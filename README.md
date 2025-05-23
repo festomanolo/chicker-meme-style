@@ -100,4 +100,4 @@ The script will generate:
 
 MIT
 
-<!-- pr-milestone: fix/mobile-pinch-zoom-clamp (2025-05-21T21:00:02Z) -->
+<!-- pr-milestone: feat/export-png-metadata (2025-05-23T13:19:31Z) -->
