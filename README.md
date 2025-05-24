@@ -100,4 +100,4 @@ The script will generate:
 
 MIT
 
-<!-- pr-milestone: feat/export-png-metadata (2025-05-23T13:19:31Z) -->
+<!-- pr-milestone: refactor/auth-session-storage (2025-05-24T07:04:59Z) -->
