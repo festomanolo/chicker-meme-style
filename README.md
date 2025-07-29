@@ -100,4 +100,4 @@ The script will generate:
 
 MIT
 
-<!-- build-revision: 125 (2025-07-29) -->
+<!-- build-revision: 126 (2025-07-29) -->
