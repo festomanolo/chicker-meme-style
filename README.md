@@ -100,4 +100,4 @@ The script will generate:
 
 MIT
 
-<!-- pr-milestone: fix/cart-badge-count-sync (2025-06-29T00:57:15Z) -->
+<!-- pr-milestone: feat/font-pairing-presets (2025-08-02T10:22:28Z) -->
