@@ -278,3 +278,59 @@ const Discover = () => {
           </div>
 
           {/* Products Grid */}
+          <div className="flex-1">
+            {/* Sort and Results */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-3 sm:gap-4">
+              <div className="flex items-center gap-2">
+                <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
+                <span className="text-muted-foreground text-sm sm:text-base">
+                  {filteredProducts.length} products found
+                </span>
+              </div>
+              
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="bg-input border border-input-border rounded-lg px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm font-medium focus:ring-2 focus:ring-primary focus:border-primary"
+              >
+                <option value="trending">Trending</option>
+                <option value="newest">Newest</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+                <option value="rating">Highest Rated</option>
+              </select>
+            </div>
+
+            {/* Products */}
+            {filteredProducts.length > 0 ? (
+              <div className={`grid gap-3 sm:gap-6 ${
+                viewMode === "grid" 
+                  ? "grid-cols-2 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3" 
+                  : "grid-cols-1"
+              }`}>
+                {filteredProducts.map((product) => (
+                  <ProductCard key={product.id} {...product} />
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12 sm:py-16">
+                <div className="w-16 h-16 sm:w-24 sm:h-24 bg-muted rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                  <Search className="h-6 w-6 sm:h-8 sm:w-8 text-muted-foreground" />
+                </div>
+                <h3 className="text-base sm:text-lg font-semibold mb-1 sm:mb-2">No products found</h3>
+                <p className="text-muted-foreground mb-3 sm:mb-4 text-sm sm:text-base">
+                  Try adjusting your filters or search terms
+                </p>
+                <Button onClick={clearFilters} variant="outline" size={isMobile ? "sm" : "default"}>
+                  Clear Filters
+                </Button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Discover;
