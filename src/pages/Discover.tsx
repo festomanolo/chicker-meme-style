@@ -54,3 +54,59 @@ const Discover = () => {
         return false;
       }
 
+      // Size filter
+      if (selectedSizes.length > 0 && !selectedSizes.some(size => product.sizes.includes(size))) {
+        return false;
+      }
+
+      return true;
+    });
+
+    // Sort products
+    switch (sortBy) {
+      case "trending":
+        filtered.sort((a, b) => (b.isTrending ? 1 : 0) - (a.isTrending ? 1 : 0));
+        break;
+      case "price-low":
+        filtered.sort((a, b) => a.price - b.price);
+        break;
+      case "price-high":
+        filtered.sort((a, b) => b.price - a.price);
+        break;
+      case "rating":
+        filtered.sort((a, b) => b.rating - a.rating);
+        break;
+      case "newest":
+        filtered.sort((a, b) => (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0));
+        break;
+    }
+
+    return filtered;
+  }, [searchQuery, selectedCategory, priceRange, selectedColors, selectedSizes, sortBy]);
+
+  const toggleColor = (color: string) => {
+    setSelectedColors(prev => 
+      prev.includes(color) 
+        ? prev.filter(c => c !== color)
+        : [...prev, color]
+    );
+  };
+
+  const toggleSize = (size: string) => {
+    setSelectedSizes(prev => 
+      prev.includes(size) 
+        ? prev.filter(s => s !== size)
+        : [...prev, size]
+    );
+  };
+
+  const clearFilters = () => {
+    setSearchQuery("");
+    setSelectedCategory("all");
+    setPriceRange([0, 50000]);
+    setSelectedColors([]);
+    setSelectedSizes([]);
+    setSortBy("trending");
+  };
+
+  return (
