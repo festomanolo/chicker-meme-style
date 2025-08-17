@@ -40,3 +40,45 @@ export const products: Product[] = [
   {
     id: "2", 
     name: "Dog Explaining WiFi Tech Tee",
+    price: 22000,
+    image: memeTshirt2,
+    rating: 4.6,
+    reviews: 89,
+    badge: "Bestseller",
+    category: "tees",
+    description: "Me explaining to my mom how WiFi works - every tech person's nightmare scenario made into wearable art!",
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    colors: ["Black", "White", "Charcoal"]
+  },
+  {
+    id: "3",
+    name: "SpongeBob Deadline Panic Tee", 
+    price: 28000,
+    image: memeTshirt3,
+    rating: 4.9,
+    reviews: 203,
+    isTrending: true,
+    category: "tees",
+    description: "When the deadline is tomorrow but you haven't started - SpongeBob captures that panic perfectly!",
+    sizes: ["XS", "S", "M", "L", "XL"],
+    colors: ["Yellow", "White", "Black", "Blue"]
+  },
+  {
+    id: "4",
+    name: "Drake Tech Choices Meme Tee",
+    price: 26000,
+    originalPrice: 32000,
+    image: memeTshirt4,
+    rating: 4.7,
+    reviews: 156,
+    badge: "Staff Pick",
+    category: "tees", 
+    description: "Drake pointing at tech choices - rejecting the old way, approving the new. A perfect developer meme!",
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    colors: ["Gray", "Black", "White", "Heather"]
+  }
+];
+
+export const featuredProducts = products.filter(p => p.isTrending || p.isNew);
+export const newProducts = products.filter(p => p.isNew);
+export const trendingProducts = products.filter(p => p.isTrending);
