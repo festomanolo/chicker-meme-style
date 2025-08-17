@@ -110,3 +110,59 @@ const Discover = () => {
   };
 
   return (
+    <div className="min-h-screen bg-background">
+      {/* Search Header */}
+      <div className="glass-card border-b border-card-border px-4 sm:px-6 py-4 sm:py-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col lg:flex-row lg:items-center gap-4 sm:gap-6">
+            <div className="flex-1">
+              <h1 className="text-headline text-2xl sm:text-3xl font-bold text-foreground mb-1 sm:mb-2">
+                Discover Memes
+              </h1>
+              <p className="text-muted-foreground text-sm sm:text-base">
+                Browse our collection of {products.length} hilarious meme t-shirts from East African creators
+              </p>
+            </div>
+            
+            {/* Search and View Controls */}
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 lg:w-auto w-full">
+              <div className="relative flex-1 lg:w-80">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder={isMobile ? "Search memes..." : "Search memes, styles, creators..."}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10 bg-input border-input-border rounded-lg"
+                />
+              </div>
+              
+              <div className="flex gap-2">
+                {!isMobile && (
+                  <>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => setViewMode("grid")}
+                      className={`${viewMode === "grid" ? "bg-primary text-primary-foreground" : ""} glass border-glass-border`}
+                    >
+                      <Grid3X3 className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => setViewMode("list")}
+                      className={`${viewMode === "list" ? "bg-primary text-primary-foreground" : ""} glass border-glass-border`}
+                    >
+                      <List className="h-4 w-4" />
+                    </Button>
+                  </>
+                )}
+                <Button
+                  variant="outline"
+                  onClick={() => setShowFilters(!showFilters)}
+                  className="glass border-glass-border"
+                >
+                  <SlidersHorizontal className="h-4 w-4 mr-2" />
+                  Filters
+                </Button>
+              </div>
