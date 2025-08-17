@@ -166,3 +166,59 @@ const Discover = () => {
                   Filters
                 </Button>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+        <div className="flex flex-col lg:flex-row gap-6 sm:gap-8">
+          {/* Filters Sidebar */}
+          <div className={`lg:w-80 ${showFilters ? "block" : "hidden lg:block"}`}>
+            <Card className="glass-card sticky top-24">
+              <CardContent className="p-4 sm:p-6 space-y-4 sm:space-y-6">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-semibold text-base sm:text-lg">Filters</h3>
+                  <div className="flex items-center gap-2">
+                    <Button variant="ghost" size="sm" onClick={clearFilters} className="text-primary text-xs sm:text-sm">
+                      Clear All
+                    </Button>
+                    {isMobile && (
+                      <Button variant="ghost" size="icon" onClick={() => setShowFilters(false)} className="lg:hidden">
+                        <X className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
+                </div>
+
+                {/* Categories */}
+                <div>
+                  <h4 className="font-medium mb-2 sm:mb-3 text-sm sm:text-base">Categories</h4>
+                  <div className="space-y-1 sm:space-y-2">
+                    {categories.map((category) => (
+                      <button
+                        key={category.id}
+                        onClick={() => setSelectedCategory(category.id)}
+                        className={`w-full flex items-center justify-between p-2 rounded-lg text-left transition-colors text-sm ${
+                          selectedCategory === category.id
+                            ? "bg-primary text-primary-foreground"
+                            : "hover:bg-hover"
+                        }`}
+                      >
+                        <span className="font-medium">{category.name}</span>
+                        <Badge variant="secondary" className="text-xs">
+                          {category.count}
+                        </Badge>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Price Range */}
+                <div>
+                  <h4 className="font-medium mb-2 sm:mb-3 text-sm sm:text-base">Price Range (TZS)</h4>
+                  <div className="space-y-3 sm:space-y-4">
+                    <Slider
+                      value={priceRange}
+                      onValueChange={setPriceRange}
+                      max={50000}
