@@ -222,3 +222,59 @@ const Discover = () => {
                       value={priceRange}
                       onValueChange={setPriceRange}
                       max={50000}
+                      min={0}
+                      step={1000}
+                      className="w-full"
+                    />
+                    <div className="flex items-center justify-between text-xs sm:text-sm text-muted-foreground">
+                      <span>TZS {priceRange[0].toLocaleString()}</span>
+                      <span>TZS {priceRange[1].toLocaleString()}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Colors */}
+                <div>
+                  <h4 className="font-medium mb-2 sm:mb-3 text-sm sm:text-base">Colors</h4>
+                  <div className="grid grid-cols-2 gap-1 sm:gap-2">
+                    {colors.map((color) => (
+                      <div key={color} className="flex items-center space-x-2">
+                        <Checkbox
+                          id={color}
+                          checked={selectedColors.includes(color)}
+                          onCheckedChange={() => toggleColor(color)}
+                        />
+                        <label htmlFor={color} className="text-xs sm:text-sm font-medium cursor-pointer">
+                          {color}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Sizes */}
+                <div>
+                  <h4 className="font-medium mb-2 sm:mb-3 text-sm sm:text-base">Sizes</h4>
+                  <div className="grid grid-cols-3 gap-1 sm:gap-2">
+                    {sizes.map((size) => (
+                      <Button
+                        key={size}
+                        variant="outline"
+                        size="sm"
+                        onClick={() => toggleSize(size)}
+                        className={`text-xs ${
+                          selectedSizes.includes(size)
+                            ? "bg-primary text-primary-foreground border-primary"
+                            : "glass border-glass-border"
+                        }`}
+                      >
+                        {size}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Products Grid */}
