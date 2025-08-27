@@ -16,3 +16,21 @@
 
 # AsyncStorage
 -keep class com.reactnativecommunity.asyncstorage.** { *; }
+
+# Zustand
+-keep class zustand.** { *; }
+
+# General optimizations
+-optimizationpasses 5
+-dontusemixedcaseclassnames
+-dontskipnonpubliclibraryclasses
+-dontpreverify
+-verbose
+-optimizations !code/simplification/arithmetic,!field/*,!class/merging/*
+
+# Remove logging
+-assumenosideeffects class android.util.Log {
+    public static *** d(...);
+    public static *** v(...);
+    public static *** i(...);
+}
