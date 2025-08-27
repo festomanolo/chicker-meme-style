@@ -22,3 +22,28 @@ export const SafeAreaView: React.FC<{ children: React.ReactNode; style?: any }> 
 };
 
 // Mock useSafeAreaInsets hook
+export const useSafeAreaInsets = () => ({
+  top: 0,
+  bottom: 0,
+  left: 0,
+  right: 0,
+});
+
+// Mock useSafeAreaFrame hook
+export const useSafeAreaFrame = () => ({
+  x: 0,
+  y: 0,
+  width: (typeof window !== 'undefined' ? window.innerWidth : 375),
+  height: (typeof window !== 'undefined' ? window.innerHeight : 667),
+});
+
+// Default export
+export default {
+  SafeAreaProvider,
+  SafeAreaView,
+  useSafeAreaInsets,
+  useSafeAreaFrame,
+  initialWindowMetrics,
+  SafeAreaInsetsContext,
+  SafeAreaFrameContext,
+};
