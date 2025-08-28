@@ -46,3 +46,51 @@ const AsyncStorageTest = () => {
       const values = await AsyncStorage.multiGet(['key1', 'key2', 'key3']);
       console.log('Multi-get result:', values);
       
+      Alert.alert('Success!', 'Advanced AsyncStorage test passed!');
+    } catch (error) {
+      Alert.alert('Error', 'Advanced test failed: ' + error.message);
+    }
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>🗄️ AsyncStorage Test</Text>
+      <Text style={styles.subtitle}>Testing data persistence</Text>
+      
+      <View style={styles.statusContainer}>
+        <Text style={styles.status}>{storageStatus}</Text>
+        {testValue && (
+          <Text style={styles.value}>Stored Value: {testValue}</Text>
+        )}
+      </View>
+      
+      <TouchableOpacity style={styles.button} onPress={testAsyncStorage}>
+        <Text style={styles.buttonText}>Retest AsyncStorage</Text>
+      </TouchableOpacity>
+      
+      <TouchableOpacity style={styles.button} onPress={handleAdvancedTest}>
+        <Text style={styles.buttonText}>Advanced Test</Text>
+      </TouchableOpacity>
+      
+      <Text style={styles.info}>
+        If this works, we can proceed to navigation testing
+      </Text>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#4CAF50',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: 'white',
+    marginBottom: 10,
+    textAlign: 'center',
+  },
