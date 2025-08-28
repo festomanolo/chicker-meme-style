@@ -39,3 +39,45 @@ const DetailsTestScreen = ({ navigation }: any) => {
       <Text style={styles.title}>📄 Details Screen</Text>
       <Text style={styles.subtitle}>Navigation successful!</Text>
       
+      <TouchableOpacity 
+        style={styles.button} 
+        onPress={() => navigation.goBack()}
+      >
+        <Text style={styles.buttonText}>Go Back</Text>
+      </TouchableOpacity>
+      
+      <TouchableOpacity 
+        style={styles.button} 
+        onPress={() => navigation.navigate('Home')}
+      >
+        <Text style={styles.buttonText}>Go to Home</Text>
+      </TouchableOpacity>
+      
+      <Text style={styles.info}>
+        Navigation between screens is working correctly!
+      </Text>
+    </View>
+  );
+};
+
+const NavigationTest = () => {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator 
+        initialRouteName="Home"
+        screenOptions={{
+          headerShown: false,
+        }}
+      >
+        <Stack.Screen name="Home" component={HomeTestScreen} />
+        <Stack.Screen name="Details" component={DetailsTestScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#2196F3',
+    justifyContent: 'center',
