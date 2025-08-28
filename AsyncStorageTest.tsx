@@ -94,3 +94,51 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     textAlign: 'center',
   },
+  subtitle: {
+    fontSize: 18,
+    color: 'white',
+    marginBottom: 40,
+    opacity: 0.9,
+    textAlign: 'center',
+  },
+  statusContainer: {
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    padding: 20,
+    borderRadius: 10,
+    marginBottom: 30,
+    minWidth: 250,
+  },
+  status: {
+    color: 'white',
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+  value: {
+    color: 'white',
+    fontSize: 14,
+    textAlign: 'center',
+    opacity: 0.8,
+  },
+  button: {
+    backgroundColor: 'white',
+    paddingHorizontal: 30,
+    paddingVertical: 15,
+    borderRadius: 25,
+    marginBottom: 15,
+  },
+  buttonText: {
+    color: '#4CAF50',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  info: {
+    color: 'white',
+    fontSize: 14,
+    textAlign: 'center',
+    opacity: 0.8,
+    marginTop: 20,
+  },
+});
+
+export default AsyncStorageTest;
