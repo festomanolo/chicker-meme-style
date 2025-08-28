@@ -51,3 +51,56 @@ const [currentTestLevel] = useState(TEST_LEVELS.ASYNC_STORAGE);
 
 **To activate**: Change in App.tsx:
 ```typescript
+const [currentTestLevel] = useState(TEST_LEVELS.NAVIGATION);
+```
+
+**Expected behavior**:
+- Blue screen with "🧭 Navigation Test"
+- "Go to Details" button navigates to purple screen
+- "Go Back" button returns to home
+
+**If this fails**: React Navigation configuration issue
+
+---
+
+### Level 4: Full App
+**What it tests**:
+- Complete app with all features
+- Database initialization
+- Authentication flow
+- Complex navigation
+
+## 🚀 Testing Process
+
+### Step 1: Test Basic Level (Current)
+```bash
+cd android
+./gradlew assembleDebug
+```
+
+Install APK: `android/app/build/outputs/apk/debug/app-debug.apk`
+
+**Result Options**:
+- ✅ **Works**: React Native setup is correct, proceed to Level 2
+- ❌ **Crashes**: Fundamental issue, check Android logs
+
+### Step 2: If Basic Works, Test AsyncStorage
+1. Change `currentTestLevel` to `TEST_LEVELS.ASYNC_STORAGE`
+2. Rebuild APK
+3. Test AsyncStorage functionality
+
+### Step 3: If AsyncStorage Works, Test Navigation
+1. Change `currentTestLevel` to `TEST_LEVELS.NAVIGATION`
+2. Rebuild APK
+3. Test navigation between screens
+
+### Step 4: If Navigation Works, Test Full App
+1. Change `currentTestLevel` to `TEST_LEVELS.FULL`
+2. Implement full app logic
+3. Test complete functionality
+
+## 🔍 Debugging Commands
+
+### Get crash logs:
+```bash
+adb logcat | grep -E "(ReactNative|Chicker|FATAL|AndroidRuntime)"
