@@ -104,3 +104,56 @@ Install APK: `android/app/build/outputs/apk/debug/app-debug.apk`
 ### Get crash logs:
 ```bash
 adb logcat | grep -E "(ReactNative|Chicker|FATAL|AndroidRuntime)"
+```
+
+### Clear app data:
+```bash
+adb shell pm clear com.chickermemestyle
+```
+
+### Check app installation:
+```bash
+adb shell pm list packages | grep chicker
+```
+
+## 📊 Expected Results
+
+| Test Level | Screen Color | Main Text | Success Indicator |
+|------------|--------------|-----------|-------------------|
+| Basic | Orange | "🐔 Chicker Debug" | Alert shows |
+| AsyncStorage | Green | "🗄️ AsyncStorage Test" | "✅ AsyncStorage Working" |
+| Navigation | Blue/Purple | "🧭 Navigation Test" | Can navigate between screens |
+| Full App | Theme colors | Full app UI | Complete functionality |
+
+## 🛠️ Quick Fixes
+
+### If Basic Test Fails:
+- Check Android manifest
+- Verify React Native installation
+- Check for missing dependencies
+
+### If AsyncStorage Test Fails:
+- Verify @react-native-async-storage/async-storage installation
+- Check Android permissions
+- Try alternative storage solution
+
+### If Navigation Test Fails:
+- Check React Navigation dependencies
+- Verify navigation configuration
+- Test with simpler navigation setup
+
+### If Full App Fails:
+- Gradually add features back
+- Test each component individually
+- Check for circular dependencies
+
+## 📝 Current Status
+- ✅ Basic test APK built successfully
+- 🔄 Ready for Level 1 testing
+- ⏳ Waiting for test results to proceed
+
+## 🎯 Next Steps
+1. Test the current basic APK
+2. Report results (works/crashes)
+3. Progress to next level based on results
+4. Identify and fix the specific crash cause
