@@ -81,3 +81,44 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#2196F3',
     justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: 'white',
+    marginBottom: 10,
+    textAlign: 'center',
+  },
+  subtitle: {
+    fontSize: 18,
+    color: 'white',
+    marginBottom: 40,
+    opacity: 0.9,
+    textAlign: 'center',
+  },
+  button: {
+    backgroundColor: 'white',
+    paddingHorizontal: 30,
+    paddingVertical: 15,
+    borderRadius: 25,
+    marginBottom: 15,
+    minWidth: 200,
+  },
+  buttonText: {
+    color: '#2196F3',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  info: {
+    color: 'white',
+    fontSize: 14,
+    textAlign: 'center',
+    opacity: 0.8,
+    marginTop: 20,
+  },
+});
+
+export default NavigationTest;
