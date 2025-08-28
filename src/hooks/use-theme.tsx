@@ -46,3 +46,50 @@ export function ThemeProvider({
       return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
         ? "dark"
         : "light";
+    }
+    return defaultTheme;
+  });
+
+  useEffect(() => {
+    const root = document.documentElement;
+    if (theme === "dark") {
+      root.classList.add("dark");
+    } else {
+      root.classList.remove("dark");
+    }
+    try {
+      localStorage.setItem(storageKey, theme);
+    } catch {}
+  }, [theme, storageKey]);
+
+  const setTheme = (next: Theme) => setThemeState(next);
+  const toggleTheme = () => setThemeState(prev => (prev === "dark" ? "light" : "dark"));
+
+  const value = {
+    theme,
+    setTheme,
+    toggleTheme,
+  };
+
+  return (
+    <ThemeProviderContext.Provider value={value}>
+      {children}
+    </ThemeProviderContext.Provider>
+  );
+}
+
+export function useTheme() {
+  const context = useContext(ThemeProviderContext);
+
+  if (context === undefined)
+    throw new Error("useTheme must be used within a ThemeProvider");
+
+  return context;
+}
+
+
+
+
+
+
+
