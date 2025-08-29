@@ -384,3 +384,58 @@ export class TransformManager {
   /**
    * Zoom to fit content
    */
+  zoomToFit(contentBounds: Rect, padding: number = 20): void {
+    const viewportSize = this.config.viewportSize;
+    
+    const scaleX = (viewportSize.width - padding * 2) / contentBounds.width;
+    const scaleY = (viewportSize.height - padding * 2) / contentBounds.height;
+    const scale = Math.min(scaleX, scaleY);
+    
+    const centerX = contentBounds.x + contentBounds.width / 2;
+    const centerY = contentBounds.y + contentBounds.height / 2;
+    
+    const translateX = viewportSize.width / 2 - centerX * scale;
+    const translateY = viewportSize.height / 2 - centerY * scale;
+    
+    this.setPanZoom({
+      scale,
+      translateX,
+      translateY,
+    });
+  }
+
+  /**
+   * Reset pan and zoom to default
+   */
+  resetPanZoom(): void {
+    this.setPanZoom({
+      scale: 1,
+      translateX: 0,
+      translateY: 0,
+    });
+  }
+
+  /**
+   * Private helper methods
+   */
+  private getCanvasBounds(): Rect {
+    // This would typically get the actual canvas element bounds
+    // For now, return a default based on viewport
+    return {
+      x: 0,
+      y: 0,
+      width: this.config.viewportSize.width,
+      height: this.config.viewportSize.height,
+    };
+  }
+
+  private applyViewportTransform(point: Point): Point {
+    return {
+      x: point.x * this.panZoomState.scale + this.panZoomState.translateX,
+      y: point.y * this.panZoomState.scale + this.panZoomState.translateY,
+    };
+  }
+
+  private removeViewportTransform(point: Point): Point {
+    return {
+      x: (point.x - this.panZoomState.translateX) / this.panZoomState.scale,
