@@ -51,3 +51,57 @@ export class NotificationAnalyticsService {
     // Google Analytics
     if (this.config.enableGoogleAnalytics) {
       this.trackGoogleAnalytics(enrichedEvent);
+    }
+
+    // Custom analytics
+    if (this.config.enableCustomAnalytics) {
+      this.queueCustomEvent(enrichedEvent);
+    }
+  }
+
+  /**
+   * Track with Google Analytics
+   */
+  private trackGoogleAnalytics(event: NotificationAnalytics): void {
+    if (typeof window === 'undefined') return;
+
+    // Google Analytics 4
+    if ((window as any).gtag) {
+      (window as any).gtag('event', 'whatsapp_notification', {
+        event_category: 'engagement',
+        event_label: event.event,
+        custom_parameters: {
+          notification_event: event.event,
+          show_count: event.showCount,
+          page_url: event.pageUrl,
+          session_id: event.sessionId,
+        },
+      });
+    }
+
+    // Universal Analytics (legacy)
+    if ((window as any).ga) {
+      (window as any).ga('send', 'event', {
+        eventCategory: 'WhatsApp Notification',
+        eventAction: event.event,
+        eventLabel: event.pageUrl,
+        eventValue: event.showCount,
+      });
+    }
+  }
+
+  /**
+   * Queue event for custom analytics
+   */
+  private queueCustomEvent(event: NotificationAnalytics): void {
+    this.eventQueue.push(event);
+
+    // Flush queue periodically
+    if (!this.flushTimer) {
+      this.flushTimer = setTimeout(() => {
+        this.flushEventQueue();
+      }, 5000); // Flush every 5 seconds
+    }
+  }
+
+  /**
