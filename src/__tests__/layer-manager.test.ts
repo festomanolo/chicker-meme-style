@@ -282,3 +282,60 @@ describe('LayerManager', () => {
       manager.addLayer({ ...mockElement, name: 'Text 1', type: 'text', visible: true });
       manager.addLayer({ ...mockElement, name: 'Image 1', type: 'image', visible: false });
       manager.addLayer({ ...mockElement, name: 'Text 2', type: 'text', locked: true });
+    });
+
+    it('should filter by type', () => {
+      const filter: LayerFilter = { type: ['text'] };
+      const filtered = manager.filterLayers(filter);
+
+      expect(filtered.length).toBe(2);
+      expect(filtered.every(el => el.type === 'text')).toBe(true);
+    });
+
+    it('should filter by visibility', () => {
+      const filter: LayerFilter = { visible: false };
+      const filtered = manager.filterLayers(filter);
+
+      expect(filtered.length).toBe(1);
+      expect(filtered[0].visible).toBe(false);
+    });
+
+    it('should filter by lock status', () => {
+      const filter: LayerFilter = { locked: true };
+      const filtered = manager.filterLayers(filter);
+
+      expect(filtered.length).toBe(1);
+      expect(filtered[0].locked).toBe(true);
+    });
+
+    it('should filter by search query', () => {
+      const filter: LayerFilter = { searchQuery: 'Text' };
+      const filtered = manager.filterLayers(filter);
+
+      expect(filtered.length).toBe(2);
+      expect(filtered.every(el => el.name.includes('Text'))).toBe(true);
+    });
+
+    it('should combine multiple filters', () => {
+      const filter: LayerFilter = { 
+        type: ['text'], 
+        visible: true 
+      };
+      const filtered = manager.filterLayers(filter);
+
+      expect(filtered.length).toBe(1);
+      expect(filtered[0].type).toBe('text');
+      expect(filtered[0].visible).toBe(true);
+    });
+  });
+
+  describe('layer sorting', () => {
+    beforeEach(() => {
+      // Add elements with different timestamps
+      const now = Date.now();
+      manager.addLayer({ ...mockElement, name: 'C Element' });
+      manager.addLayer({ ...mockElement, name: 'A Element' });
+      manager.addLayer({ ...mockElement, name: 'B Element' });
+    });
+
+    it('should sort by name ascending', () => {
