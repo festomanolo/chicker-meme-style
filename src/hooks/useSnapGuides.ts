@@ -168,3 +168,59 @@ export const useSnapGuides = (options: UseSnapGuidesOptions = {}): UseSnapGuides
         );
       }
     });
+
+    // Grid guides (if enabled)
+    if (enableGridSnap && gridSize > 0) {
+      // Generate grid guides at regular intervals
+      for (let x = 0; x <= canvasSize.width; x += gridSize) {
+        guides.push({
+          type: 'grid',
+          position: x,
+          axis: 'x',
+          temporary: false,
+          priority: 4,
+        });
+      }
+      
+      for (let y = 0; y <= canvasSize.height; y += gridSize) {
+        guides.push({
+          type: 'grid',
+          position: y,
+          axis: 'y',
+          temporary: false,
+          priority: 4,
+        });
+      }
+    }
+
+    // Sort guides by priority
+    guides.sort((a, b) => a.priority - b.priority);
+
+    setSnapGuides(guides);
+  }, [enableGridSnap, gridSize]);
+
+  // Snap position to nearest guides
+  const snapToGuides = useCallback((
+    position: Point,
+    excludeElementId?: string
+  ): SnapResult => {
+    const activeGuides: SnapGuide[] = [];
+    let snappedPosition = { ...position };
+    let minDistanceX = snapThreshold;
+    let minDistanceY = snapThreshold;
+    let snappedX = false;
+    let snappedY = false;
+
+    // Filter out guides from the element being moved
+    const relevantGuides = snapGuides.filter(
+      guide => !excludeElementId || guide.elementId !== excludeElementId
+    );
+
+    // Check X-axis guides
+    for (const guide of relevantGuides.filter(g => g.axis === 'x')) {
+      const distance = Math.abs(position.x - guide.position);
+      if (distance < minDistanceX) {
+        snappedPosition.x = guide.position;
+        minDistanceX = distance;
+        snappedX = true;
+        
