@@ -93,3 +93,51 @@ export const ToolsRow: React.FC<ToolsRowProps> = ({
   const {
     showLabels = false,
     showShortcuts = true,
+    iconSize = 'md',
+    orientation = 'horizontal',
+  } = config;
+
+  const [hoveredTool, setHoveredTool] = useState<ToolType | null>(null);
+
+  const handleToolClick = useCallback((toolId: ToolType) => {
+    if (disabled.includes(toolId)) return;
+    onToolSelect(toolId);
+  }, [onToolSelect, disabled]);
+
+  const getIconSize = () => {
+    switch (iconSize) {
+      case 'sm': return 'h-4 w-4';
+      case 'lg': return 'h-6 w-6';
+      default: return 'h-5 w-5';
+    }
+  };
+
+  const getButtonSize = () => {
+    // Ensure 44px minimum touch target
+    return 'h-11 w-11 min-h-[44px] min-w-[44px]';
+  };
+
+  const renderTool = (tool: Tool) => {
+    const isSelected = selectedTool === tool.id;
+    const isDisabled = disabled.includes(tool.id);
+    const isHovered = hoveredTool === tool.id;
+    const IconComponent = tool.icon;
+
+    const tooltipContent = (
+      <div className="text-center">
+        <div className="font-medium">{tool.name}</div>
+        {showShortcuts && tool.shortcut && (
+          <div className="text-xs text-gray-400 mt-1">
+            Press {tool.shortcut}
+          </div>
+        )}
+        <div className="text-xs text-gray-400 mt-1">
+          {tool.description}
+        </div>
+      </div>
+    );
+
+    return (
+      <Tooltip key={tool.id}>
+        <TooltipTrigger asChild>
+          <Button
