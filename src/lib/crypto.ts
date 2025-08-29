@@ -39,3 +39,44 @@ export class PasswordUtils {
   }
 
   // Generate a random user ID
+  static generateUserId(): string {
+    const timestamp = Date.now().toString(36);
+    const randomPart = Math.random().toString(36).substring(2, 8);
+    return `user_${timestamp}_${randomPart}`;
+  }
+
+  // Generate a random session token
+  static generateSessionToken(): string {
+    const timestamp = Date.now().toString(36);
+    const randomPart = Math.random().toString(36).substring(2, 15);
+    return `session_${timestamp}_${randomPart}`;
+  }
+
+  // Validate email format
+  static isValidEmail(email: string): boolean {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
+
+  // Validate password strength
+  static validatePassword(password: string): { isValid: boolean; errors: string[] } {
+    const errors: string[] = [];
+    
+    if (password.length < 6) {
+      errors.push('Password must be at least 6 characters long');
+    }
+    
+    if (!/[A-Za-z]/.test(password)) {
+      errors.push('Password must contain at least one letter');
+    }
+    
+    if (!/[0-9]/.test(password)) {
+      errors.push('Password must contain at least one number');
+    }
+    
+    return {
+      isValid: errors.length === 0,
+      errors
+    };
+  }
+}
