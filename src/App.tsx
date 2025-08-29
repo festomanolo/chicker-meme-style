@@ -37,3 +37,42 @@ function App() {
     initApp();
   }, [checkAuth]);
 
+  return (
+    <ThemeProvider defaultTheme="light" storageKey="chicker-theme">
+      <Router>
+        <AppLayout>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/discover" element={<Discover />} />
+            <Route path="/cart" element={
+              <ProtectedRoute>
+                <Cart />
+              </ProtectedRoute>
+            } />
+            <Route path="/account" element={
+              <ProtectedRoute>
+                <Account />
+              </ProtectedRoute>
+            } />
+            <Route path="/customize" element={<Customize />} />
+            <Route path="/orders" element={
+              <ProtectedRoute>
+                <Orders />
+              </ProtectedRoute>
+            } />
+            <Route path="/checkout" element={
+              <ProtectedRoute>
+                <Checkout />
+              </ProtectedRoute>
+            } />
+            <Route path="/auth" element={<Auth />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </AppLayout>
+        <Toaster />
+      </Router>
+    </ThemeProvider>
+  );
+}
+
+export default App;
