@@ -227,3 +227,60 @@ describe('HistoryManager', () => {
       };
       const isValid = historyManager.validateState(invalidState);
       expect(isValid).toBe(false);
+    });
+
+    it('should reject invalid state - missing canvas settings', () => {
+      const invalidState = { ...mockState, canvasSettings: undefined } as any;
+      const isValid = historyManager.validateState(invalidState);
+      expect(isValid).toBe(false);
+    });
+
+    it('should calculate checksum when enabled', () => {
+      const config: Partial<HistoryManagerConfig> = { enableChecksums: true };
+      const manager = new HistoryManager(config);
+      
+      const checksum = manager.calculateChecksum(mockState);
+      expect(checksum).toBeTruthy();
+      expect(typeof checksum).toBe('string');
+    });
+
+    it('should return empty checksum when disabled', () => {
+      const config: Partial<HistoryManagerConfig> = { enableChecksums: false };
+      const manager = new HistoryManager(config);
+      
+      const checksum = manager.calculateChecksum(mockState);
+      expect(checksum).toBe('');
+    });
+  });
+
+  describe('compression', () => {
+    it('should compress entries when threshold reached', () => {
+      const config: Partial<HistoryManagerConfig> = {
+        enableCompression: true,
+        compressionThreshold: 3,
+        compressionRatio: 0.5,
+      };
+      const manager = new HistoryManager(config);
+      
+      // Add entries beyond threshold
+      for (let i = 0; i < 5; i++) {
+        manager.addEntry(createMockAction(), mockState, `Action ${i}`);
+      }
+      
+      const stats = manager.getStats();
+      expect(stats.compressedEntries).toBeGreaterThan(0);
+    });
+
+    it('should not compress when disabled', () => {
+      const config: Partial<HistoryManagerConfig> = {
+        enableCompression: false,
+        compressionThreshold: 2,
+      };
+      const manager = new HistoryManager(config);
+      
+      // Add entries beyond threshold
+      for (let i = 0; i < 5; i++) {
+        manager.addEntry(createMockAction(), mockState, `Action ${i}`);
+      }
+      
+      const stats = manager.getStats();
