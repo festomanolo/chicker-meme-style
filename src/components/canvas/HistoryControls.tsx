@@ -35,3 +35,41 @@ export const HistoryControls: React.FC<HistoryControlsProps> = ({
   const formatMemoryUsage = (bytes: number): string => {
     if (bytes < 1024) return `${bytes}B`;
     if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)}KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)}MB`;
+  };
+
+  return (
+    <TooltipProvider>
+      <div className={cn("flex items-center gap-2", className)}>
+        {/* Undo button */}
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onUndo}
+              disabled={!canUndo}
+              className="h-8 px-2"
+            >
+              <Undo2 className="h-4 w-4" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Undo (Ctrl+Z)</p>
+          </TooltipContent>
+        </Tooltip>
+
+        {/* Redo button */}
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onRedo}
+              disabled={!canRedo}
+              className="h-8 px-2"
+            >
+              <Redo2 className="h-4 w-4" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
