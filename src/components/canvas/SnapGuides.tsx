@@ -139,3 +139,50 @@ export const SnapGuides: React.FC<SnapGuidesProps> = ({
                   key={key}
                   x1={guide.position}
                   y1={0}
+                  x2={guide.position}
+                  y2={canvasSize.height}
+                  {...style}
+                  className={cn(
+                    "transition-opacity duration-200",
+                    guide.temporary && "animate-pulse"
+                  )}
+                />
+              );
+            } else {
+              // Horizontal guide line
+              return (
+                <line
+                  key={key}
+                  x1={0}
+                  y1={guide.position}
+                  x2={canvasSize.width}
+                  y2={guide.position}
+                  {...style}
+                  className={cn(
+                    "transition-opacity duration-200",
+                    guide.temporary && "animate-pulse"
+                  )}
+                />
+              );
+            }
+          })}
+        </g>
+
+        {/* Guide labels for temporary guides */}
+        {visibleGuides
+          .filter(guide => guide.temporary)
+          .map((guide, index) => {
+            const labelText = `${guide.type} ${Math.round(guide.position)}px`;
+            const key = `label-${guide.type}-${guide.axis}-${guide.position}-${index}`;
+
+            return (
+              <g key={key}>
+                {guide.axis === 'x' ? (
+                  // Vertical guide label
+                  <g>
+                    <rect
+                      x={guide.position - 30 / zoom}
+                      y={10 / zoom}
+                      width={60 / zoom}
+                      height={20 / zoom}
+                      fill="rgba(0, 0, 0, 0.8)"
