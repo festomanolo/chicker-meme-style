@@ -299,3 +299,63 @@ export class ColorManager {
   /**
    * Blend color with fabric using specified options
    */
+  blendColorWithFabric(color: TshirtColor, fabricBase: string, options: FabricBlendOptions): string {
+    // This would implement sophisticated fabric blending
+    // For now, return a CSS filter representation
+    return this.generateCSSFilter(color);
+  }
+
+  /**
+   * Generate color preview with texture applied
+   */
+  generateColorPreview(color: TshirtColor, texture?: TextureFilter): string {
+    const baseFilter = this.generateCSSFilter(color, texture);
+    
+    // Create a small preview canvas
+    const previewCanvas = document.createElement('canvas');
+    previewCanvas.width = 100;
+    previewCanvas.height = 100;
+    const previewCtx = previewCanvas.getContext('2d')!;
+
+    // Fill with base color
+    previewCtx.fillStyle = color.hex;
+    previewCtx.fillRect(0, 0, 100, 100);
+
+    // Apply texture pattern if available
+    if (texture) {
+      this.applyTexturePattern(previewCtx, texture);
+    }
+
+    return previewCanvas.toDataURL();
+  }
+
+  /**
+   * Apply texture pattern to preview
+   */
+  private applyTexturePattern(ctx: CanvasRenderingContext2D, texture: TextureFilter): void {
+    // Create texture pattern based on texture type
+    switch (texture.category) {
+      case 'weave':
+        this.drawWeavePattern(ctx);
+        break;
+      case 'wash':
+        this.drawWashPattern(ctx);
+        break;
+      case 'finish':
+        this.drawFinishPattern(ctx);
+        break;
+      default:
+        break;
+    }
+  }
+
+  /**
+   * Draw weave texture pattern
+   */
+  private drawWeavePattern(ctx: CanvasRenderingContext2D): void {
+    ctx.globalCompositeOperation = 'multiply';
+    ctx.strokeStyle = 'rgba(0, 0, 0, 0.1)';
+    ctx.lineWidth = 0.5;
+
+    // Draw crosshatch pattern
+    for (let i = 0; i < 100; i += 2) {
