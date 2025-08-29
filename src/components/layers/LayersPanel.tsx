@@ -591,3 +591,62 @@ export const LayersPanel: React.FC<LayersPanelProps> = ({
                 onLayerDelete={onLayerDelete}
                 onLayerDuplicate={onLayerDuplicate}
                 onLayerVisibilityToggle={onLayerVisibilityToggle}
+                onLayerLockToggle={onLayerLockToggle}
+                onStartEdit={setEditingLayerId}
+                onEndEdit={() => setEditingLayerId(null)}
+                onGroupVisibilityToggle={onGroupVisibilityToggle}
+                onGroupLockToggle={onGroupLockToggle}
+              />
+            ))}
+
+            {/* Individual layers (not in groups) */}
+            <div className="space-y-1">
+              {filteredLayers.length === 0 && groups.length === 0 ? (
+                <div className="text-center py-8 text-gray-500">
+                  <div className="mb-2">No layers found</div>
+                  {Object.keys(filter).length > 0 && (
+                    <div className="text-sm">
+                      Try adjusting your filters
+                    </div>
+                  )}
+                </div>
+              ) : (
+                filteredLayers.map(layer => (
+                  <LayerItem
+                    key={keyManager.getIndividualKey(layer.id)}
+                    layer={layer}
+                    isSelected={selectedIds.includes(layer.id)}
+                    isEditing={enableInlineEdit && editingLayerId === layer.id}
+                    showThumbnail={showThumbnails}
+                    onSelect={onLayerSelect}
+                    onUpdate={onLayerUpdate}
+                    onDelete={onLayerDelete}
+                    onDuplicate={onLayerDuplicate}
+                    onVisibilityToggle={onLayerVisibilityToggle}
+                    onLockToggle={onLayerLockToggle}
+                    onStartEdit={setEditingLayerId}
+                    onEndEdit={() => setEditingLayerId(null)}
+                    onDragStart={enableDragReorder ? handleDragStart : undefined}
+                    onDragOver={enableDragReorder ? handleDragOver : undefined}
+                    onDrop={enableDragReorder ? handleDrop : undefined}
+                  />
+                ))
+              )}
+            </div>
+          </>
+        )}
+      </div>
+
+      {/* Layer count */}
+      <div className="p-3 border-t text-xs text-gray-500 text-center">
+        {searchQuery.trim() ? (
+          `${searchResults.length} of ${layers.length} layers matching "${searchQuery}"`
+        ) : (
+          `${filteredLayers.length + groupedLayerIds.size} layers total (${filteredLayers.length} individual, ${groupedLayerIds.size} in groups)`
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default LayersPanel;
