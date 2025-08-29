@@ -109,3 +109,58 @@ export const TransformControls: React.FC<TransformControlsProps> = ({
         id: 'n',
         type: 'edge',
         position: 'n',
+        cursor: 'n-resize',
+        bounds: { x: x + width/2 - offset, y: y - offset, width: handleSize, height: handleSize },
+        active: false,
+      },
+      {
+        id: 'e',
+        type: 'edge',
+        position: 'e',
+        cursor: 'e-resize',
+        bounds: { x: x + width - offset, y: y + height/2 - offset, width: handleSize, height: handleSize },
+        active: false,
+      },
+      {
+        id: 's',
+        type: 'edge',
+        position: 's',
+        cursor: 's-resize',
+        bounds: { x: x + width/2 - offset, y: y + height - offset, width: handleSize, height: handleSize },
+        active: false,
+      },
+      {
+        id: 'w',
+        type: 'edge',
+        position: 'w',
+        cursor: 'w-resize',
+        bounds: { x: x - offset, y: y + height/2 - offset, width: handleSize, height: handleSize },
+        active: false,
+      },
+    ];
+  }, [element, isSelected, disabled, zoom]);
+
+  // Generate rotation handle
+  const rotationHandle = useMemo((): TransformHandle | null => {
+    if (!isSelected || disabled || !showRotationHandle) return null;
+
+    const { x, y, width, height } = element;
+    const handleSize = 8 / zoom;
+    const offset = handleSize / 2;
+    const rotationDistance = 30 / zoom; // Distance above the element
+
+    return {
+      id: 'rotate',
+      type: 'rotation',
+      position: 'rotate',
+      cursor: 'grab',
+      bounds: { 
+        x: x + width/2 - offset, 
+        y: y - rotationDistance - offset, 
+        width: handleSize, 
+        height: handleSize 
+      },
+      active: false,
+    };
+  }, [element, isSelected, disabled, showRotationHandle, zoom]);
+
