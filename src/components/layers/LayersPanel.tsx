@@ -354,3 +354,62 @@ const GroupItem: React.FC<{
         
         {/* Group visibility indicator */}
         {!group.visible && (
+          <EyeOff className="h-3 w-3 text-gray-400" />
+        )}
+        
+        {/* Group lock indicator */}
+        {group.locked && (
+          <Lock className="h-3 w-3 text-gray-400" />
+        )}
+      </div>
+
+      {group.expanded && (
+        <div className="ml-6 mt-2 space-y-1" data-testid={`group-content-${group.id}`}>
+          {groupLayers.length === 0 ? (
+            <div className="text-xs text-gray-500 italic p-2">
+              No layers in this group
+            </div>
+          ) : (
+            groupLayers.map(layer => (
+              <LayerItem
+                key={keyManager.getGroupKey(layer.id, group.id)}
+                layer={layer}
+                isSelected={selectedIds.includes(layer.id)}
+                isEditing={enableInlineEdit && editingLayerId === layer.id}
+                showThumbnail={showThumbnails}
+                onSelect={onLayerSelect}
+                onUpdate={onLayerUpdate}
+                onDelete={onLayerDelete}
+                onDuplicate={onLayerDuplicate}
+                onVisibilityToggle={onLayerVisibilityToggle}
+                onLockToggle={onLayerLockToggle}
+                onStartEdit={onStartEdit}
+                onEndEdit={onEndEdit}
+              />
+            ))
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export const LayersPanel: React.FC<LayersPanelProps> = ({
+  layers,
+  groups,
+  selectedIds,
+  onLayerSelect,
+  onLayerReorder,
+  onLayerUpdate,
+  onLayerDelete,
+  onLayerDuplicate,
+  onLayerVisibilityToggle,
+  onLayerLockToggle,
+  onGroupToggle,
+  onGroupVisibilityToggle,
+  onGroupLockToggle,
+  searchQuery = '',
+  onSearchChange,
+  filter = {},
+  className,
+  showThumbnails = true,
