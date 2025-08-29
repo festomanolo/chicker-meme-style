@@ -240,3 +240,63 @@ export class LayerManager {
     return this.reorderLayer(elementId, this.state.elements.length - 1);
   }
 
+  /**
+   * Send layer to back
+   */
+  sendToBack(elementId: string): boolean {
+    return this.reorderLayer(elementId, 0);
+  }
+
+  /**
+   * Search layers by name, type, or content
+   */
+  searchLayers(query: string): LayerSearchResult[] {
+    if (!query.trim()) return [];
+
+    const results: LayerSearchResult[] = [];
+    const searchTerm = query.toLowerCase();
+
+    this.state.elements.forEach(element => {
+      let score = 0;
+      let matchType: LayerSearchResult['matchType'] | null = null;
+
+      // Search by name
+      if (element.name.toLowerCase().includes(searchTerm)) {
+        score += element.name.toLowerCase() === searchTerm ? 100 : 50;
+        matchType = 'name';
+      }
+
+      // Search by type
+      if (element.type.toLowerCase().includes(searchTerm)) {
+        score += 30;
+        if (!matchType) matchType = 'type';
+      }
+
+      // Search by content
+      if (element.content && element.content.toLowerCase().includes(searchTerm)) {
+        score += element.content.toLowerCase() === searchTerm ? 80 : 40;
+        if (!matchType) matchType = 'content';
+      }
+
+      if (score > 0 && matchType) {
+        results.push({ element, matchType, score });
+      }
+    });
+
+    // Sort by score (highest first)
+    return results.sort((a, b) => b.score - a.score);
+  }
+
+  /**
+   * Filter layers based on criteria
+   */
+  filterLayers(filter: LayerFilter): LayerElement[] {
+    return this.state.elements.filter(element => {
+      // Type filter
+      if (filter.type && !filter.type.includes(element.type)) {
+        return false;
+      }
+
+      // Visibility filter
+      if (filter.visible !== undefined && element.visible !== filter.visible) {
+        return false;
