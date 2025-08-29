@@ -341,3 +341,60 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
         id: 'actions',
         title: 'Quick Actions',
         icon: Zap,
+        defaultExpanded: false,
+        content: <QuickActions element={selectedElement} onAction={handleQuickAction} />,
+      });
+    }
+
+    // Tool-specific properties
+    if (selectedTool) {
+      baseSections.push({
+        id: 'tool-properties',
+        title: `${selectedTool.charAt(0).toUpperCase() + selectedTool.slice(1)} Tool`,
+        icon: Settings,
+        defaultExpanded: false,
+        content: <div className="text-xs text-gray-500">Tool-specific properties will be shown here</div>,
+      });
+    }
+
+    return baseSections;
+  }, [selectedElement, selectedTool]);
+
+  return (
+    <div className={cn('h-full bg-white dark:bg-gray-900', className)}>
+      {/* Header */}
+      <div className="p-3 border-b border-gray-200 dark:border-gray-700">
+        <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">Properties</h3>
+        {selectedElement && (
+          <p className="text-xs text-gray-500 mt-1">
+            {selectedElement.type} • {selectedElement.name}
+          </p>
+        )}
+      </div>
+
+      {/* Sections */}
+      <div className="flex-1 overflow-y-auto">
+        {sections.map((section) => (
+          <CollapsibleSection
+            key={section.id}
+            title={section.title}
+            icon={section.icon}
+            defaultExpanded={section.defaultExpanded}
+          >
+            {section.content}
+          </CollapsibleSection>
+        ))}
+
+        {/* Empty state */}
+        {sections.length === 1 && (
+          <div className="p-6 text-center text-gray-500">
+            <Palette className="h-8 w-8 mx-auto mb-2 opacity-50" />
+            <p className="text-sm">Select an element or tool to see properties</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default PropertiesPanel;
