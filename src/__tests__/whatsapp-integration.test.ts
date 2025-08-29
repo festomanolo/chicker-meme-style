@@ -258,3 +258,55 @@ describe('WhatsAppIntegration', () => {
     it('should combine all context', () => {
       const message = WhatsAppIntegration.createPersonalizedMessage(
         'I need help.',
+        {
+          userName: 'John',
+          projectName: 'My Project',
+          pageUrl: 'https://example.com',
+          timestamp: Date.now(),
+        }
+      );
+      
+      expect(message).toContain('Hi, I\'m John');
+      expect(message).toContain('My Project');
+      expect(message).toContain('Page:');
+      expect(message).toContain('Time:');
+    });
+  });
+
+  describe('trackInteraction', () => {
+    it('should track with Google Analytics if available', () => {
+      const mockGtag = jest.fn();
+      (window as any).gtag = mockGtag;
+      
+      WhatsAppIntegration.trackInteraction('link_clicked', { test: 'data' });
+      
+      expect(mockGtag).toHaveBeenCalledWith('event', 'whatsapp_interaction', {
+        action: 'link_clicked',
+        test: 'data',
+      });
+      
+      delete (window as any).gtag;
+    });
+
+    it('should track with custom analytics if available', () => {
+      const mockTrack = jest.fn();
+      (window as any).analytics = { track: mockTrack };
+      
+      WhatsAppIntegration.trackInteraction('chat_opened', { test: 'data' });
+      
+      expect(mockTrack).toHaveBeenCalledWith('WhatsApp Interaction', {
+        action: 'chat_opened',
+        timestamp: expect.any(Number),
+        test: 'data',
+      });
+      
+      delete (window as any).analytics;
+    });
+
+    it('should handle missing analytics gracefully', () => {
+      expect(() => {
+        WhatsAppIntegration.trackInteraction('link_generated');
+      }).not.toThrow();
+    });
+  });
+});
