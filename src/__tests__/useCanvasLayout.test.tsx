@@ -54,3 +54,59 @@ describe('useCanvasLayout', () => {
   });
 
   it('should handle panel opening', () => {
+    const { result } = renderHook(() => useCanvasLayout());
+
+    act(() => {
+      result.current.openPanel();
+    });
+
+    expect(result.current.isPanelOpen).toBe(true);
+  });
+
+  it('should handle panel closing', () => {
+    const { result } = renderHook(() => useCanvasLayout());
+
+    act(() => {
+      result.current.openPanel();
+    });
+
+    expect(result.current.isPanelOpen).toBe(true);
+
+    act(() => {
+      result.current.closePanel();
+    });
+
+    expect(result.current.isPanelOpen).toBe(false);
+  });
+
+  it('should toggle panel state', () => {
+    const { result } = renderHook(() => useCanvasLayout());
+
+    expect(result.current.isPanelOpen).toBe(false);
+
+    act(() => {
+      result.current.togglePanel();
+    });
+
+    expect(result.current.isPanelOpen).toBe(true);
+
+    act(() => {
+      result.current.togglePanel();
+    });
+
+    expect(result.current.isPanelOpen).toBe(false);
+  });
+
+  it('should update zoom level', () => {
+    const { result } = renderHook(() => useCanvasLayout());
+
+    act(() => {
+      result.current.setZoom(2, false);
+    });
+
+    expect(result.current.layoutState.zoom).toBe(2);
+  });
+
+  it('should update pan position', () => {
+    const { result } = renderHook(() => useCanvasLayout());
+
