@@ -107,3 +107,58 @@ export class CropTransformIntegration {
     validatedCrop.y = Math.max(0, Math.min(validatedCrop.y, crop.originalHeight - validatedCrop.height));
     
     return validatedCrop;
+  }
+
+  /**
+   * Apply crop to element while preserving transform properties
+   */
+  static applyCropToElement(element: LayerElement, crop: CropData): LayerElement {
+    if (element.type !== 'image') {
+      return element;
+    }
+
+    // Calculate new transform based on crop
+    const newTransform = this.cropToTransform(crop, {
+      x: element.x,
+      y: element.y,
+      width: element.width,
+      height: element.height,
+      rotation: element.rotation,
+      scaleX: element.scaleX,
+      scaleY: element.scaleY,
+    });
+
+    return {
+      ...element,
+      x: newTransform.x,
+      y: newTransform.y,
+      width: newTransform.width,
+      height: newTransform.height,
+      scaleX: newTransform.scaleX,
+      scaleY: newTransform.scaleY,
+      cropData: crop,
+      updatedAt: Date.now(),
+    };
+  }
+
+  /**
+   * Reset crop while maintaining current transform
+   */
+  static resetCrop(element: LayerElement): LayerElement {
+    if (element.type !== 'image' || !element.cropData) {
+      return element;
+    }
+
+    const { cropData } = element;
+    const resetCrop: CropData = {
+      x: 0,
+      y: 0,
+      width: cropData.originalWidth,
+      height: cropData.originalHeight,
+      originalWidth: cropData.originalWidth,
+      originalHeight: cropData.originalHeight,
+    };
+
+    return this.applyCropToElement(element, resetCrop);
+  }
+
