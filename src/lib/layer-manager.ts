@@ -300,3 +300,64 @@ export class LayerManager {
       // Visibility filter
       if (filter.visible !== undefined && element.visible !== filter.visible) {
         return false;
+      }
+
+      // Lock filter
+      if (filter.locked !== undefined && element.locked !== filter.locked) {
+        return false;
+      }
+
+      // Search query filter
+      if (filter.searchQuery) {
+        const query = filter.searchQuery.toLowerCase();
+        const matchesName = element.name.toLowerCase().includes(query);
+        const matchesContent = element.content?.toLowerCase().includes(query);
+        if (!matchesName && !matchesContent) {
+          return false;
+        }
+      }
+
+      // Group filter
+      if (filter.groupId && element.groupId !== filter.groupId) {
+        return false;
+      }
+
+      return true;
+    });
+  }
+
+  /**
+   * Get layers sorted by specified criteria
+   */
+  getSortedLayers(sortBy: LayerManagerState['sortBy'] = 'zIndex', sortOrder: LayerManagerState['sortOrder'] = 'asc'): LayerElement[] {
+    const sorted = [...this.state.elements].sort((a, b) => {
+      let comparison = 0;
+
+      switch (sortBy) {
+        case 'name':
+          comparison = a.name.localeCompare(b.name);
+          break;
+        case 'type':
+          comparison = a.type.localeCompare(b.type);
+          break;
+        case 'created':
+          comparison = a.createdAt - b.createdAt;
+          break;
+        case 'updated':
+          comparison = a.updatedAt - b.updatedAt;
+          break;
+        case 'zIndex':
+          comparison = a.zIndex - b.zIndex;
+          break;
+      }
+
+      return sortOrder === 'asc' ? comparison : -comparison;
+    });
+
+    return sorted;
+  }
+
+  /**
+   * Create a group from selected layers
+   */
+  createGroup(elementIds: string[], groupName?: string): LayerGroup | null {
