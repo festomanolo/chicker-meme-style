@@ -321,3 +321,57 @@ describe('TransformManager', () => {
       expect(panZoom.translateY).toBe(50);
     });
 
+    it('should clamp scale to min/max values', () => {
+      manager.setPanZoom({ scale: 10 }); // Above max
+      expect(manager.getPanZoom().scale).toBe(5); // Should be clamped to max
+
+      manager.setPanZoom({ scale: 0.01 }); // Below min
+      expect(manager.getPanZoom().scale).toBe(0.1); // Should be clamped to min
+    });
+
+    it('should zoom to fit content', () => {
+      const contentBounds: Rect = { x: 100, y: 100, width: 400, height: 300 };
+      
+      manager.zoomToFit(contentBounds, 20);
+      
+      const panZoom = manager.getPanZoom();
+      expect(panZoom.scale).toBeGreaterThan(0);
+      expect(panZoom.translateX).toBeDefined();
+      expect(panZoom.translateY).toBeDefined();
+    });
+
+    it('should reset pan and zoom to default', () => {
+      manager.setPanZoom({ scale: 2, translateX: 100, translateY: 50 });
+      manager.resetPanZoom();
+      
+      const panZoom = manager.getPanZoom();
+      
+      expect(panZoom.scale).toBe(1);
+      expect(panZoom.translateX).toBe(0);
+      expect(panZoom.translateY).toBe(0);
+    });
+  });
+
+  describe('configuration updates', () => {
+    it('should update configuration', () => {
+      const newConfig = { devicePixelRatio: 2, flipY: true };
+      
+      manager.updateConfig(newConfig);
+      
+      // Test that the new config is applied by checking coordinate conversion
+      const canvasPoint: Point = { x: 50, y: 100 };
+      const worldPoint = manager.canvasToWorld(canvasPoint);
+      
+      // With flipY: true, Y coordinate should be flipped
+      expect(worldPoint.y).toBe(500); // 600 - 100
+    });
+  });
+});
+
+describe('utility functions', () => {
+  describe('createTransformManager', () => {
+    it('should create transform manager with config', () => {
+      const manager = createTransformManager(mockConfig);
+      
+      expect(manager).toBeInstanceOf(TransformManager);
+    });
