@@ -358,3 +358,63 @@ describe('SnapGuides', () => {
         priority: 1,
       },
     ];
+
+    const { container } = render(
+      <SnapGuides
+        guides={permanentGuides}
+        canvasSize={mockCanvasSize}
+        zoom={1}
+      />
+    );
+
+    const line = container.querySelector('line');
+    expect(line).toHaveAttribute('opacity', '0.3');
+  });
+
+  it('should handle different grid sizes', () => {
+    const { container, rerender } = render(
+      <SnapGuides
+        guides={[]}
+        canvasSize={mockCanvasSize}
+        zoom={1}
+        showGrid={true}
+        gridSize={100}
+      />
+    );
+
+    const lines1 = container.querySelectorAll('line');
+    const count1 = lines1.length;
+
+    rerender(
+      <SnapGuides
+        guides={[]}
+        canvasSize={mockCanvasSize}
+        zoom={1}
+        showGrid={true}
+        gridSize={50}
+      />
+    );
+
+    const lines2 = container.querySelectorAll('line');
+    const count2 = lines2.length;
+
+    // Smaller grid size should result in more lines
+    expect(count2).toBeGreaterThan(count1);
+  });
+
+  it('should apply custom grid opacity', () => {
+    const { container } = render(
+      <SnapGuides
+        guides={[]}
+        canvasSize={mockCanvasSize}
+        zoom={1}
+        showGrid={true}
+        gridSize={50}
+        gridOpacity={0.5}
+      />
+    );
+
+    const lines = container.querySelectorAll('line');
+    expect(lines[0]).toHaveAttribute('opacity', '0.5');
+  });
+});
