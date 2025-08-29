@@ -283,3 +283,60 @@ const Checkout = () => {
                     ))}
                   </div>
 
+                  <Separator />
+
+                  {/* Totals */}
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span>Subtotal</span>
+                      <span>TZS {subtotal.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Shipping</span>
+                      <span>
+                        {shipping === 0 ? (
+                          <span className="text-success">Free</span>
+                        ) : (
+                          `TZS ${shipping.toLocaleString()}`
+                        )}
+                      </span>
+                    </div>
+                    <Separator />
+                    <div className="flex justify-between text-lg font-bold">
+                      <span>Total</span>
+                      <span>TZS {total.toLocaleString()}</span>
+                    </div>
+                  </div>
+
+                  <Button
+                    onClick={processOrder}
+                    disabled={isProcessing}
+                    className="w-full"
+                  >
+                    {isProcessing ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                        Processing...
+                      </>
+                    ) : (
+                      <>
+                        <CreditCard className="h-4 w-4 mr-2" />
+                        Place Order
+                      </>
+                    )}
+                  </Button>
+
+                  <p className="text-xs text-muted-foreground text-center">
+                    By placing your order, you agree to our Terms of Service and Privacy Policy.
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Checkout;
