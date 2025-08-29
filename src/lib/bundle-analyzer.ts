@@ -144,3 +144,51 @@ export class BundleAnalyzer {
         metric: 'Total Bundle Size',
         actual: analysis.totalSize,
         budget: budgets.totalSize,
+        passes: analysis.totalSize <= budgets.totalSize,
+      },
+      {
+        metric: 'Gzipped Size',
+        actual: analysis.gzippedSize,
+        budget: budgets.gzippedSize,
+        passes: analysis.gzippedSize <= budgets.gzippedSize,
+      },
+      {
+        metric: 'Main Chunk Size',
+        actual: analysis.chunks.find(c => c.name === 'main')?.size || 0,
+        budget: budgets.mainChunkSize,
+        passes: (analysis.chunks.find(c => c.name === 'main')?.size || 0) <= budgets.mainChunkSize,
+      },
+    ];
+
+    return {
+      passes: results.every(r => r.passes),
+      results,
+    };
+  }
+
+  /**
+   * Format size for display
+   */
+  static formatSize(bytes: number): string {
+    if (bytes < 1024) return `${bytes}B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)}KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)}MB`;
+  }
+
+  /**
+   * Generate bundle report
+   */
+  static generateReport(): string {
+    const analysis = this.analyzeBundleSize();
+    const budget = this.checkPerformanceBudget(analysis);
+    const suggestions = this.getOptimizationSuggestions();
+
+    let report = '# Bundle Analysis Report\n\n';
+    
+    report += '## Size Metrics\n';
+    report += `- Total Size: ${this.formatSize(analysis.totalSize)}\n`;
+    report += `- Gzipped Size: ${this.formatSize(analysis.gzippedSize)}\n`;
+    report += `- Compression Ratio: ${((1 - analysis.gzippedSize / analysis.totalSize) * 100).toFixed(1)}%\n\n`;
+
+    report += '## Performance Budget\n';
+    budget.results.forEach(result => {
