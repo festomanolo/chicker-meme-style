@@ -156,3 +156,56 @@ export const TEXTURE_FILTERS: TextureFilter[] = [
     name: 'Glossy Finish',
     description: 'High shine with reflective surface',
     category: 'finish',
+    cssFilter: 'brightness(1.1) contrast(1.2) saturate(1.1)',
+    canvasFilter: {
+      type: 'color-matrix',
+      matrix: [
+        1.1, 0, 0, 0, 10,
+        0, 1.1, 0, 0, 10,
+        0, 0, 1.1, 0, 10,
+        0, 0, 0, 1, 0
+      ],
+    },
+    preview: '/assets/textures/glossy-finish-preview.webp',
+    intensity: 50,
+    gpuAccelerated: true,
+  },
+
+  // Special effects
+  {
+    id: 'vintage',
+    name: 'Vintage',
+    description: 'Aged appearance with warm tones and soft contrast',
+    category: 'effect',
+    cssFilter: 'sepia(0.3) brightness(1.1) contrast(0.8) saturate(0.7) hue-rotate(15deg)',
+    canvasFilter: {
+      type: 'color-matrix',
+      matrix: [
+        0.8, 0.2, 0.1, 0, 15,
+        0.1, 0.8, 0.1, 0, 10,
+        0.1, 0.1, 0.7, 0, 5,
+        0, 0, 0, 1, 0
+      ],
+    },
+    preview: '/assets/textures/vintage-preview.webp',
+    intensity: 45,
+    gpuAccelerated: true,
+  },
+  {
+    id: 'heather',
+    name: 'Heather',
+    description: 'Mixed fiber appearance with subtle color variation',
+    category: 'effect',
+    cssFilter: 'contrast(0.9) brightness(1.05) saturate(0.85)',
+    canvasFilter: {
+      type: 'custom',
+      customShader: 'heather-shader',
+    },
+    preview: '/assets/textures/heather-preview.webp',
+    intensity: 40,
+    gpuAccelerated: true,
+  },
+  {
+    id: 'distressed',
+    name: 'Distressed',
+    description: 'Worn and weathered with random fade patterns',
