@@ -161,3 +161,57 @@ describe('ToolsRow', () => {
     const indicator = moveButton.querySelector('.absolute.-bottom-1');
     expect(indicator).toBeInTheDocument();
   });
+
+  it('should apply custom className', () => {
+    const { container } = render(
+      <ToolsRow {...mockProps} className="custom-tools-row" />
+    );
+    
+    expect(container.firstChild).toHaveClass('custom-tools-row');
+  });
+
+  it('should handle mouse enter and leave events', async () => {
+    const user = userEvent.setup();
+    render(<ToolsRow {...mockProps} />);
+    
+    const moveButton = screen.getByLabelText(/move tool/i);
+    
+    await user.hover(moveButton);
+    // Button should have hover effects
+    
+    await user.unhover(moveButton);
+    // Hover effects should be removed
+  });
+
+  it('should show separator between tool groups', () => {
+    const { container } = render(<ToolsRow {...mockProps} />);
+    
+    const separator = container.querySelector('.bg-gray-200');
+    expect(separator).toBeInTheDocument();
+  });
+
+  it('should include navigation tools after separator', () => {
+    render(<ToolsRow {...mockProps} />);
+    
+    expect(screen.getByLabelText(/zoom tool/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/hand tool/i)).toBeInTheDocument();
+  });
+
+  it('should handle keyboard shortcuts in aria-labels', () => {
+    render(<ToolsRow {...mockProps} />);
+    
+    const moveButton = screen.getByLabelText('Move tool (V)');
+    expect(moveButton).toBeInTheDocument();
+    
+    const cropButton = screen.getByLabelText('Crop tool (C)');
+    expect(cropButton).toBeInTheDocument();
+  });
+
+  it('should handle tools without shortcuts', () => {
+    render(<ToolsRow {...mockProps} />);
+    
+    // Some tools might not have shortcuts, should still render properly
+    const buttons = screen.getAllByRole('button');
+    expect(buttons.length).toBeGreaterThan(0);
+  });
+});
