@@ -339,3 +339,60 @@ describe('LayerManager', () => {
     });
 
     it('should sort by name ascending', () => {
+      const sorted = manager.getSortedLayers('name', 'asc');
+
+      expect(sorted[0].name).toBe('A Element');
+      expect(sorted[1].name).toBe('B Element');
+      expect(sorted[2].name).toBe('C Element');
+    });
+
+    it('should sort by name descending', () => {
+      const sorted = manager.getSortedLayers('name', 'desc');
+
+      expect(sorted[0].name).toBe('C Element');
+      expect(sorted[1].name).toBe('B Element');
+      expect(sorted[2].name).toBe('A Element');
+    });
+
+    it('should sort by z-index', () => {
+      const sorted = manager.getSortedLayers('zIndex', 'asc');
+
+      expect(sorted[0].zIndex).toBe(1);
+      expect(sorted[1].zIndex).toBe(2);
+      expect(sorted[2].zIndex).toBe(3);
+    });
+
+    it('should sort by creation time', () => {
+      const sorted = manager.getSortedLayers('created', 'asc');
+
+      // Should be in order of creation
+      expect(sorted[0].createdAt).toBeLessThanOrEqual(sorted[1].createdAt);
+      expect(sorted[1].createdAt).toBeLessThanOrEqual(sorted[2].createdAt);
+    });
+  });
+
+  describe('layer grouping', () => {
+    let elements: LayerElement[];
+
+    beforeEach(() => {
+      elements = [
+        manager.addLayer({ ...mockElement, name: 'Element 1' }),
+        manager.addLayer({ ...mockElement, name: 'Element 2' }),
+        manager.addLayer({ ...mockElement, name: 'Element 3' }),
+      ];
+    });
+
+    it('should create a group from multiple elements', () => {
+      const group = manager.createGroup([elements[0].id, elements[1].id], 'Test Group');
+
+      expect(group).not.toBeNull();
+      expect(group!.name).toBe('Test Group');
+      expect(group!.children).toEqual([elements[0].id, elements[1].id]);
+      
+      // Elements should reference the group
+      expect(manager.getLayer(elements[0].id)!.groupId).toBe(group!.id);
+      expect(manager.getLayer(elements[1].id)!.groupId).toBe(group!.id);
+    });
+
+    it('should auto-generate group name if not provided', () => {
+      const group = manager.createGroup([elements[0].id, elements[1].id]);
