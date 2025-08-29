@@ -141,3 +141,50 @@ export const ToolsRow: React.FC<ToolsRowProps> = ({
       <Tooltip key={tool.id}>
         <TooltipTrigger asChild>
           <Button
+            variant={isSelected ? 'default' : 'ghost'}
+            size="sm"
+            className={cn(
+              getButtonSize(),
+              'p-0 relative transition-all duration-200',
+              isSelected && 'bg-blue-600 hover:bg-blue-700 text-white',
+              !isSelected && 'hover:bg-gray-100 dark:hover:bg-gray-800',
+              isDisabled && 'opacity-50 cursor-not-allowed',
+              isHovered && !isSelected && 'scale-105'
+            )}
+            onClick={() => handleToolClick(tool.id)}
+            onMouseEnter={() => setHoveredTool(tool.id)}
+            onMouseLeave={() => setHoveredTool(null)}
+            disabled={isDisabled}
+            aria-label={`${tool.name} tool${tool.shortcut ? ` (${tool.shortcut})` : ''}`}
+          >
+            <IconComponent className={cn(getIconSize(), 'transition-transform')} />
+            
+            {/* Active indicator */}
+            {isSelected && (
+              <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-white rounded-full" />
+            )}
+            
+            {/* Keyboard shortcut overlay */}
+            {showShortcuts && tool.shortcut && !showLabels && (
+              <div className="absolute -top-1 -right-1 bg-gray-800 text-white text-xs rounded px-1 py-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                {tool.shortcut}
+              </div>
+            )}
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent side={orientation === 'horizontal' ? 'bottom' : 'right'}>
+          {tooltipContent}
+        </TooltipContent>
+      </Tooltip>
+    );
+  };
+
+  return (
+    <TooltipProvider>
+      <div className={cn(
+        'flex gap-1 p-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg',
+        orientation === 'vertical' ? 'flex-col' : 'flex-row flex-wrap',
+        className
+      )}>
+        {DEFAULT_TOOLS.map(renderTool)}
+        
