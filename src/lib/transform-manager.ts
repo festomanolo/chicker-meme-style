@@ -439,3 +439,58 @@ export class TransformManager {
   private removeViewportTransform(point: Point): Point {
     return {
       x: (point.x - this.panZoomState.translateX) / this.panZoomState.scale,
+      y: (point.y - this.panZoomState.translateY) / this.panZoomState.scale,
+    };
+  }
+
+  private validateTransform(transform: TransformData): TransformData {
+    return {
+      x: Number.isFinite(transform.x) ? transform.x : 0,
+      y: Number.isFinite(transform.y) ? transform.y : 0,
+      width: Math.max(1, Number.isFinite(transform.width) ? transform.width : 100),
+      height: Math.max(1, Number.isFinite(transform.height) ? transform.height : 100),
+      rotation: Number.isFinite(transform.rotation) ? transform.rotation % 360 : 0,
+      scaleX: Math.max(0.01, Number.isFinite(transform.scaleX) ? transform.scaleX : 1),
+      scaleY: Math.max(0.01, Number.isFinite(transform.scaleY) ? transform.scaleY : 1),
+    };
+  }
+
+  private applyConstraints(transform: TransformData, constraints?: TransformConstraints): TransformData {
+    if (!constraints) return transform;
+
+    let constrainedTransform = { ...transform };
+
+    // Apply size constraints
+    if (constraints.minWidth !== undefined) {
+      constrainedTransform.width = Math.max(constraints.minWidth, constrainedTransform.width);
+    }
+    if (constraints.maxWidth !== undefined) {
+      constrainedTransform.width = Math.min(constraints.maxWidth, constrainedTransform.width);
+    }
+    if (constraints.minHeight !== undefined) {
+      constrainedTransform.height = Math.max(constraints.minHeight, constrainedTransform.height);
+    }
+    if (constraints.maxHeight !== undefined) {
+      constrainedTransform.height = Math.min(constraints.maxHeight, constrainedTransform.height);
+    }
+
+    // Apply aspect ratio constraint
+    if (constraints.lockAspectRatio && constraints.aspectRatio) {
+      const currentAspectRatio = constrainedTransform.width / constrainedTransform.height;
+      if (Math.abs(currentAspectRatio - constraints.aspectRatio) > 0.01) {
+        constrainedTransform.height = constrainedTransform.width / constraints.aspectRatio;
+      }
+    }
+
+    // Apply bounds constraint
+    if (constraints.bounds) {
+      constrainedTransform = this.validateBounds(constrainedTransform, constraints.bounds);
+    }
+
+    // Apply grid snapping
+    if (constraints.snapToGrid && constraints.gridSize) {
+      const gridSize = constraints.gridSize;
+      constrainedTransform.x = Math.round(constrainedTransform.x / gridSize) * gridSize;
+      constrainedTransform.y = Math.round(constrainedTransform.y / gridSize) * gridSize;
+    }
+
