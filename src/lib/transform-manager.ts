@@ -108,3 +108,58 @@ export class TransformManager {
       world,
     };
   }
+
+  /**
+   * Apply transform to an element
+   */
+  applyTransform(elementId: string, transform: TransformData): void {
+    // Validate transform data
+    const validatedTransform = this.validateTransform(transform);
+    
+    // Apply constraints if any
+    const constrainedTransform = this.applyConstraints(validatedTransform);
+    
+    // Update element transform
+    this.updateElementTransform(elementId, constrainedTransform);
+  }
+
+  /**
+   * Get transform matrix for an element
+   */
+  getTransformMatrix(transform: TransformData): TransformMatrix {
+    const { x, y, width, height, rotation, scaleX, scaleY } = transform;
+    
+    // Create transformation matrix
+    const cos = Math.cos(rotation * Math.PI / 180);
+    const sin = Math.sin(rotation * Math.PI / 180);
+    
+    // Center point for rotation
+    const centerX = x + width / 2;
+    const centerY = y + height / 2;
+    
+    // Translation to center, rotation, scale, translation back
+    const matrix: TransformMatrix = {
+      a: cos * scaleX,
+      b: sin * scaleY,
+      c: -sin * scaleX,
+      d: cos * scaleY,
+      e: centerX - (centerX * cos * scaleX - centerY * sin * scaleX),
+      f: centerY - (centerX * sin * scaleY + centerY * cos * scaleY),
+    };
+    
+    return matrix;
+  }
+
+  /**
+   * Get CSS transform string from transform data
+   */
+  getCSSTransform(transform: TransformData): string {
+    const { x, y, rotation, scaleX, scaleY } = transform;
+    
+    const transforms = [
+      `translate(${x}px, ${y}px)`,
+      `rotate(${rotation}deg)`,
+      `scale(${scaleX}, ${scaleY})`,
+    ];
+    
+    return transforms.join(' ');
