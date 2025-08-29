@@ -92,3 +92,50 @@ export const SnapGuides: React.FC<SnapGuidesProps> = ({
           strokeDasharray: guide.temporary ? 'none' : `${6 / zoom} ${2 / zoom}`,
         };
       case 'element':
+        return {
+          ...baseStyle,
+          stroke: '#F59E0B', // Amber
+          strokeDasharray: guide.temporary ? 'none' : `${2 / zoom} ${2 / zoom}`,
+        };
+      case 'grid':
+        return {
+          ...baseStyle,
+          stroke: '#6B7280', // Gray
+          strokeDasharray: `${1 / zoom} ${1 / zoom}`,
+        };
+      default:
+        return {
+          ...baseStyle,
+          stroke: '#8B5CF6', // Purple
+        };
+    }
+  };
+
+  return (
+    <div className={cn("absolute inset-0 pointer-events-none", className)}>
+      <svg
+        width={canvasSize.width}
+        height={canvasSize.height}
+        className="absolute inset-0 text-gray-400"
+        style={{ zIndex: 100 }}
+      >
+        {/* Grid pattern */}
+        {showGrid && (
+          <g className="opacity-50">
+            {gridPattern}
+          </g>
+        )}
+
+        {/* Snap guides */}
+        <g className="snap-guides">
+          {visibleGuides.map((guide, index) => {
+            const style = getGuideStyle(guide);
+            const key = `${guide.type}-${guide.axis}-${guide.position}-${index}`;
+
+            if (guide.axis === 'x') {
+              // Vertical guide line
+              return (
+                <line
+                  key={key}
+                  x1={guide.position}
+                  y1={0}
