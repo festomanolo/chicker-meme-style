@@ -18,3 +18,22 @@ export interface CanvasFilterConfig {
   matrix?: number[];
   blendMode?: GlobalCompositeOperation;
   customShader?: string;
+}
+
+export interface FabricBlendOptions {
+  baseColor: string;
+  overlayColor: string;
+  blendMode: 'multiply' | 'overlay' | 'soft-light' | 'color-burn' | 'linear-burn';
+  opacity: number;
+  preserveHighlights: boolean;
+  preserveShadows: boolean;
+}
+
+export interface ColorBlendResult {
+  blendedColor: string;
+  cssFilter: string;
+  performanceMetrics: {
+    blendTime: number;
+    method: 'css' | 'canvas' | 'webgl';
+  };
+}
