@@ -505,3 +505,60 @@ describe('Canvas Performance', () => {
     
     await transformElement('element-1', { x: 100, y: 100, rotation: 45 });
     
+    const duration = performance.now() - startTime;
+    expect(duration).toBeLessThan(60);
+  });
+  
+  test('color blending maintains 60fps', async () => {
+    const frameRates = [];
+    const observer = new PerformanceObserver((list) => {
+      frameRates.push(...list.getEntries().map(e => 1000 / e.duration));
+    });
+    
+    observer.observe({ entryTypes: ['frame'] });
+    
+    await changeColor('#ff0000');
+    
+    const avgFrameRate = frameRates.reduce((a, b) => a + b) / frameRates.length;
+    expect(avgFrameRate).toBeGreaterThan(55); // Allow 5fps tolerance
+  });
+});
+```
+
+### Accessibility Testing
+
+#### Keyboard Navigation Tests
+```typescript
+describe('Accessibility', () => {
+  test('all interactive elements are keyboard accessible', () => {
+    const { container } = render(<CustomizeCanvas />);
+    const interactiveElements = container.querySelectorAll('button, input, [tabindex]');
+    
+    interactiveElements.forEach(element => {
+      expect(element).toHaveAttribute('tabindex');
+      expect(element).toHaveAttribute('aria-label');
+    });
+  });
+  
+  test('canvas elements can be navigated with arrow keys', () => {
+    const canvas = render(<PhotorealisticCanvas {...props} />);
+    const element = canvas.getByTestId('design-element-1');
+    
+    element.focus();
+    fireEvent.keyDown(element, { key: 'ArrowRight' });
+    
+    expect(element).toHaveStyle({ transform: 'translate(1px, 0px)' });
+  });
+});
+```
+
+### End-to-End Testing
+
+#### User Workflow Tests
+```typescript
+describe('Complete User Workflows', () => {
+  test('user can create, customize, and export design', async () => {
+    // 1. Load canvas
+    const page = await browser.newPage();
+    await page.goto('/customize');
+    
