@@ -289,3 +289,61 @@ export const ColorRangeSelector: React.FC<ColorRangeSelectorProps> = ({
                   <Slider
                     id="saturation-slider"
                     min={0}
+                    max={100}
+                    step={1}
+                    value={[saturation]}
+                    onValueChange={handleSaturationChange}
+                    disabled={disabled}
+                    className="w-full"
+                    style={{
+                      background: saturationGradient,
+                    }}
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="value-slider" className="text-sm font-medium">
+                  Brightness: {value}%
+                </Label>
+                <div className="relative">
+                  <Slider
+                    id="value-slider"
+                    min={0}
+                    max={100}
+                    step={1}
+                    value={[value]}
+                    onValueChange={handleValueChange}
+                    disabled={disabled}
+                    className="w-full"
+                    style={{
+                      background: valueGradient,
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Hex Input */}
+            <div className="space-y-2">
+              <Label htmlFor="hex-input" className="text-sm font-medium">
+                Hex Color
+              </Label>
+              <div className="flex gap-2">
+                <Input
+                  id="hex-input"
+                  type="text"
+                  value={hexInput}
+                  onChange={handleHexInputChange}
+                  disabled={disabled}
+                  placeholder="#FF0000"
+                  className="font-mono"
+                  maxLength={7}
+                />
+                <Button variant="outline" size="icon" disabled>
+                  <Pipette className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+
+            {/* RGB Inputs */}
