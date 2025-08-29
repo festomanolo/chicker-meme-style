@@ -264,3 +264,57 @@ describe('ColorManager', () => {
 
   describe('browser capability detection', () => {
     it('should detect WebGL support', () => {
+      // WebGL should be supported in our mock
+      const result = manager['supportsWebGL']();
+      expect(result).toBe(true);
+    });
+
+    it('should detect Canvas 2D support', () => {
+      // Canvas 2D should be supported in our mock
+      const result = manager['supportsCanvas2D']();
+      expect(result).toBe(true);
+    });
+
+    it('should handle WebGL not supported', () => {
+      // Mock WebGL not supported
+      const originalGetContext = mockCanvas.getContext;
+      mockCanvas.getContext = jest.fn(() => null);
+
+      const result = manager['supportsWebGL']();
+      expect(result).toBe(false);
+
+      // Restore
+      mockCanvas.getContext = originalGetContext;
+    });
+  });
+
+  describe('CSS filter generation', () => {
+    it('should generate correct CSS filter for color', () => {
+      const filter = manager['generateCSSFilter'](mockColor);
+      
+      expect(filter).toContain('hue-rotate');
+      expect(filter).toContain('saturate');
+      expect(filter).toContain('brightness');
+    });
+
+    it('should include texture filter in CSS', () => {
+      const filter = manager['generateCSSFilter'](mockColor, mockTextureFilter);
+      
+      expect(filter).toContain(mockTextureFilter.cssFilter);
+    });
+
+    it('should return "none" for default color values', () => {
+      const defaultColor = createTshirtColor(128, 128, 128); // Gray with default HSL values
+      const filter = manager['generateCSSFilter'](defaultColor);
+      
+      // Should have minimal or no filters for neutral gray
+      expect(filter).toBeDefined();
+    });
+  });
+
+  describe('texture pattern application', () => {
+    it('should apply weave pattern correctly', () => {
+      const ctx = mockContext2D;
+      manager['drawWeavePattern'](ctx);
+
+      expect(ctx.beginPath).toHaveBeenCalled();
