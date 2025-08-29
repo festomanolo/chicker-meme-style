@@ -176,3 +176,62 @@ export class HistoryManager {
       if (!this.entries[i].compressed) {
         this.entries[i] = this.compressEntry(this.entries[i]);
       }
+    }
+  }
+
+  /**
+   * Validate state integrity
+   */
+  validateState(state: CanvasState): boolean {
+    try {
+      // Basic validation
+      if (!state.layers || !Array.isArray(state.layers)) return false;
+      if (!state.selectedIds || !Array.isArray(state.selectedIds)) return false;
+      if (!state.canvasSettings) return false;
+
+      // Validate layers
+      for (const layer of state.layers) {
+        if (!layer.id || typeof layer.id !== 'string') return false;
+        if (!layer.name || typeof layer.name !== 'string') return false;
+        if (!layer.type || typeof layer.type !== 'string') return false;
+      }
+
+      // Validate canvas settings
+      const { canvasSettings } = state;
+      if (typeof canvasSettings.zoom !== 'number') return false;
+      if (typeof canvasSettings.panX !== 'number') return false;
+      if (typeof canvasSettings.panY !== 'number') return false;
+
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  /**
+   * Calculate checksum for state
+   */
+  calculateChecksum(state: CanvasState): string {
+    if (!this.config.enableChecksums) return '';
+    
+    try {
+      const stateString = JSON.stringify(state, this.getSerializationReplacer());
+      return this.simpleHash(stateString);
+    } catch (error) {
+      return '';
+    }
+  }
+
+  /**
+   * Private methods
+   */
+
+  private commitEntry(entry: HistoryEntry): void {
+    // Remove any entries after current index (when adding after undo)
+    if (this.currentIndex < this.entries.length - 1) {
+      this.entries = this.entries.slice(0, this.currentIndex + 1);
+    }
+
+    // Add checksum if enabled
+    if (this.config.enableChecksums) {
+      entry.state.metadata = {
