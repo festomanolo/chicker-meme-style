@@ -119,3 +119,63 @@ export class LayerManager {
     this.state.elements.splice(clampedIndex, 0, element);
 
     // Update z-indices to match new order
+    this.updateZIndices();
+
+    this.recordOperation({
+      type: 'reorder',
+      elementId,
+      data: { from: currentIndex, to: clampedIndex },
+      timestamp: Date.now(),
+    });
+
+    this.emit('layerReordered', { element, from: currentIndex, to: clampedIndex });
+    this.emit('stateChanged', this.state);
+
+    return true;
+  }
+
+  /**
+   * Update layer properties
+   */
+  updateLayer(elementId: string, updates: Partial<LayerElement>): boolean {
+    const element = this.state.elements.find(el => el.id === elementId);
+    if (!element) return false;
+
+    const oldElement = { ...element };
+    Object.assign(element, updates, { updatedAt: Date.now() });
+
+    this.recordOperation({
+      type: 'update',
+      elementId,
+      data: { old: oldElement, new: element },
+      timestamp: Date.now(),
+    });
+
+    this.emit('layerUpdated', { element, updates });
+    this.emit('stateChanged', this.state);
+
+    return true;
+  }
+
+  /**
+   * Duplicate a layer element
+   */
+  duplicateLayer(elementId: string): LayerElement | null {
+    const element = this.state.elements.find(el => el.id === elementId);
+    if (!element) return null;
+
+    const duplicatedElement = this.addLayer({
+      ...element,
+      name: `${element.name} Copy`,
+      x: element.x + 20,
+      y: element.y + 20,
+    });
+
+    this.recordOperation({
+      type: 'duplicate',
+      elementId: duplicatedElement.id,
+      data: { originalId: elementId },
+      timestamp: Date.now(),
+    });
+
+    return duplicatedElement;
