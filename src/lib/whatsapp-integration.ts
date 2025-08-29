@@ -48,3 +48,53 @@ export class WhatsAppIntegration {
     );
   }
 
+  /**
+   * Get appropriate WhatsApp link based on device
+   */
+  static getOptimalLink(config: WhatsAppLinkConfig): string {
+    return this.isMobileDevice() 
+      ? this.generateLink(config)
+      : this.generateWebLink(config);
+  }
+
+  /**
+   * Open WhatsApp with optimal method
+   */
+  static openWhatsApp(config: WhatsAppLinkConfig): void {
+    const link = this.getOptimalLink(config);
+    
+    // Try to open in new tab/window
+    const newWindow = window.open(link, '_blank', 'noopener,noreferrer');
+    
+    // Fallback for popup blockers
+    if (!newWindow) {
+      window.location.href = link;
+    }
+  }
+
+  /**
+   * Validate phone number format
+   */
+  static validatePhoneNumber(phoneNumber: string): {
+    isValid: boolean;
+    formatted?: string;
+    error?: string;
+  } {
+    const cleaned = phoneNumber.replace(/\D/g, '');
+    
+    if (cleaned.length === 0) {
+      return { isValid: false, error: 'Phone number is required' };
+    }
+    
+    if (cleaned.length < 10) {
+      return { isValid: false, error: 'Phone number too short' };
+    }
+    
+    if (cleaned.length > 15) {
+      return { isValid: false, error: 'Phone number too long' };
+    }
+    
+    // Format for display
+    const formatted = this.formatPhoneNumber(cleaned);
+    
+    return { isValid: true, formatted };
