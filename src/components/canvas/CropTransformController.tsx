@@ -343,3 +343,61 @@ export const CropTransformController: React.FC<CropTransformControllerProps> = (
         {isTransitioning && (
           <div className="absolute inset-0 bg-white/50 dark:bg-gray-900/50 flex items-center justify-center z-10">
             <div className="text-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-2"></div>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Switching to {mode === 'crop' ? 'transform' : 'crop'} mode...
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Preview panel */}
+      {previewVisible && mode === 'crop' && (
+        <div className="p-3 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+          <div className="flex items-center justify-between mb-2">
+            <h4 className="text-sm font-medium">Crop Preview</h4>
+            <Badge variant="outline" className="text-xs">
+              {Math.round(currentCrop.width)} × {Math.round(currentCrop.height)}
+            </Badge>
+          </div>
+          
+          <div className="relative w-full h-32 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
+            {element.imageUrl && (
+              <img
+                src={element.imageUrl}
+                alt="Crop preview"
+                className="w-full h-full object-cover"
+                style={previewStyles}
+              />
+            )}
+          </div>
+          
+          <div className="mt-2 text-xs text-gray-500 flex justify-between">
+            <span>Position: {Math.round(currentCrop.x)}, {Math.round(currentCrop.y)}</span>
+            <span>
+              Scale: {Math.round((currentCrop.width / currentCrop.originalWidth) * 100)}%
+            </span>
+          </div>
+        </div>
+      )}
+
+      {/* Status bar */}
+      <div className="p-2 border-t border-gray-200 dark:border-gray-700 text-xs text-gray-500">
+        <div className="flex items-center justify-between">
+          <span>
+            {mode === 'crop' ? 'Crop' : 'Transform'}: {element.name}
+          </span>
+          <span>
+            {mode === 'crop' 
+              ? `${Math.round(currentCrop.width)} × ${Math.round(currentCrop.height)}`
+              : `${Math.round(currentTransform.width)} × ${Math.round(currentTransform.height)}`
+            }
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default CropTransformController;
