@@ -264,3 +264,56 @@ const AuthPage = () => {
               >
                 {isSubmitting || isLoading
                   ? 'Loading...'
+                  : isLogin
+                  ? 'Sign In'
+                  : 'Create Account'
+                }
+              </Button>
+            </form>
+
+            {/* Demo Credentials (Login only) */}
+            {isLogin && (
+              <>
+                <Separator className="my-4" />
+                <div className="space-y-2">
+                  <p className="text-sm text-muted-foreground text-center">
+                    Try the demo account:
+                  </p>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="w-full"
+                    onClick={fillDemoCredentials}
+                    disabled={isSubmitting || isLoading}
+                  >
+                    Use Demo Credentials
+                  </Button>
+                </div>
+              </>
+            )}
+
+            {/* Toggle Mode */}
+            <Separator className="my-4" />
+            <div className="text-center">
+              <p className="text-sm text-muted-foreground">
+                {isLogin ? "Don't have an account? " : 'Already have an account? '}
+                <Button
+                  type="button"
+                  variant="link"
+                  className="p-0 h-auto font-semibold"
+                  onClick={toggleMode}
+                  disabled={isSubmitting || isLoading}
+                >
+                  {isLogin ? 'Sign Up' : 'Sign In'}
+                </Button>
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+};
+
+export default AuthPage;
