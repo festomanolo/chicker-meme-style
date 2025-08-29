@@ -162,3 +162,57 @@ export class CropTransformIntegration {
     return this.applyCropToElement(element, resetCrop);
   }
 
+  /**
+   * Calculate preview transform during crop operation
+   */
+  static calculatePreviewTransform(
+    originalTransform: TransformData,
+    previewCrop: CropData
+  ): TransformData {
+    return this.cropToTransform(previewCrop, originalTransform);
+  }
+
+  /**
+   * Smooth transition between crop and transform modes
+   */
+  static createModeTransition(
+    fromMode: 'crop' | 'transform',
+    toMode: 'crop' | 'transform',
+    element: LayerElement
+  ): {
+    duration: number;
+    easing: string;
+    properties: string[];
+  } {
+    const baseTransition = {
+      duration: 300,
+      easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
+      properties: ['transform', 'opacity'],
+    };
+
+    if (fromMode === 'crop' && toMode === 'transform') {
+      return {
+        ...baseTransition,
+        properties: ['transform', 'opacity', 'border-radius'],
+      };
+    }
+
+    if (fromMode === 'transform' && toMode === 'crop') {
+      return {
+        ...baseTransition,
+        properties: ['transform', 'opacity', 'mask'],
+      };
+    }
+
+    return baseTransition;
+  }
+
+  /**
+   * Generate crop preview styles for CSS
+   */
+  static generateCropPreviewStyles(crop: CropData, containerDimensions: { width: number; height: number }) {
+    const { width: containerWidth, height: containerHeight } = containerDimensions;
+    
+    // Calculate scale to fit crop in container
+    const scaleX = containerWidth / crop.originalWidth;
+    const scaleY = containerHeight / crop.originalHeight;
