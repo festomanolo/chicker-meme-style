@@ -92,3 +92,50 @@ export const useCanvasHistory = (options: UseCanvasHistoryOptions = {}): CanvasH
     if (!historyManagerRef.current) {
       return { success: false, error: 'History manager not initialized' };
     }
+
+    const result = historyManagerRef.current.redo();
+    updateUndoRedoState();
+    return result;
+  }, [updateUndoRedoState]);
+
+  const saveState = useCallback((state: CanvasState, description?: string) => {
+    if (!historyManagerRef.current) return;
+
+    historyManagerRef.current.addEntry(
+      { type: 'canvas_update' },
+      state,
+      description
+    );
+    updateUndoRedoState();
+  }, [updateUndoRedoState]);
+
+  const addLayer = useCallback((layer: LayerElement, state: CanvasState) => {
+    if (!historyManagerRef.current) return;
+
+    historyManagerRef.current.addLayerAction(layer, state);
+    updateUndoRedoState();
+  }, [updateUndoRedoState]);
+
+  const removeLayer = useCallback((layerId: string, state: CanvasState) => {
+    if (!historyManagerRef.current) return;
+
+    historyManagerRef.current.removeLayerAction(layerId, state);
+    updateUndoRedoState();
+  }, [updateUndoRedoState]);
+
+  const updateLayer = useCallback((layerId: string, updates: Partial<LayerElement>, state: CanvasState) => {
+    if (!historyManagerRef.current) return;
+
+    historyManagerRef.current.updateLayerAction(layerId, updates, state);
+    updateUndoRedoState();
+  }, [updateUndoRedoState]);
+
+  const transformElement = useCallback((elementId: string, state: CanvasState) => {
+    if (!historyManagerRef.current) return;
+
+    historyManagerRef.current.transformAction(elementId, state);
+    updateUndoRedoState();
+  }, [updateUndoRedoState]);
+
+  const cropElement = useCallback((elementId: string, state: CanvasState) => {
+    if (!historyManagerRef.current) return;
