@@ -118,3 +118,64 @@ export class ColorManager {
       cssFilter: this.generateCSSFilter(color, textureFilter),
       performanceMetrics: {
         blendTime: 0,
+        method: 'webgl',
+      },
+    };
+  }
+
+  /**
+   * Apply color using Canvas 2D API
+   */
+  private async applyCanvasBlending(
+    color: TshirtColor,
+    mockup: TshirtMockup,
+    textureFilter?: TextureFilter
+  ): Promise<ColorBlendResult> {
+    // Set canvas size
+    this.canvas.width = mockup.metadata.originalWidth;
+    this.canvas.height = mockup.metadata.originalHeight;
+
+    // Clear canvas
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+    // Load base mockup image
+    const baseImage = await this.loadImage(mockup.variants['1x']);
+    
+    // Draw base image
+    this.ctx.drawImage(baseImage, 0, 0);
+
+    // Apply color overlay with blend mode
+    this.ctx.globalCompositeOperation = 'multiply';
+    this.ctx.fillStyle = color.hex;
+    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+    // Apply texture filter if provided
+    if (textureFilter) {
+      await this.applyCanvasTextureFilter(textureFilter);
+    }
+
+    // Restore normal blend mode
+    this.ctx.globalCompositeOperation = 'source-over';
+
+    // Convert to data URL
+    const blendedDataUrl = this.canvas.toDataURL('image/webp', 0.9);
+
+    return {
+      blendedColor: blendedDataUrl,
+      cssFilter: this.generateCSSFilter(color, textureFilter),
+      performanceMetrics: {
+        blendTime: 0,
+        method: 'canvas',
+      },
+    };
+  }
+
+  /**
+   * Apply color using CSS filters (fastest, but less realistic)
+   */
+  private applyCSSBlending(
+    color: TshirtColor,
+    textureFilter?: TextureFilter
+  ): ColorBlendResult {
+    const cssFilter = this.generateCSSFilter(color, textureFilter);
+
