@@ -56,3 +56,60 @@ describe('useSnapGuides', () => {
 
   it('should generate canvas center guides', () => {
     const { result } = renderHook(() => useSnapGuides());
+
+    act(() => {
+      result.current.generateGuides([], mockCanvasSize);
+    });
+
+    const centerXGuide = result.current.snapGuides.find(
+      g => g.type === 'center' && g.axis === 'x'
+    );
+    const centerYGuide = result.current.snapGuides.find(
+      g => g.type === 'center' && g.axis === 'y'
+    );
+
+    expect(centerXGuide).toBeDefined();
+    expect(centerXGuide!.position).toBe(400); // 800 / 2
+    expect(centerYGuide).toBeDefined();
+    expect(centerYGuide!.position).toBe(300); // 600 / 2
+  });
+
+  it('should generate mockup guides when mockup bounds provided', () => {
+    const { result } = renderHook(() => useSnapGuides());
+
+    act(() => {
+      result.current.generateGuides([], mockCanvasSize, mockMockupBounds);
+    });
+
+    const mockupCenterXGuide = result.current.snapGuides.find(
+      g => g.type === 'mockup' && g.axis === 'x' && g.position === 400 // 200 + 400/2
+    );
+    const mockupCenterYGuide = result.current.snapGuides.find(
+      g => g.type === 'mockup' && g.axis === 'y' && g.position === 300 // 150 + 300/2
+    );
+
+    expect(mockupCenterXGuide).toBeDefined();
+    expect(mockupCenterYGuide).toBeDefined();
+  });
+
+  it('should generate element guides for visible, unlocked elements', () => {
+    const { result } = renderHook(() => useSnapGuides());
+
+    act(() => {
+      result.current.generateGuides(mockElements, mockCanvasSize);
+    });
+
+    // Should have guides for element-1 and element-2 only
+    const element1Guides = result.current.snapGuides.filter(
+      g => g.elementId === 'element-1'
+    );
+    const element2Guides = result.current.snapGuides.filter(
+      g => g.elementId === 'element-2'
+    );
+    const element3Guides = result.current.snapGuides.filter(
+      g => g.elementId === 'element-3'
+    );
+    const element4Guides = result.current.snapGuides.filter(
+      g => g.elementId === 'element-4'
+    );
+
