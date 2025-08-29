@@ -170,3 +170,60 @@ describe('HistoryManager', () => {
       historyManager.undo();
       
       const result = historyManager.redo();
+      
+      expect(result.success).toBe(true);
+      expect(result.state).toBeDefined();
+      expect(result.description).toContain('Redo');
+      expect(historyManager.canUndo()).toBe(true);
+      expect(historyManager.canRedo()).toBe(false);
+    });
+
+    it('should fail when nothing to redo', () => {
+      const result = historyManager.redo();
+      
+      expect(result.success).toBe(false);
+      expect(result.error).toBe('Nothing to redo');
+      expect(result.state).toBeUndefined();
+    });
+
+    it('should handle multiple redos', () => {
+      // Add 3 entries
+      for (let i = 0; i < 3; i++) {
+        historyManager.addEntry(createMockAction(), mockState, `Action ${i}`);
+      }
+      
+      // Undo all
+      historyManager.undo();
+      historyManager.undo();
+      
+      // Redo
+      let result = historyManager.redo();
+      expect(result.success).toBe(true);
+      
+      result = historyManager.redo();
+      expect(result.success).toBe(true);
+      
+      result = historyManager.redo();
+      expect(result.success).toBe(false); // Should fail
+    });
+  });
+
+  describe('state management', () => {
+    it('should validate valid state', () => {
+      const isValid = historyManager.validateState(mockState);
+      expect(isValid).toBe(true);
+    });
+
+    it('should reject invalid state - missing layers', () => {
+      const invalidState = { ...mockState, layers: undefined } as any;
+      const isValid = historyManager.validateState(invalidState);
+      expect(isValid).toBe(false);
+    });
+
+    it('should reject invalid state - invalid layer', () => {
+      const invalidState = {
+        ...mockState,
+        layers: [{ id: null, name: 'Invalid' }] as any,
+      };
+      const isValid = historyManager.validateState(invalidState);
+      expect(isValid).toBe(false);
