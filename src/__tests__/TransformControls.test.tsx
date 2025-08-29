@@ -440,3 +440,58 @@ describe('TransformControls', () => {
         isSelected={true}
         onTransform={mockOnTransform}
         onTransformEnd={mockOnTransformEnd}
+        canvasRect={mockCanvasRect}
+        zoom={1}
+      />
+    );
+
+    const handle = screen.getByLabelText('Resize handle se');
+    
+    fireEvent.mouseDown(handle, { clientX: 300, clientY: 250 });
+    fireEvent.mouseMove(document, { clientX: 320, clientY: 270 });
+
+    await waitFor(() => {
+      expect(screen.getByText(/Hold Shift for free transform/)).toBeInTheDocument();
+    });
+  });
+
+  it('should update hint when Shift is pressed', async () => {
+    render(
+      <TransformControls
+        element={mockElement}
+        isSelected={true}
+        onTransform={mockOnTransform}
+        onTransformEnd={mockOnTransformEnd}
+        canvasRect={mockCanvasRect}
+        zoom={1}
+      />
+    );
+
+    const handle = screen.getByLabelText('Resize handle se');
+    
+    fireEvent.mouseDown(handle, { clientX: 300, clientY: 250 });
+    fireEvent.keyDown(window, { key: 'Shift' });
+    fireEvent.mouseMove(document, { clientX: 320, clientY: 270 });
+
+    await waitFor(() => {
+      expect(screen.getByText(/Free transform/)).toBeInTheDocument();
+    });
+  });
+
+  it('should handle different resize directions correctly', async () => {
+    render(
+      <TransformControls
+        element={mockElement}
+        isSelected={true}
+        onTransform={mockOnTransform}
+        onTransformEnd={mockOnTransformEnd}
+        canvasRect={mockCanvasRect}
+        zoom={1}
+      />
+    );
+
+    // Test north handle (should only change height and y position)
+    const northHandle = screen.getByLabelText('Resize handle n');
+    
+    fireEvent.mouseDown(northHandle, { clientX: 200, clientY: 100 });
+    fireEvent.mouseMove(document, { clientX: 200, clientY: 80 }); // Move up
