@@ -284,3 +284,61 @@ describe('HistoryManager', () => {
       }
       
       const stats = manager.getStats();
+      expect(stats.compressedEntries).toBe(0);
+    });
+  });
+
+  describe('utility methods', () => {
+    it('should clear all history', () => {
+      historyManager.addEntry(createMockAction(), mockState);
+      historyManager.clear();
+      
+      const stats = historyManager.getStats();
+      expect(stats.totalEntries).toBe(0);
+      expect(historyManager.canUndo()).toBe(false);
+      expect(historyManager.canRedo()).toBe(false);
+    });
+
+    it('should get recent entries', () => {
+      // Add 5 entries
+      for (let i = 0; i < 5; i++) {
+        historyManager.addEntry(createMockAction(), mockState, `Action ${i}`);
+      }
+      
+      const recent = historyManager.getRecentEntries(3);
+      expect(recent).toHaveLength(3);
+      expect(recent[recent.length - 1].description).toContain('Action 4');
+    });
+
+    it('should create and restore snapshots', () => {
+      historyManager.addEntry(createMockAction(), mockState, 'Test action');
+      
+      const snapshot = historyManager.getSnapshot();
+      expect(snapshot.entries).toHaveLength(1);
+      expect(snapshot.currentIndex).toBe(0);
+      
+      const newManager = new HistoryManager();
+      newManager.restoreSnapshot(snapshot);
+      
+      const newStats = newManager.getStats();
+      expect(newStats.totalEntries).toBe(1);
+      expect(newManager.canUndo()).toBe(true);
+    });
+
+    it('should calculate memory usage', () => {
+      historyManager.addEntry(createMockAction(), mockState);
+      
+      const stats = historyManager.getStats();
+      expect(stats.memoryUsage).toBeGreaterThan(0);
+    });
+  });
+
+  describe('specific action helpers', () => {
+    it('should add layer action', () => {
+      const layer: LayerElement = mockState.layers[0];
+      historyManager.addLayerAction(layer, mockState);
+      
+      const entries = historyManager.getRecentEntries(1);
+      expect(entries[0].action.type).toBe('layer_add');
+      expect(entries[0].action.elementId).toBe(layer.id);
+      expect(entries[0].description).toContain('Add text layer');
