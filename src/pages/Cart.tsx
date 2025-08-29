@@ -112,3 +112,60 @@ const Cart = () => {
 
   const proceedToCheckout = () => {
     console.log("Proceeding to checkout with items:", items);
+    // Navigate to checkout page (you can create this later)
+    navigate('/checkout');
+  };
+
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <div className="glass-card border-b border-card-border px-6 py-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center gap-3">
+            <ShoppingCart className="h-8 w-8 text-primary" />
+            <div>
+              <h1 className="text-headline text-3xl font-bold text-foreground">
+                Shopping Cart
+              </h1>
+              <p className="text-muted-foreground">
+                {items.length} {items.length === 1 ? 'item' : 'items'} in your cart
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-6 py-8">
+        {isLoading ? (
+          <Loading className="py-16" size="lg" />
+        ) : items.length > 0 ? (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Cart Items */}
+            <div className="lg:col-span-2 space-y-6">
+              <Card className="glass-card">
+                <CardHeader>
+                  <CardTitle className="flex items-center justify-between">
+                    <span>Cart Items</span>
+                    <Badge variant="secondary">{items.length}</Badge>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  {items.map((item, index) => (
+                    <div key={item.id}>
+                      <div className="flex gap-4">
+                        {/* Product Image */}
+                        <div className="w-24 h-24 bg-muted rounded-lg flex items-center justify-center flex-shrink-0">
+                          <img 
+                            src={item.image} 
+                            alt={item.name}
+                            className="w-full h-full object-cover rounded-lg"
+                            onError={(e) => {
+                              e.currentTarget.src = "/api/placeholder/100/100";
+                            }}
+                          />
+                        </div>
+
+                        {/* Product Details */}
+                        <div className="flex-1 space-y-2">
+                          <div className="flex items-start justify-between">
+                            <div>
