@@ -172,3 +172,62 @@ export const ColorRangeSelector: React.FC<ColorRangeSelectorProps> = ({
   // Generate saturation gradient for slider background
   const saturationGradient = useMemo(() => {
     const colorStart = ColorConverter.hsvToRgb(hue, 0, value);
+    const colorEnd = ColorConverter.hsvToRgb(hue, 100, value);
+    return `linear-gradient(to right, rgb(${colorStart.r}, ${colorStart.g}, ${colorStart.b}), rgb(${colorEnd.r}, ${colorEnd.g}, ${colorEnd.b}))`;
+  }, [hue, value]);
+
+  // Generate value gradient for slider background
+  const valueGradient = useMemo(() => {
+    const colorStart = ColorConverter.hsvToRgb(hue, saturation, 0);
+    const colorEnd = ColorConverter.hsvToRgb(hue, saturation, 100);
+    return `linear-gradient(to right, rgb(${colorStart.r}, ${colorStart.g}, ${colorStart.b}), rgb(${colorEnd.r}, ${colorEnd.g}, ${colorEnd.b}))`;
+  }, [hue, saturation]);
+
+  return (
+    <Card className={cn("w-full", className)}>
+      <CardHeader className="pb-3">
+        <CardTitle className="flex items-center gap-2 text-lg">
+          <Palette className="h-5 w-5" />
+          Color Selection
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        {/* Color Preview */}
+        {showPreview && (
+          <div className="flex items-center gap-3">
+            <div
+              className="w-16 h-16 rounded-lg border-2 border-gray-200 shadow-sm"
+              style={{ backgroundColor: currentColor.hex }}
+              aria-label={`Selected color: ${currentColor.hex}`}
+            />
+            <div className="flex-1">
+              <p className="text-sm font-medium">{currentColor.name || 'Custom Color'}</p>
+              <p className="text-xs text-muted-foreground">{currentColor.hex}</p>
+              <p className="text-xs text-muted-foreground">
+                HSV({currentColor.h}, {currentColor.s}%, {currentColor.v}%)
+              </p>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleReset}
+              disabled={disabled}
+              className="shrink-0"
+            >
+              <RotateCcw className="h-4 w-4" />
+            </Button>
+          </div>
+        )}
+
+        {/* Color Selection Tabs */}
+        <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)}>
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="presets">Presets</TabsTrigger>
+            <TabsTrigger value="advanced">Advanced</TabsTrigger>
+          </TabsList>
+
+          {/* Preset Colors Tab */}
+          <TabsContent value="presets" className="space-y-4">
+            <div className="grid grid-cols-4 gap-2">
+              {presetColors.map((preset) => (
+                <Button
