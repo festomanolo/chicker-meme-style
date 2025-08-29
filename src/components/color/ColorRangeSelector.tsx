@@ -347,3 +347,61 @@ export const ColorRangeSelector: React.FC<ColorRangeSelectorProps> = ({
             </div>
 
             {/* RGB Inputs */}
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">RGB Values</Label>
+              <div className="grid grid-cols-3 gap-2">
+                <div>
+                  <Label htmlFor="rgb-r" className="text-xs text-muted-foreground">
+                    Red
+                  </Label>
+                  <Input
+                    id="rgb-r"
+                    type="number"
+                    min={0}
+                    max={255}
+                    value={rgbInput.r}
+                    onChange={(e) => handleRgbInputChange('r', e.target.value)}
+                    disabled={disabled}
+                    className="text-sm"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="rgb-g" className="text-xs text-muted-foreground">
+                    Green
+                  </Label>
+                  <Input
+                    id="rgb-g"
+                    type="number"
+                    min={0}
+                    max={255}
+                    value={rgbInput.g}
+                    onChange={(e) => handleRgbInputChange('g', e.target.value)}
+                    disabled={disabled}
+                    className="text-sm"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="rgb-b" className="text-xs text-muted-foreground">
+                    Blue
+                  </Label>
+                  <Input
+                    id="rgb-b"
+                    type="number"
+                    min={0}
+                    max={255}
+                    value={rgbInput.b}
+                    onChange={(e) => handleRgbInputChange('b', e.target.value)}
+                    disabled={disabled}
+                    className="text-sm"
+                  />
+                </div>
+              </div>
+            </div>
+          </TabsContent>
+        </Tabs>
+      </CardContent>
+    </Card>
+  );
+};
+
+export default ColorRangeSelector;
