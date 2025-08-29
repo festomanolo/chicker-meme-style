@@ -118,3 +118,63 @@ describe('SnapGuides', () => {
     expect(line).toHaveAttribute('x1', '0');
     expect(line).toHaveAttribute('x2', '800');
     expect(line).toHaveAttribute('y1', '300');
+    expect(line).toHaveAttribute('y2', '300');
+  });
+
+  it('should apply different styles based on guide type', () => {
+    const typedGuides: SnapGuide[] = [
+      {
+        type: 'center',
+        position: 400,
+        axis: 'x',
+        temporary: true,
+        priority: 1,
+      },
+      {
+        type: 'mockup',
+        position: 200,
+        axis: 'x',
+        temporary: true,
+        priority: 2,
+      },
+      {
+        type: 'element',
+        position: 100,
+        axis: 'x',
+        temporary: true,
+        priority: 3,
+      },
+    ];
+
+    const { container } = render(
+      <SnapGuides
+        guides={typedGuides}
+        canvasSize={mockCanvasSize}
+        zoom={1}
+      />
+    );
+
+    const lines = container.querySelectorAll('line');
+    
+    // Center guide should have blue stroke
+    expect(lines[0]).toHaveAttribute('stroke', '#3B82F6');
+    
+    // Mockup guide should have green stroke
+    expect(lines[1]).toHaveAttribute('stroke', '#10B981');
+    
+    // Element guide should have amber stroke
+    expect(lines[2]).toHaveAttribute('stroke', '#F59E0B');
+  });
+
+  it('should show grid when showGrid is true', () => {
+    const { container } = render(
+      <SnapGuides
+        guides={[]}
+        canvasSize={mockCanvasSize}
+        zoom={1}
+        showGrid={true}
+        gridSize={50}
+      />
+    );
+
+    const lines = container.querySelectorAll('line');
