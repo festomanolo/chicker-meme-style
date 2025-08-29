@@ -441,3 +441,59 @@ export const TransformControls: React.FC<TransformControlsProps> = ({
   return (
     <div className={cn("absolute pointer-events-none", className)}>
       {/* Selection outline */}
+      <div
+        className="absolute border-2 border-blue-400 border-dashed pointer-events-none"
+        style={{
+          left: currentTransform.x,
+          top: currentTransform.y,
+          width: currentTransform.width,
+          height: currentTransform.height,
+          transform: `rotate(${currentTransform.rotation || 0}deg)`,
+          transformOrigin: 'center',
+        }}
+      />
+
+      {/* Transform handles */}
+      {handles.map((handle) => (
+        <div
+          key={handle.id}
+          className={cn(
+            "absolute bg-white border-2 border-blue-400 rounded-sm pointer-events-auto transition-all duration-150",
+            "hover:bg-blue-50 hover:border-blue-500 hover:scale-110",
+            dragState.isDragging && dragState.handlePosition === handle.position && "bg-blue-100 border-blue-600"
+          )}
+          style={{
+            left: handle.bounds.x,
+            top: handle.bounds.y,
+            width: handle.bounds.width,
+            height: handle.bounds.height,
+            cursor: handle.cursor,
+            zIndex: 1000,
+          }}
+          onMouseDown={(e) => handleMouseDown(e, handle)}
+          onTouchStart={(e) => handleTouchStart(e, handle)}
+          role="button"
+          tabIndex={0}
+          aria-label={`Resize handle ${handle.position}`}
+        />
+      ))}
+
+      {/* Rotation handle */}
+      {rotationHandle && (
+        <div
+          className={cn(
+            "absolute bg-white border-2 border-green-400 rounded-full pointer-events-auto transition-all duration-150 flex items-center justify-center",
+            "hover:bg-green-50 hover:border-green-500 hover:scale-110",
+            dragState.isDragging && dragState.handlePosition === 'rotate' && "bg-green-100 border-green-600"
+          )}
+          style={{
+            left: rotationHandle.bounds.x,
+            top: rotationHandle.bounds.y,
+            width: rotationHandle.bounds.width,
+            height: rotationHandle.bounds.height,
+            cursor: dragState.isDragging && dragState.handlePosition === 'rotate' ? 'grabbing' : 'grab',
+            zIndex: 1000,
+          }}
+          onMouseDown={(e) => handleMouseDown(e, rotationHandle)}
+          onTouchStart={(e) => handleTouchStart(e, rotationHandle)}
+          role="button"
