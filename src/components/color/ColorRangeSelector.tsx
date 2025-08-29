@@ -114,3 +114,61 @@ export const ColorRangeSelector: React.FC<ColorRangeSelectorProps> = ({
         setRgbInput({ r: color.r, g: color.g, b: color.b });
         onColorChange(color);
       }
+    }
+  }, [onColorChange]);
+
+  // Handle RGB input changes
+  const handleRgbInputChange = useCallback((component: 'r' | 'g' | 'b', value: string) => {
+    const numValue = parseInt(value) || 0;
+    const clampedValue = Math.max(0, Math.min(255, numValue));
+    
+    const newRgbInput = { ...rgbInput, [component]: clampedValue };
+    setRgbInput(newRgbInput);
+
+    if (ColorValidator.validateRgbValues(newRgbInput.r, newRgbInput.g, newRgbInput.b)) {
+      const color = ColorConverter.createTshirtColor(newRgbInput.r, newRgbInput.g, newRgbInput.b);
+      setHue(color.h);
+      setSaturation(color.s);
+      setValue(color.v);
+      setHexInput(color.hex);
+      onColorChange(color);
+    }
+  }, [rgbInput, onColorChange]);
+
+  // Handle preset color selection
+  const handlePresetColorSelect = useCallback((preset: ColorPreset) => {
+    const color = preset.color;
+    setHue(color.h);
+    setSaturation(color.s);
+    setValue(color.v);
+    setHexInput(color.hex);
+    setRgbInput({ r: color.r, g: color.g, b: color.b });
+    onColorChange(color);
+  }, [onColorChange]);
+
+  // Reset to original color
+  const handleReset = useCallback(() => {
+    setHue(selectedColor.h);
+    setSaturation(selectedColor.s);
+    setValue(selectedColor.v);
+    setHexInput(selectedColor.hex);
+    setRgbInput({
+      r: selectedColor.r,
+      g: selectedColor.g,
+      b: selectedColor.b,
+    });
+  }, [selectedColor]);
+
+  // Generate hue gradient for slider background
+  const hueGradient = useMemo(() => {
+    const stops = [];
+    for (let i = 0; i <= 360; i += 30) {
+      const color = ColorConverter.hsvToRgb(i, 100, 100);
+      stops.push(`rgb(${color.r}, ${color.g}, ${color.b})`);
+    }
+    return `linear-gradient(to right, ${stops.join(', ')})`;
+  }, []);
+
+  // Generate saturation gradient for slider background
+  const saturationGradient = useMemo(() => {
+    const colorStart = ColorConverter.hsvToRgb(hue, 0, value);
