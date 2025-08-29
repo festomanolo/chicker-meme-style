@@ -148,3 +148,54 @@ export const MobileEditingPanel: React.FC<MobileEditingPanelProps> = ({
 
   // Backdrop opacity based on drag
   const backdropOpacity = () => {
+    if (!isOpen) return 0;
+    if (isDragging && dragOffset > 0) {
+      return Math.max(0, 0.5 - (dragOffset / dimensions.width) * 0.5);
+    }
+    return 0.5;
+  };
+
+  // Panel width calculation
+  const panelWidth = isCollapsed ? 60 : dimensions.width;
+
+  return (
+    <>
+      {/* Backdrop overlay */}
+      <div
+        ref={overlayRef}
+        className={cn(
+          "fixed inset-0 z-40 transition-opacity duration-300",
+          isOpen ? "pointer-events-auto" : "pointer-events-none"
+        )}
+        style={{
+          backgroundColor: `rgba(0, 0, 0, ${backdropOpacity()})`,
+        }}
+        onClick={handleBackdropClick}
+      />
+
+      {/* Panel */}
+      <div
+        ref={panelRef}
+        className={cn(
+          "fixed top-0 z-50 h-full bg-white dark:bg-gray-900 shadow-xl",
+          "transition-transform duration-300 ease-out",
+          "flex flex-col",
+          position === 'right' ? 'right-0' : 'left-0',
+          className
+        )}
+        style={{
+          width: panelWidth,
+          transform: panelTransform(),
+        }}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
+        {/* Panel header */}
+        <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+          <div className="flex items-center gap-3">
+            {showCollapseButton && !dimensions.isSmallPhone && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsCollapsed(!isCollapsed)}
