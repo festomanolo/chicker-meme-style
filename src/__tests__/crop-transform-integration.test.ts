@@ -294,3 +294,63 @@ describe('CropTransformIntegration', () => {
       expect(result.easing).toBeDefined();
       expect(result.properties).toContain('transform');
       expect(result.properties).toContain('opacity');
+    });
+
+    it('should return base transition for same mode', () => {
+      const result = CropTransformIntegration.createModeTransition('crop', 'crop', mockImageElement);
+
+      expect(result.duration).toBe(300);
+      expect(result.properties).toEqual(['transform', 'opacity']);
+    });
+  });
+
+  describe('generateCropPreviewStyles', () => {
+    it('should generate correct CSS styles for crop preview', () => {
+      const containerDimensions = { width: 300, height: 200 };
+      const result = CropTransformIntegration.generateCropPreviewStyles(mockCropData, containerDimensions);
+
+      expect(result.clipPath).toBeDefined();
+      expect(result.transform).toBeDefined();
+      expect(result.transformOrigin).toBe('top left');
+    });
+
+    it('should scale crop to fit container', () => {
+      const containerDimensions = { width: 200, height: 200 };
+      const result = CropTransformIntegration.generateCropPreviewStyles(mockCropData, containerDimensions);
+
+      expect(result.transform).toContain('scale');
+    });
+  });
+
+  describe('calculateOptimalCrop', () => {
+    it('should calculate optimal crop for viewport', () => {
+      const viewportDimensions = { width: 300, height: 200 };
+      const result = CropTransformIntegration.calculateOptimalCrop(mockImageElement, viewportDimensions);
+
+      expect(result.width).toBeGreaterThan(0);
+      expect(result.height).toBeGreaterThan(0);
+      expect(result.x).toBeGreaterThanOrEqual(0);
+      expect(result.y).toBeGreaterThanOrEqual(0);
+    });
+
+    it('should throw error for non-image elements', () => {
+      const textElement: LayerElement = {
+        ...mockImageElement,
+        type: 'text',
+      };
+
+      expect(() => {
+        CropTransformIntegration.calculateOptimalCrop(textElement, { width: 300, height: 200 });
+      }).toThrow('Can only calculate crop for image elements');
+    });
+
+    it('should handle wide viewport aspect ratios', () => {
+      const wideViewport = { width: 400, height: 200 };
+      const result = CropTransformIntegration.calculateOptimalCrop(mockImageElement, wideViewport);
+
+      expect(result.width).toBeLessThanOrEqual(mockImageElement.width);
+      expect(result.height).toBeLessThanOrEqual(mockImageElement.height);
+    });
+
+    it('should handle tall viewport aspect ratios', () => {
+      const tallViewport = { width: 200, height: 400 };
