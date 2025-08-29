@@ -219,3 +219,58 @@ describe('TransformControls', () => {
         zoom={1}
       />
     );
+
+    const handle = screen.getByLabelText('Resize handle se');
+    
+    // Start touch drag
+    fireEvent.touchStart(handle, {
+      touches: [{ clientX: 300, clientY: 250 }],
+    });
+    
+    // Move touch
+    fireEvent.touchMove(document, {
+      touches: [{ clientX: 320, clientY: 270 }],
+    });
+
+    await waitFor(() => {
+      expect(mockOnTransform).toHaveBeenCalled();
+    });
+
+    // End touch
+    fireEvent.touchEnd(document);
+
+    await waitFor(() => {
+      expect(mockOnTransformEnd).toHaveBeenCalled();
+    });
+  });
+
+  it('should maintain aspect ratio for corner handles by default', async () => {
+    render(
+      <TransformControls
+        element={mockElement}
+        isSelected={true}
+        onTransform={mockOnTransform}
+        onTransformEnd={mockOnTransformEnd}
+        canvasRect={mockCanvasRect}
+        zoom={1}
+      />
+    );
+
+    const handle = screen.getByLabelText('Resize handle se');
+    
+    fireEvent.mouseDown(handle, { clientX: 300, clientY: 250 });
+    fireEvent.mouseMove(document, { clientX: 340, clientY: 270 });
+
+    await waitFor(() => {
+      expect(mockOnTransform).toHaveBeenCalled();
+    });
+
+    const lastCall = mockOnTransform.mock.calls[mockOnTransform.mock.calls.length - 1][0];
+    const aspectRatio = lastCall.width / lastCall.height;
+    const originalAspectRatio = mockElement.width / mockElement.height;
+    
+    expect(aspectRatio).toBeCloseTo(originalAspectRatio, 1);
+  });
+
+  it('should allow free transform when Shift is pressed', async () => {
+    render(
