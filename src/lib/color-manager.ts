@@ -420,3 +420,63 @@ export class ColorManager {
    * Utility methods
    */
   private generateCacheKey(color: TshirtColor, mockup: TshirtMockup, textureFilter?: TextureFilter): string {
+    return `${color.hex}-${mockup.id}-${textureFilter?.id || 'none'}`;
+  }
+
+  private supportsWebGL(): boolean {
+    try {
+      const canvas = document.createElement('canvas');
+      return !!(canvas.getContext('webgl') || canvas.getContext('experimental-webgl'));
+    } catch {
+      return false;
+    }
+  }
+
+  private supportsCanvas2D(): boolean {
+    try {
+      const canvas = document.createElement('canvas');
+      return !!canvas.getContext('2d');
+    } catch {
+      return false;
+    }
+  }
+
+  private async loadImage(src: string): Promise<HTMLImageElement> {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = reject;
+      img.src = src;
+    });
+  }
+
+  // WebGL shader creation methods (simplified)
+  private createVertexShader(gl: WebGLRenderingContext): WebGLShader {
+    const vertexShaderSource = `
+      attribute vec4 a_position;
+      attribute vec2 a_texCoord;
+      varying vec2 v_texCoord;
+      
+      void main() {
+        gl_Position = a_position;
+        v_texCoord = a_texCoord;
+      }
+    `;
+
+    const shader = gl.createShader(gl.VERTEX_SHADER)!;
+    gl.shaderSource(shader, vertexShaderSource);
+    gl.compileShader(shader);
+    return shader;
+  }
+
+  private createFabricFragmentShader(
+    gl: WebGLRenderingContext, 
+    color: TshirtColor, 
+    textureFilter?: TextureFilter
+  ): WebGLShader {
+    const fragmentShaderSource = `
+      precision mediump float;
+      uniform sampler2D u_texture;
+      uniform vec3 u_color;
+      varying vec2 v_texCoord;
+      
