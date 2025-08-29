@@ -249,3 +249,53 @@ export const MobileEditingPanel: React.FC<MobileEditingPanelProps> = ({
           <div className={cn(
             "absolute top-1/2 -translate-y-1/2 w-1 h-12 bg-gray-300 dark:bg-gray-600 rounded-full",
             position === 'right' ? '-left-2' : '-right-2'
+          )} />
+        )}
+
+        {/* Resize handle for tablets */}
+        {dimensions.isTablet && (
+          <div className={cn(
+            "absolute top-0 bottom-0 w-2 cursor-col-resize hover:bg-blue-500/20 transition-colors",
+            position === 'right' ? '-left-1' : '-right-1'
+          )} />
+        )}
+      </div>
+    </>
+  );
+};
+
+// Hook for managing panel state
+export const useMobileEditingPanel = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [activePanel, setActivePanel] = useState<string | null>(null);
+
+  const openPanel = useCallback((panelId?: string) => {
+    setIsOpen(true);
+    if (panelId) {
+      setActivePanel(panelId);
+    }
+  }, []);
+
+  const closePanel = useCallback(() => {
+    setIsOpen(false);
+    setActivePanel(null);
+  }, []);
+
+  const togglePanel = useCallback((panelId?: string) => {
+    if (isOpen && activePanel === panelId) {
+      closePanel();
+    } else {
+      openPanel(panelId);
+    }
+  }, [isOpen, activePanel, openPanel, closePanel]);
+
+  return {
+    isOpen,
+    activePanel,
+    openPanel,
+    closePanel,
+    togglePanel,
+  };
+};
+
+export default MobileEditingPanel;
