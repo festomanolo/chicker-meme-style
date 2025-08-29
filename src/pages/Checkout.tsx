@@ -55,3 +55,60 @@ const Checkout = () => {
         await db.createOrder(user.id, items, total, shippingInfo);
       }
       
+      // Clear cart and show success
+      await clearCart();
+      setOrderComplete(true);
+    } catch (error) {
+      console.error('Order processing failed:', error);
+      // Handle error (you could show a toast here)
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  if (orderComplete) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Card className="max-w-md mx-auto">
+          <CardContent className="text-center p-8">
+            <div className="w-16 h-16 bg-success/10 rounded-full flex items-center justify-center mx-auto mb-4">
+              <CheckCircle className="h-8 w-8 text-success" />
+            </div>
+            <h2 className="text-2xl font-bold mb-2">Order Placed!</h2>
+            <p className="text-muted-foreground mb-6">
+              Your order has been successfully placed. You'll receive a confirmation email shortly.
+            </p>
+            <div className="space-y-3">
+              <Button onClick={() => navigate("/orders")} className="w-full">
+                View Orders
+              </Button>
+              <Button variant="outline" onClick={() => navigate("/")} className="w-full">
+                Continue Shopping
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (items.length === 0) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Card className="max-w-md mx-auto">
+          <CardContent className="text-center p-8">
+            <h2 className="text-2xl font-bold mb-2">Cart is Empty</h2>
+            <p className="text-muted-foreground mb-6">
+              Add some items to your cart before checking out.
+            </p>
+            <Button onClick={() => navigate("/")} className="w-full">
+              Start Shopping
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-background">
