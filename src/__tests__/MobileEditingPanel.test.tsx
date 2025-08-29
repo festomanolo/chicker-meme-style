@@ -262,3 +262,56 @@ describe('useMobileEditingPanel', () => {
   it('should toggle panel', () => {
     const { result } = renderHook(() => useMobileEditingPanel());
     
+    // Toggle open
+    act(() => {
+      result.current.togglePanel('test-panel');
+    });
+    
+    expect(result.current.isOpen).toBe(true);
+    expect(result.current.activePanel).toBe('test-panel');
+    
+    // Toggle closed
+    act(() => {
+      result.current.togglePanel('test-panel');
+    });
+    
+    expect(result.current.isOpen).toBe(false);
+    expect(result.current.activePanel).toBe(null);
+  });
+
+  it('should switch between different panels', () => {
+    const { result } = renderHook(() => useMobileEditingPanel());
+    
+    act(() => {
+      result.current.openPanel('panel-1');
+    });
+    
+    expect(result.current.activePanel).toBe('panel-1');
+    
+    act(() => {
+      result.current.openPanel('panel-2');
+    });
+    
+    expect(result.current.isOpen).toBe(true);
+    expect(result.current.activePanel).toBe('panel-2');
+  });
+
+  it('should handle toggle with different panel IDs', () => {
+    const { result } = renderHook(() => useMobileEditingPanel());
+    
+    // Open panel-1
+    act(() => {
+      result.current.togglePanel('panel-1');
+    });
+    
+    expect(result.current.activePanel).toBe('panel-1');
+    
+    // Toggle panel-2 (should switch to panel-2)
+    act(() => {
+      result.current.togglePanel('panel-2');
+    });
+    
+    expect(result.current.isOpen).toBe(true);
+    expect(result.current.activePanel).toBe('panel-2');
+  });
+});
