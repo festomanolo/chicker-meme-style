@@ -46,3 +46,50 @@ const DEFAULT_TOOLS: Tool[] = [
     name: 'Text',
     icon: Type,
     shortcut: 'T',
+    description: 'Add text elements',
+    category: 'drawing',
+  },
+  {
+    id: 'image',
+    name: 'Image',
+    icon: Image,
+    shortcut: 'I',
+    description: 'Replace or add images',
+    category: 'editing',
+  },
+  {
+    id: 'mask',
+    name: 'Mask',
+    icon: Scissors,
+    shortcut: 'M',
+    description: 'Create masks and selections',
+    category: 'editing',
+  },
+  {
+    id: 'pen',
+    name: 'Pen',
+    icon: PenTool,
+    shortcut: 'P',
+    description: 'Draw vector paths',
+    category: 'drawing',
+  },
+  {
+    id: 'eyedropper',
+    name: 'Eyedropper',
+    icon: Pipette,
+    shortcut: 'E',
+    description: 'Sample colors',
+    category: 'selection',
+  },
+];
+
+export const ToolsRow: React.FC<ToolsRowProps> = ({
+  selectedTool,
+  onToolSelect,
+  config = {},
+  className,
+  disabled = [],
+}) => {
+  const {
+    showLabels = false,
+    showShortcuts = true,
