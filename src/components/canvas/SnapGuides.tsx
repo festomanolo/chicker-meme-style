@@ -186,3 +186,50 @@ export const SnapGuides: React.FC<SnapGuidesProps> = ({
                       width={60 / zoom}
                       height={20 / zoom}
                       fill="rgba(0, 0, 0, 0.8)"
+                      rx={4 / zoom}
+                    />
+                    <text
+                      x={guide.position}
+                      y={20 / zoom}
+                      textAnchor="middle"
+                      dominantBaseline="middle"
+                      fill="white"
+                      fontSize={12 / zoom}
+                      fontFamily="system-ui, sans-serif"
+                    >
+                      {labelText}
+                    </text>
+                  </g>
+                ) : (
+                  // Horizontal guide label
+                  <g>
+                    <rect
+                      x={10 / zoom}
+                      y={guide.position - 10 / zoom}
+                      width={60 / zoom}
+                      height={20 / zoom}
+                      fill="rgba(0, 0, 0, 0.8)"
+                      rx={4 / zoom}
+                    />
+                    <text
+                      x={40 / zoom}
+                      y={guide.position}
+                      textAnchor="middle"
+                      dominantBaseline="middle"
+                      fill="white"
+                      fontSize={12 / zoom}
+                      fontFamily="system-ui, sans-serif"
+                    >
+                      {labelText}
+                    </text>
+                  </g>
+                )}
+              </g>
+            );
+          })}
+      </svg>
+    </div>
+  );
+};
+
+export default SnapGuides;
