@@ -95,3 +95,51 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
     isVisible: notification.isVisible,
     showCount: notification.showCount,
     clickCount: notification.clickCount,
+    forceShow: notification.forceShow,
+    forceHide: notification.forceHide,
+    resetState: notification.resetState,
+    config: notification.config,
+  };
+
+  return (
+    <NotificationContext.Provider value={contextValue}>
+      {children}
+      
+      {/* Render notification */}
+      <WhatsAppNotification
+        isVisible={notification.isVisible}
+        onDismiss={notification.dismiss}
+        onLinkClick={handleLinkClick}
+        config={notification.config}
+        onAnalytics={handleAnalytics}
+      />
+    </NotificationContext.Provider>
+  );
+};
+
+/**
+ * Hook to access notification context
+ */
+export const useNotification = (): NotificationContextValue => {
+  const context = useContext(NotificationContext);
+  if (!context) {
+    throw new Error('useNotification must be used within a NotificationProvider');
+  }
+  return context;
+};
+
+/**
+ * Higher-order component to wrap app with notifications
+ */
+export const withNotifications = <P extends object>(
+  Component: React.ComponentType<P>,
+  notificationConfig?: Partial<NotificationConfig>
+) => {
+  return (props: P) => (
+    <NotificationProvider config={notificationConfig}>
+      <Component {...props} />
+    </NotificationProvider>
+  );
+};
+
+export default NotificationProvider;
