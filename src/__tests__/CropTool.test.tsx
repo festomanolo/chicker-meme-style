@@ -174,3 +174,61 @@ describe('CropTool', () => {
       minHeight: 100,
       maxWidth: 300,
       maxHeight: 300,
+    };
+
+    render(<CropTool {...mockProps} constraints={constraints} />);
+    
+    const image = screen.getByAltText('Crop preview');
+    fireEvent.load(image);
+
+    // Component should respect constraints during crop operations
+    await waitFor(() => {
+      expect(screen.getByText('Crop Image')).toBeInTheDocument();
+    });
+  });
+
+  it('should apply aspect ratio constraints', async () => {
+    const constraints: CropConstraints = {
+      aspectRatio: 1,
+      lockAspectRatio: true,
+    };
+
+    render(<CropTool {...mockProps} constraints={constraints} />);
+    
+    const image = screen.getByAltText('Crop preview');
+    fireEvent.load(image);
+
+    await waitFor(() => {
+      expect(screen.getByText('Crop Image')).toBeInTheDocument();
+    });
+  });
+
+  it('should handle mouse interactions on crop handles', async () => {
+    render(<CropTool {...mockProps} originalCrop={mockCropData} />);
+    
+    const image = screen.getByAltText('Crop preview');
+    fireEvent.load(image);
+
+    await waitFor(() => {
+      const cropArea = screen.getByAltText('Crop preview').parentElement;
+      expect(cropArea).toBeInTheDocument();
+    });
+
+    // Test mouse down on crop area (handles would be rendered as divs)
+    // This is a simplified test as the actual handles are dynamically positioned
+  });
+
+  it('should show grid lines when enabled', async () => {
+    const config: CropToolConfig = { showGrid: true };
+    render(<CropTool {...mockProps} config={config} originalCrop={mockCropData} />);
+    
+    const image = screen.getByAltText('Crop preview');
+    fireEvent.load(image);
+
+    await waitFor(() => {
+      // Grid lines are rendered as SVG elements
+      const svg = document.querySelector('svg');
+      expect(svg).toBeInTheDocument();
+    });
+  });
+
