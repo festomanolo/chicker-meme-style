@@ -480,3 +480,63 @@ export class ColorManager {
       uniform vec3 u_color;
       varying vec2 v_texCoord;
       
+      void main() {
+        vec4 texColor = texture2D(u_texture, v_texCoord);
+        vec3 blended = texColor.rgb * u_color;
+        gl_FragColor = vec4(blended, texColor.a);
+      }
+    `;
+
+    const shader = gl.createShader(gl.FRAGMENT_SHADER)!;
+    gl.shaderSource(shader, fragmentShaderSource);
+    gl.compileShader(shader);
+    return shader;
+  }
+
+  private createShaderProgram(
+    gl: WebGLRenderingContext, 
+    vertexShader: WebGLShader, 
+    fragmentShader: WebGLShader
+  ): WebGLProgram {
+    const program = gl.createProgram()!;
+    gl.attachShader(program, vertexShader);
+    gl.attachShader(program, fragmentShader);
+    gl.linkProgram(program);
+    return program;
+  }
+
+  /**
+   * Clear performance cache
+   */
+  clearCache(): void {
+    this.performanceCache.clear();
+  }
+
+  /**
+   * Get cache statistics
+   */
+  getCacheStats() {
+    return {
+      cacheSize: this.performanceCache.size,
+      memoryUsage: this.estimateCacheMemoryUsage(),
+    };
+  }
+
+  private estimateCacheMemoryUsage(): number {
+    // Rough estimate of cache memory usage in bytes
+    return this.performanceCache.size * 1024; // Assume 1KB per cached item
+  }
+}
+
+// Export singleton instance
+export const colorManager = new ColorManager();
+
+// Export utility functions
+export const applyColorToFabric = (color: TshirtColor, mockup: TshirtMockup, textureFilter?: TextureFilter) =>
+  colorManager.applyColorToFabric(color, mockup, textureFilter);
+
+export const generateColorPreview = (color: TshirtColor, texture?: TextureFilter) =>
+  colorManager.generateColorPreview(color, texture);
+
+export const blendColorWithFabric = (color: TshirtColor, fabricBase: string, options: FabricBlendOptions) =>
+  colorManager.blendColorWithFabric(color, fabricBase, options);
