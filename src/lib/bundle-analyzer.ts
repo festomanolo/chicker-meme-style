@@ -47,3 +47,51 @@ export class BundleAnalyzer {
           modules: [
             { name: 'react-dom', size: 300 * 1024, path: 'node_modules/react-dom' },
             { name: 'other-deps', size: 1000 * 1024, path: 'node_modules/' },
+          ],
+        },
+      ],
+      recommendations: [],
+      warnings: [],
+    };
+
+    // Analyze and provide recommendations
+    if (mockAnalysis.totalSize > 3 * 1024 * 1024) {
+      warnings.push('Bundle size exceeds 3MB - consider code splitting');
+      recommendations.push('Implement lazy loading for non-critical components');
+      recommendations.push('Use dynamic imports for large dependencies');
+    }
+
+    if (mockAnalysis.gzippedSize > 1024 * 1024) {
+      warnings.push('Gzipped size exceeds 1MB');
+      recommendations.push('Enable tree shaking for unused code');
+      recommendations.push('Consider using smaller alternative libraries');
+    }
+
+    // Check for large modules
+    mockAnalysis.chunks.forEach(chunk => {
+      chunk.modules.forEach(module => {
+        if (module.size > 500 * 1024) {
+          warnings.push(`Large module detected: ${module.name} (${(module.size / 1024).toFixed(0)}KB)`);
+          recommendations.push(`Consider code splitting for ${module.name}`);
+        }
+      });
+    });
+
+    return {
+      ...mockAnalysis,
+      recommendations,
+      warnings,
+    };
+  }
+
+  /**
+   * Get optimization suggestions
+   */
+  static getOptimizationSuggestions(): {
+    codesplitting: string[];
+    treeshaking: string[];
+    compression: string[];
+    caching: string[];
+  } {
+    return {
+      codesplitting: [
