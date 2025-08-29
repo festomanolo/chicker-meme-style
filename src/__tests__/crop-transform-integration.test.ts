@@ -235,3 +235,62 @@ describe('CropTransformIntegration', () => {
       expect(result.cropData?.y).toBe(0);
       expect(result.cropData?.width).toBe(mockCropData.originalWidth);
       expect(result.cropData?.height).toBe(mockCropData.originalHeight);
+    });
+
+    it('should not modify elements without crop data', () => {
+      const result = CropTransformIntegration.resetCrop(mockImageElement);
+
+      expect(result).toEqual(mockImageElement);
+    });
+
+    it('should not modify non-image elements', () => {
+      const textElement: LayerElement = {
+        ...mockImageElement,
+        type: 'text',
+        content: 'Test text',
+        cropData: mockCropData,
+      };
+
+      const result = CropTransformIntegration.resetCrop(textElement);
+
+      expect(result).toEqual(textElement);
+    });
+  });
+
+  describe('calculatePreviewTransform', () => {
+    it('should calculate preview transform from crop', () => {
+      const result = CropTransformIntegration.calculatePreviewTransform(mockTransformData, mockCropData);
+
+      expect(result.width).toBe(mockCropData.width);
+      expect(result.height).toBe(mockCropData.height);
+    });
+
+    it('should maintain original transform properties', () => {
+      const transformWithRotation: TransformData = {
+        ...mockTransformData,
+        rotation: 30,
+      };
+
+      const result = CropTransformIntegration.calculatePreviewTransform(transformWithRotation, mockCropData);
+
+      expect(result.rotation).toBe(30);
+    });
+  });
+
+  describe('createModeTransition', () => {
+    it('should create transition config for crop to transform', () => {
+      const result = CropTransformIntegration.createModeTransition('crop', 'transform', mockImageElement);
+
+      expect(result.duration).toBeGreaterThan(0);
+      expect(result.easing).toBeDefined();
+      expect(result.properties).toContain('transform');
+      expect(result.properties).toContain('opacity');
+    });
+
+    it('should create transition config for transform to crop', () => {
+      const result = CropTransformIntegration.createModeTransition('transform', 'crop', mockImageElement);
+
+      expect(result.duration).toBeGreaterThan(0);
+      expect(result.easing).toBeDefined();
+      expect(result.properties).toContain('transform');
+      expect(result.properties).toContain('opacity');
