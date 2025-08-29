@@ -57,3 +57,63 @@ const LayerTypeIcon: React.FC<{ type: LayerElement['type'] }> = ({ type }) => {
       return <Image {...iconProps} />;
     case 'shape':
       return <Square {...iconProps} />;
+    case 'sticker':
+      return <Sticker {...iconProps} />;
+    case 'template':
+      return <FileImage {...iconProps} />;
+    default:
+      return <Square {...iconProps} />;
+  }
+};
+
+const LayerThumbnail: React.FC<{ layer: LayerElement; size?: number }> = ({ 
+  layer, 
+  size = 32 
+}) => {
+  if (layer.thumbnail) {
+    return (
+      <img
+        src={layer.thumbnail}
+        alt={`${layer.name} thumbnail`}
+        className="rounded border bg-gray-100"
+        style={{ width: size, height: size }}
+      />
+    );
+  }
+
+  // Generate thumbnail based on layer type
+  return (
+    <div
+      className="flex items-center justify-center rounded border bg-gray-100 text-gray-500"
+      style={{ width: size, height: size }}
+    >
+      <LayerTypeIcon type={layer.type} />
+    </div>
+  );
+};
+
+const LayerItem: React.FC<{
+  layer: LayerElement;
+  isSelected: boolean;
+  isEditing: boolean;
+  showThumbnail: boolean;
+  onSelect: (id: string, multiSelect?: boolean) => void;
+  onUpdate: (id: string, updates: Partial<LayerElement>) => void;
+  onDelete: (id: string) => void;
+  onDuplicate: (id: string) => void;
+  onVisibilityToggle: (id: string) => void;
+  onLockToggle: (id: string) => void;
+  onStartEdit: (id: string) => void;
+  onEndEdit: () => void;
+  onDragStart?: (e: React.DragEvent, id: string) => void;
+  onDragOver?: (e: React.DragEvent) => void;
+  onDrop?: (e: React.DragEvent, targetId: string) => void;
+}> = ({
+  layer,
+  isSelected,
+  isEditing,
+  showThumbnail,
+  onSelect,
+  onUpdate,
+  onDelete,
+  onDuplicate,
