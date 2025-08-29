@@ -192,3 +192,52 @@ export class BundleAnalyzer {
 
     report += '## Performance Budget\n';
     budget.results.forEach(result => {
+      const status = result.passes ? '✅' : '❌';
+      report += `${status} ${result.metric}: ${this.formatSize(result.actual)} / ${this.formatSize(result.budget)}\n`;
+    });
+    report += '\n';
+
+    if (analysis.warnings.length > 0) {
+      report += '## Warnings\n';
+      analysis.warnings.forEach(warning => {
+        report += `⚠️ ${warning}\n`;
+      });
+      report += '\n';
+    }
+
+    if (analysis.recommendations.length > 0) {
+      report += '## Recommendations\n';
+      analysis.recommendations.forEach(rec => {
+        report += `💡 ${rec}\n`;
+      });
+      report += '\n';
+    }
+
+    report += '## Optimization Suggestions\n\n';
+    
+    report += '### Code Splitting\n';
+    suggestions.codesplitting.forEach(suggestion => {
+      report += `- ${suggestion}\n`;
+    });
+    report += '\n';
+
+    report += '### Tree Shaking\n';
+    suggestions.treeshaking.forEach(suggestion => {
+      report += `- ${suggestion}\n`;
+    });
+    report += '\n';
+
+    report += '### Compression\n';
+    suggestions.compression.forEach(suggestion => {
+      report += `- ${suggestion}\n`;
+    });
+    report += '\n';
+
+    report += '### Caching\n';
+    suggestions.caching.forEach(suggestion => {
+      report += `- ${suggestion}\n`;
+    });
+
+    return report;
+  }
+}
