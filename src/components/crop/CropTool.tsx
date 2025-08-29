@@ -110,3 +110,59 @@ export const CropTool: React.FC<CropToolProps> = ({
 
       setCropState(prev => ({
         ...prev,
+        currentCrop: initialCrop,
+        originalCrop: initialCrop,
+      }));
+    }
+  }, [originalCrop]);
+
+  // Generate crop handles
+  const cropHandles = useMemo((): CropHandle[] => {
+    if (!imageLoaded) return [];
+
+    const { currentCrop } = cropState;
+    const { x, y, width, height } = currentCrop;
+    const halfHandle = handleSize / 2;
+
+    return [
+      // Corner handles
+      {
+        id: 'nw',
+        type: 'corner',
+        position: 'nw',
+        cursor: 'nw-resize',
+        bounds: { x: x - halfHandle, y: y - halfHandle, width: handleSize, height: handleSize },
+      },
+      {
+        id: 'ne',
+        type: 'corner',
+        position: 'ne',
+        cursor: 'ne-resize',
+        bounds: { x: x + width - halfHandle, y: y - halfHandle, width: handleSize, height: handleSize },
+      },
+      {
+        id: 'se',
+        type: 'corner',
+        position: 'se',
+        cursor: 'se-resize',
+        bounds: { x: x + width - halfHandle, y: y + height - halfHandle, width: handleSize, height: handleSize },
+      },
+      {
+        id: 'sw',
+        type: 'corner',
+        position: 'sw',
+        cursor: 'sw-resize',
+        bounds: { x: x - halfHandle, y: y + height - halfHandle, width: handleSize, height: handleSize },
+      },
+      // Edge handles
+      {
+        id: 'n',
+        type: 'edge',
+        position: 'n',
+        cursor: 'n-resize',
+        bounds: { x: x + width/2 - halfHandle, y: y - halfHandle, width: handleSize, height: handleSize },
+      },
+      {
+        id: 'e',
+        type: 'edge',
+        position: 'e',
