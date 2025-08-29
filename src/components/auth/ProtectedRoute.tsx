@@ -18,3 +18,23 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
       navigate('/auth', { 
         state: { from: location },
         replace: true 
+      });
+    }
+  }, [isAuthenticated, isLoading, navigate, location]);
+
+  // Show loading while checking auth
+  if (isLoading) {
+    return (
+      <div className="min-h-screen">
+        <Loading className="min-h-screen" size="lg" />
+      </div>
+    );
+  }
+
+  // Don't render children if not authenticated
+  if (!isAuthenticated) {
+    return null;
+  }
+
+  return <>{children}</>;
+}
