@@ -56,3 +56,60 @@ export const CropTransformController: React.FC<CropTransformControllerProps> = (
   }));
 
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [previewVisible, setPreviewVisible] = useState(showPreview);
+
+  // Update state when mode changes
+  useEffect(() => {
+    setState(prev => ({ ...prev, mode }));
+  }, [mode]);
+
+  // Calculate current crop data
+  const currentCrop = useMemo((): CropData => {
+    if (state.previewCrop) return state.previewCrop;
+    if (element.cropData) return element.cropData;
+    
+    // Generate default crop from current element
+    return {
+      x: 0,
+      y: 0,
+      width: element.width,
+      height: element.height,
+      originalWidth: element.width,
+      originalHeight: element.height,
+    };
+  }, [element, state.previewCrop]);
+
+  // Calculate current transform data
+  const currentTransform = useMemo((): TransformData => {
+    if (state.previewTransform) return state.previewTransform;
+    
+    return {
+      x: element.x,
+      y: element.y,
+      width: element.width,
+      height: element.height,
+      rotation: element.rotation,
+      scaleX: element.scaleX,
+      scaleY: element.scaleY,
+    };
+  }, [element, state.previewTransform]);
+
+  // Handle mode switching with smooth transition
+  const handleModeSwitch = useCallback(async (newMode: 'crop' | 'transform') => {
+    if (newMode === mode || isTransitioning) return;
+
+    setIsTransitioning(true);
+
+    // Get transition configuration
+    const transition = CropTransformIntegration.createModeTransition(mode, newMode, element);
+
+    // Apply transition styles
+    const transitionPromise = new Promise<void>((resolve) => {
+      setTimeout(() => {
+        onModeChange(newMode);
+        resolve();
+      }, transition.duration);
+    });
+
+    await transitionPromise;
+    setIsTransitioning(false);
