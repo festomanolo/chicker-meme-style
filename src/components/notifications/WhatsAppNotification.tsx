@@ -40,3 +40,44 @@ export const WhatsAppNotification: React.FC<WhatsAppNotificationProps> = ({
       timestamp: Date.now(),
       sessionId,
       pageUrl: window.location.href,
+      showCount,
+      metadata,
+    });
+  }, [config.enableAnalytics, onAnalytics, sessionId, showCount]);
+
+  // Handle show animation
+  useEffect(() => {
+    if (isVisible) {
+      setIsAnimating(true);
+      setShowCount(prev => prev + 1);
+      trackEvent('show');
+      
+      // Remove animation class after animation completes
+      const timer = setTimeout(() => setIsAnimating(false), 300);
+      return () => clearTimeout(timer);
+    }
+  }, [isVisible, trackEvent]);
+
+  // Handle dismiss
+  const handleDismiss = useCallback(() => {
+    trackEvent('dismiss');
+    onDismiss();
+  }, [trackEvent, onDismiss]);
+
+  // Handle WhatsApp link click
+  const handleLinkClick = useCallback(() => {
+    trackEvent('click');
+    onLinkClick();
+    
+    // Track when link is actually opened
+    setTimeout(() => {
+      trackEvent('link_opened');
+    }, 100);
+  }, [trackEvent, onLinkClick]);
+
+  // Generate WhatsApp link
+  const whatsappLink = `https://wa.me/${config.phoneNumber}?text=${encodeURIComponent(config.defaultMessage)}`;
+
+  if (!isVisible) return null;
+
+  return (
