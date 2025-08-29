@@ -446,3 +446,59 @@ export const CropTool: React.FC<CropToolProps> = ({
       );
     }
 
+    return lines;
+  }, [showGrid, imageLoaded, cropState, gridOpacity]);
+
+  if (!imageLoaded) {
+    return (
+      <div className={cn("flex items-center justify-center h-64 bg-gray-100 dark:bg-gray-800 rounded-lg", className)}>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-2"></div>
+          <p className="text-sm text-gray-600 dark:text-gray-400">Loading image...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className={cn("flex flex-col h-full bg-white dark:bg-gray-900", className)}>
+      {/* Toolbar */}
+      <div className="flex items-center justify-between p-3 border-b border-gray-200 dark:border-gray-700">
+        <div className="flex items-center gap-2">
+          <h3 className="text-sm font-semibold">Crop Image</h3>
+          <Badge variant="secondary" className="text-xs">
+            {Math.round(cropState.currentCrop.width)} × {Math.round(cropState.currentCrop.height)}
+          </Badge>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" onClick={handleReset}>
+            <RotateCcw className="h-4 w-4 mr-1" />
+            Reset
+          </Button>
+          <Button variant="outline" size="sm" onClick={onCropCancel}>
+            <X className="h-4 w-4 mr-1" />
+            Cancel
+          </Button>
+          <Button size="sm" onClick={handleConfirm}>
+            <Check className="h-4 w-4 mr-1" />
+            Confirm
+          </Button>
+        </div>
+      </div>
+
+      {/* Presets */}
+      {enablePresets && (
+        <div className="p-3 border-b border-gray-200 dark:border-gray-700">
+          <div className="flex items-center gap-2 flex-wrap">
+            {DEFAULT_PRESETS.map((preset) => (
+              <Button
+                key={preset.id}
+                variant={selectedPreset === preset.id ? "default" : "outline"}
+                size="sm"
+                onClick={() => handlePresetSelect(preset)}
+                className="h-8 px-3 text-xs"
+              >
+                {preset.id === 'square' && <Square className="h-3 w-3 mr-1" />}
+                {preset.id === 'phone' && <Smartphone className="h-3 w-3 mr-1" />}
+                {preset.id === 'landscape' && <Monitor className="h-3 w-3 mr-1" />}
