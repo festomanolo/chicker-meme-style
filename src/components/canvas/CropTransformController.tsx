@@ -171,3 +171,60 @@ export const CropTransformController: React.FC<CropTransformControllerProps> = (
     // Clear preview state
     setState(prev => ({
       ...prev,
+      previewTransform: null,
+      originalTransform: transform,
+    }));
+  }, [element, onElementUpdate]);
+
+  // Handle reset operations
+  const handleReset = useCallback(() => {
+    if (mode === 'crop') {
+      const resetElement = CropTransformIntegration.resetCrop(element);
+      onElementUpdate(resetElement);
+    } else {
+      // Reset transform to original
+      handleTransformConfirm(state.originalTransform);
+    }
+    
+    setState(prev => ({
+      ...prev,
+      previewCrop: null,
+      previewTransform: null,
+    }));
+  }, [mode, element, state.originalTransform, onElementUpdate, handleTransformConfirm]);
+
+  // Handle cancel
+  const handleCancel = useCallback(() => {
+    setState(prev => ({
+      ...prev,
+      previewCrop: null,
+      previewTransform: null,
+    }));
+    onCancel();
+  }, [onCancel]);
+
+  // Calculate quality validation for current crop
+  const cropQuality = useMemo(() => {
+    if (mode !== 'crop') return null;
+    
+    return CropTransformIntegration.validateCropQuality(currentCrop, {
+      width: element.width,
+      height: element.height,
+    });
+  }, [mode, currentCrop, element]);
+
+  // Generate preview styles
+  const previewStyles = useMemo(() => {
+    if (!previewVisible || mode !== 'crop') return {};
+    
+    return CropTransformIntegration.generateCropPreviewStyles(currentCrop, {
+      width: 300,
+      height: 200,
+    });
+  }, [previewVisible, mode, currentCrop]);
+
+  return (
+    <div className={cn("flex flex-col h-full bg-white dark:bg-gray-900", className)}>
+      {/* Mode switcher and controls */}
+      <div className="flex items-center justify-between p-3 border-b border-gray-200 dark:border-gray-700">
+        <div className="flex items-center gap-2">
