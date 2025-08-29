@@ -42,3 +42,47 @@ export class PerformanceMonitor {
       this.metrics.renderTime = performance.now() - this.renderStartTime;
       this.renderStartTime = 0;
     }
+  }
+
+  /**
+   * Update FPS counter
+   */
+  updateFPS(): void {
+    const now = performance.now();
+    this.fpsCounter++;
+
+    if (now - this.lastFpsTime >= 1000) {
+      this.metrics.fps = this.fpsCounter;
+      this.fpsCounter = 0;
+      this.lastFpsTime = now;
+    }
+  }
+
+  /**
+   * Get memory usage
+   */
+  updateMemoryUsage(): void {
+    if ('memory' in performance) {
+      const memory = (performance as any).memory;
+      this.metrics.memoryUsage = memory.usedJSHeapSize / 1024 / 1024; // MB
+    }
+  }
+
+  /**
+   * Measure load time
+   */
+  measureLoadTime(): void {
+    if (performance.timing) {
+      const { navigationStart, loadEventEnd } = performance.timing;
+      this.metrics.loadTime = loadEventEnd - navigationStart;
+    }
+  }
+
+  /**
+   * Get current metrics
+   */
+  getMetrics(): PerformanceMetrics {
+    this.updateMemoryUsage();
+    return { ...this.metrics };
+  }
+
