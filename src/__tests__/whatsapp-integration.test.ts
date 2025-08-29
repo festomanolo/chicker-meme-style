@@ -50,3 +50,55 @@ describe('WhatsAppIntegration', () => {
       const link = WhatsAppIntegration.generateLink(config);
       expect(link).toContain(encodeURIComponent('Hello & welcome! How are you?'));
     });
+
+    it('should work without source', () => {
+      const config = {
+        phoneNumber: '1234567890',
+        message: 'Test message',
+      };
+      
+      const link = WhatsAppIntegration.generateLink(config);
+      expect(link).toBe('https://wa.me/1234567890?text=Test%20message');
+    });
+  });
+
+  describe('generateWebLink', () => {
+    it('should generate correct WhatsApp Web link', () => {
+      const link = WhatsAppIntegration.generateWebLink(mockConfig);
+      
+      expect(link).toBe('https://web.whatsapp.com/send?phone=12345678900&text=Hello%2C%20I%20need%20help!');
+    });
+  });
+
+  describe('isMobileDevice', () => {
+    it('should detect mobile devices', () => {
+      // Mock mobile user agent
+      Object.defineProperty(navigator, 'userAgent', {
+        value: 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X)',
+        writable: true,
+      });
+      
+      expect(WhatsAppIntegration.isMobileDevice()).toBe(true);
+    });
+
+    it('should detect desktop devices', () => {
+      // Mock desktop user agent
+      Object.defineProperty(navigator, 'userAgent', {
+        value: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+        writable: true,
+      });
+      
+      expect(WhatsAppIntegration.isMobileDevice()).toBe(false);
+    });
+  });
+
+  describe('getOptimalLink', () => {
+    it('should return mobile link for mobile devices', () => {
+      Object.defineProperty(navigator, 'userAgent', {
+        value: 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X)',
+        writable: true,
+      });
+      
+      const link = WhatsAppIntegration.getOptimalLink(mockConfig);
+      expect(link).toContain('wa.me');
+    });
