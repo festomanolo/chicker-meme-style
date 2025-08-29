@@ -91,3 +91,49 @@ export class ErrorBoundary extends Component<Props, State> {
                 </summary>
                 <div className="bg-gray-100 dark:bg-gray-700 p-3 rounded text-xs font-mono overflow-auto max-h-32">
                   <div className="text-red-600 dark:text-red-400 mb-2">
+                    {this.state.error.toString()}
+                  </div>
+                  {this.state.errorInfo?.componentStack && (
+                    <div className="text-gray-600 dark:text-gray-400">
+                      {this.state.errorInfo.componentStack}
+                    </div>
+                  )}
+                </div>
+              </details>
+            )}
+
+            <div className="flex flex-col sm:flex-row gap-3">
+              <button
+                onClick={this.handleReset}
+                className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                <RefreshCw className="w-4 h-4" />
+                Try Again
+              </button>
+              
+              <button
+                onClick={this.handleReload}
+                className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+              >
+                <RefreshCw className="w-4 h-4" />
+                Reload Page
+              </button>
+              
+              <button
+                onClick={this.handleGoHome}
+                className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+              >
+                <Home className="w-4 h-4" />
+                Go Home
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
+
+export default ErrorBoundary;
