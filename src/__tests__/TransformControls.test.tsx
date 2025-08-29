@@ -164,3 +164,58 @@ describe('TransformControls', () => {
       <TransformControls
         element={mockElement}
         isSelected={true}
+        onTransform={mockOnTransform}
+        onTransformEnd={mockOnTransformEnd}
+        canvasRect={mockCanvasRect}
+        zoom={1}
+      />
+    );
+
+    const handle = screen.getByLabelText('Resize handle se');
+    
+    // Start drag
+    fireEvent.mouseDown(handle, { clientX: 300, clientY: 250 });
+    
+    // Move mouse
+    fireEvent.mouseMove(document, { clientX: 320, clientY: 270 });
+
+    await waitFor(() => {
+      expect(mockOnTransform).toHaveBeenCalled();
+    });
+  });
+
+  it('should end drag operation on mouse up', async () => {
+    render(
+      <TransformControls
+        element={mockElement}
+        isSelected={true}
+        onTransform={mockOnTransform}
+        onTransformEnd={mockOnTransformEnd}
+        canvasRect={mockCanvasRect}
+        zoom={1}
+      />
+    );
+
+    const handle = screen.getByLabelText('Resize handle se');
+    
+    // Start and end drag
+    fireEvent.mouseDown(handle, { clientX: 300, clientY: 250 });
+    fireEvent.mouseMove(document, { clientX: 320, clientY: 270 });
+    fireEvent.mouseUp(document);
+
+    await waitFor(() => {
+      expect(mockOnTransformEnd).toHaveBeenCalled();
+    });
+  });
+
+  it('should handle touch events for mobile', async () => {
+    render(
+      <TransformControls
+        element={mockElement}
+        isSelected={true}
+        onTransform={mockOnTransform}
+        onTransformEnd={mockOnTransformEnd}
+        canvasRect={mockCanvasRect}
+        zoom={1}
+      />
+    );
