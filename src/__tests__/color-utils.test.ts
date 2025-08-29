@@ -113,3 +113,60 @@ describe('ColorConverter', () => {
 
     it('should handle hex without hash', () => {
       expect(ColorConverter.hexToRgb('FF0000')).toEqual({ r: 255, g: 0, b: 0 });
+    });
+
+    it('should return null for invalid hex', () => {
+      expect(ColorConverter.hexToRgb('#GGGGGG')).toBeNull();
+      expect(ColorConverter.hexToRgb('#FF')).toBeNull();
+      expect(ColorConverter.hexToRgb('invalid')).toBeNull();
+    });
+  });
+
+  describe('TshirtColor creation', () => {
+    it('should create complete TshirtColor from RGB', () => {
+      const color = ColorConverter.createTshirtColor(255, 0, 0, 'Red');
+      
+      expect(color.r).toBe(255);
+      expect(color.g).toBe(0);
+      expect(color.b).toBe(0);
+      expect(color.h).toBe(0);
+      expect(color.s).toBe(100);
+      expect(color.v).toBe(100);
+      expect(color.hex).toBe('#FF0000');
+      expect(color.name).toBe('Red');
+    });
+
+    it('should create TshirtColor from HSV', () => {
+      const color = ColorConverter.createTshirtColorFromHsv(120, 100, 100, 'Green');
+      
+      expect(color.r).toBe(0);
+      expect(color.g).toBe(255);
+      expect(color.b).toBe(0);
+      expect(color.h).toBe(120);
+      expect(color.s).toBe(100);
+      expect(color.v).toBe(100);
+      expect(color.hex).toBe('#00FF00');
+      expect(color.name).toBe('Green');
+    });
+
+    it('should create TshirtColor from hex', () => {
+      const color = ColorConverter.createTshirtColorFromHex('#0000FF', 'Blue');
+      
+      expect(color).not.toBeNull();
+      expect(color!.r).toBe(0);
+      expect(color!.g).toBe(0);
+      expect(color!.b).toBe(255);
+      expect(color!.h).toBe(240);
+      expect(color!.s).toBe(100);
+      expect(color!.v).toBe(100);
+      expect(color!.hex).toBe('#0000FF');
+      expect(color!.name).toBe('Blue');
+    });
+
+    it('should return null for invalid hex', () => {
+      const color = ColorConverter.createTshirtColorFromHex('#INVALID');
+      expect(color).toBeNull();
+    });
+  });
+
+  describe('Color space conversion', () => {
