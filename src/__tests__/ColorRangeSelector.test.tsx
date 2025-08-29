@@ -157,3 +157,55 @@ describe('ColorRangeSelector', () => {
     await user.clear(hexInput);
     await user.type(hexInput, '#FF0000');
 
+    await waitFor(() => {
+      expect(mockOnColorChange).toHaveBeenCalled();
+    });
+  });
+
+  it('should update color when RGB inputs change', async () => {
+    const user = userEvent.setup();
+    
+    render(
+      <ColorRangeSelector
+        selectedColor={mockColor}
+        onColorChange={mockOnColorChange}
+      />
+    );
+
+    // Switch to advanced tab
+    const advancedTab = screen.getByText('Advanced');
+    await user.click(advancedTab);
+
+    // Find RGB inputs
+    const redInput = screen.getByLabelText('Red');
+    
+    // Change red value
+    await user.clear(redInput);
+    await user.type(redInput, '200');
+
+    await waitFor(() => {
+      expect(mockOnColorChange).toHaveBeenCalled();
+    });
+  });
+
+  it('should validate hex input correctly', async () => {
+    const user = userEvent.setup();
+    
+    render(
+      <ColorRangeSelector
+        selectedColor={mockColor}
+        onColorChange={mockOnColorChange}
+      />
+    );
+
+    // Switch to advanced tab
+    const advancedTab = screen.getByText('Advanced');
+    await user.click(advancedTab);
+
+    // Find hex input
+    const hexInput = screen.getByLabelText('Hex Color');
+    
+    // Type invalid hex value
+    await user.clear(hexInput);
+    await user.type(hexInput, '#INVALID');
+
