@@ -160,3 +160,57 @@ export class ColorConverter {
     g = g / 255;
     b = b / 255;
 
+    // Apply gamma correction
+    r = r > 0.04045 ? Math.pow((r + 0.055) / 1.055, 2.4) : r / 12.92;
+    g = g > 0.04045 ? Math.pow((g + 0.055) / 1.055, 2.4) : g / 12.92;
+    b = b > 0.04045 ? Math.pow((b + 0.055) / 1.055, 2.4) : b / 12.92;
+
+    // Convert to XYZ using sRGB matrix
+    let x = r * 0.4124564 + g * 0.3575761 + b * 0.1804375;
+    let y = r * 0.2126729 + g * 0.7151522 + b * 0.0721750;
+    let z = r * 0.0193339 + g * 0.1191920 + b * 0.9503041;
+
+    // Normalize for D65 illuminant
+    x = x / 0.95047;
+    y = y / 1.00000;
+    z = z / 1.08883;
+
+    // Convert XYZ to LAB
+    x = x > 0.008856 ? Math.pow(x, 1/3) : (7.787 * x + 16/116);
+    y = y > 0.008856 ? Math.pow(y, 1/3) : (7.787 * y + 16/116);
+    z = z > 0.008856 ? Math.pow(z, 1/3) : (7.787 * z + 16/116);
+
+    return {
+      l: Math.round((116 * y) - 16),
+      a: Math.round(500 * (x - y)),
+      b: Math.round(200 * (y - z)),
+    };
+  }
+
+  /**
+   * Convert RGB to hex string
+   */
+  static rgbToHex(r: number, g: number, b: number): string {
+    const toHex = (n: number) => {
+      const hex = Math.round(Math.max(0, Math.min(255, n))).toString(16);
+      return hex.length === 1 ? '0' + hex : hex;
+    };
+    return `#${toHex(r)}${toHex(g)}${toHex(b)}`.toUpperCase();
+  }
+
+  /**
+   * Convert hex string to RGB
+   */
+  static hexToRgb(hex: string): RGBColor | null {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+      r: parseInt(result[1], 16),
+      g: parseInt(result[2], 16),
+      b: parseInt(result[3], 16),
+    } : null;
+  }
+
+  /**
+   * Create a complete TshirtColor object from RGB values
+   */
+  static createTshirtColor(r: number, g: number, b: number, name?: string): TshirtColor {
