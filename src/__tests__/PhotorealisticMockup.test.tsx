@@ -53,3 +53,57 @@ describe('PhotorealisticMockup', () => {
     jest.clearAllMocks();
   });
 
+  it('should render loading state initially', () => {
+    mockLoadMockup.mockImplementation(() => new Promise(() => {})); // Never resolves
+
+    render(<PhotorealisticMockup mockup={mockMockup} />);
+
+    expect(screen.getByText('Loading Test Mockup...')).toBeInTheDocument();
+    expect(screen.getByRole('status')).toBeInTheDocument(); // Loader2 icon
+  });
+
+  it('should render mockup image after successful load', async () => {
+    mockLoadMockup.mockResolvedValue({
+      url: '/test-2x.webp',
+      width: 1040,
+      height: 1200,
+      loaded: true,
+    });
+
+    render(<PhotorealisticMockup mockup={mockMockup} />);
+
+    await waitFor(() => {
+      expect(screen.getByAltText('Test Mockup')).toBeInTheDocument();
+    });
+
+    const img = screen.getByAltText('Test Mockup') as HTMLImageElement;
+    expect(img.src).toContain('/test-2x.webp');
+  });
+
+  it('should render error state on load failure', async () => {
+    mockLoadMockup.mockResolvedValue({
+      url: '/test-2x.webp',
+      width: 0,
+      height: 0,
+      loaded: false,
+      error: 'Network error',
+    });
+
+    render(<PhotorealisticMockup mockup={mockMockup} />);
+
+    await waitFor(() => {
+      expect(screen.getByText('Failed to load mockup')).toBeInTheDocument();
+      expect(screen.getByText('Network error')).toBeInTheDocument();
+    });
+  });
+
+  it('should call onLoad callback on successful load', async () => {
+    const onLoad = jest.fn();
+    const assetInfo = {
+      url: '/test-2x.webp',
+      width: 1040,
+      height: 1200,
+      loaded: true,
+    };
+
+    mockLoadMockup.mockResolvedValue(assetInfo);
