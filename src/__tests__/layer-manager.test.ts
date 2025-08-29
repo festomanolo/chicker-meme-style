@@ -112,3 +112,60 @@ describe('LayerManager', () => {
   });
 
   describe('layer reordering', () => {
+    let elements: LayerElement[];
+
+    beforeEach(() => {
+      elements = [
+        manager.addLayer({ ...mockElement, name: 'Element 1' }),
+        manager.addLayer({ ...mockElement, name: 'Element 2' }),
+        manager.addLayer({ ...mockElement, name: 'Element 3' }),
+      ];
+    });
+
+    it('should reorder layer to new position', () => {
+      const reordered = manager.reorderLayer(elements[0].id, 2);
+
+      expect(reordered).toBe(true);
+      
+      const allLayers = manager.getAllLayers();
+      expect(allLayers[0].name).toBe('Element 2');
+      expect(allLayers[1].name).toBe('Element 3');
+      expect(allLayers[2].name).toBe('Element 1');
+    });
+
+    it('should update z-indices after reordering', () => {
+      manager.reorderLayer(elements[0].id, 2);
+      
+      const allLayers = manager.getAllLayers();
+      expect(allLayers[0].zIndex).toBe(1);
+      expect(allLayers[1].zIndex).toBe(2);
+      expect(allLayers[2].zIndex).toBe(3);
+    });
+
+    it('should bring layer forward', () => {
+      const moved = manager.bringForward(elements[0].id);
+
+      expect(moved).toBe(true);
+      
+      const allLayers = manager.getAllLayers();
+      expect(allLayers[0].name).toBe('Element 2');
+      expect(allLayers[1].name).toBe('Element 1');
+      expect(allLayers[2].name).toBe('Element 3');
+    });
+
+    it('should send layer backward', () => {
+      const moved = manager.sendBackward(elements[1].id);
+
+      expect(moved).toBe(true);
+      
+      const allLayers = manager.getAllLayers();
+      expect(allLayers[0].name).toBe('Element 2');
+      expect(allLayers[1].name).toBe('Element 1');
+      expect(allLayers[2].name).toBe('Element 3');
+    });
+
+    it('should bring layer to front', () => {
+      const moved = manager.bringToFront(elements[0].id);
+
+      expect(moved).toBe(true);
+      
