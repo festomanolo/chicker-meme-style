@@ -209,3 +209,56 @@ describe('ColorRangeSelector', () => {
     await user.clear(hexInput);
     await user.type(hexInput, '#INVALID');
 
+    // Should not call onColorChange for invalid hex
+    await waitFor(() => {
+      expect(mockOnColorChange).not.toHaveBeenCalledWith(
+        expect.objectContaining({ hex: '#INVALID' })
+      );
+    });
+  });
+
+  it('should clamp RGB values to valid range', async () => {
+    const user = userEvent.setup();
+    
+    render(
+      <ColorRangeSelector
+        selectedColor={mockColor}
+        onColorChange={mockOnColorChange}
+      />
+    );
+
+    // Switch to advanced tab
+    const advancedTab = screen.getByText('Advanced');
+    await user.click(advancedTab);
+
+    // Find RGB inputs
+    const redInput = screen.getByLabelText('Red');
+    
+    // Try to enter value above 255
+    await user.clear(redInput);
+    await user.type(redInput, '300');
+
+    // Should clamp to 255
+    await waitFor(() => {
+      expect(redInput).toHaveValue(255);
+    });
+  });
+
+  it('should call onColorValidation when provided', () => {
+    render(
+      <ColorRangeSelector
+        selectedColor={mockColor}
+        onColorChange={mockOnColorChange}
+        onColorValidation={mockOnColorValidation}
+      />
+    );
+
+    expect(mockOnColorValidation).toHaveBeenCalledWith(true, []);
+  });
+
+  it('should reset color when reset button is clicked', async () => {
+    const user = userEvent.setup();
+    
+    render(
+      <ColorRangeSelector
+        selectedColor={mockColor}
