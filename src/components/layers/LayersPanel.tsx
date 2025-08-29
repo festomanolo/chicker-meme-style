@@ -294,3 +294,63 @@ const GroupItem: React.FC<{
   layers: LayerElement[];
   selectedIds: string[];
   showThumbnails: boolean;
+  enableInlineEdit: boolean;
+  editingLayerId: string | null;
+  onToggle: (groupId: string) => void;
+  onLayerSelect: (elementId: string, multiSelect?: boolean) => void;
+  onLayerUpdate: (elementId: string, updates: Partial<LayerElement>) => void;
+  onLayerDelete: (elementId: string) => void;
+  onLayerDuplicate: (elementId: string) => void;
+  onLayerVisibilityToggle: (elementId: string) => void;
+  onLayerLockToggle: (elementId: string) => void;
+  onStartEdit: (id: string) => void;
+  onEndEdit: () => void;
+  onGroupVisibilityToggle?: (groupId: string) => void;
+  onGroupLockToggle?: (groupId: string) => void;
+}> = ({ 
+  group, 
+  layers, 
+  selectedIds,
+  showThumbnails,
+  enableInlineEdit,
+  editingLayerId,
+  onToggle,
+  onLayerSelect,
+  onLayerUpdate,
+  onLayerDelete,
+  onLayerDuplicate,
+  onLayerVisibilityToggle,
+  onLayerLockToggle,
+  onStartEdit,
+  onEndEdit,
+  onGroupVisibilityToggle,
+  onGroupLockToggle
+}) => {
+  // Use centralized key management within the component
+  const keyManager = useLayerKeys();
+  const groupLayers = layers.filter(layer => group.children.includes(layer.id));
+
+  return (
+    <div className="mb-2" data-testid={`layer-group-${group.id}`}>
+      <div
+        className={cn(
+          "flex items-center gap-2 p-2 rounded-md bg-gray-100 dark:bg-gray-800 cursor-pointer transition-colors",
+          "hover:bg-gray-200 dark:hover:bg-gray-700",
+          !group.visible && "opacity-50",
+          group.locked && "opacity-60"
+        )}
+        onClick={() => onToggle(group.id)}
+        data-testid={`group-header-${group.id}`}
+      >
+        {group.expanded ? (
+          <ChevronDown className="h-4 w-4" />
+        ) : (
+          <ChevronRight className="h-4 w-4" />
+        )}
+        <span className="font-medium text-sm flex-1">{group.name}</span>
+        <Badge variant="outline" className="text-xs">
+          {group.children.length}
+        </Badge>
+        
+        {/* Group visibility indicator */}
+        {!group.visible && (
