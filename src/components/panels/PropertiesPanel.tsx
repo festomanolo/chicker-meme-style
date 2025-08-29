@@ -284,3 +284,60 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
         handleElementUpdate({ zIndex: Math.max(0, selectedElement.zIndex - 1) });
         break;
       case 'lock':
+        handleElementUpdate({ locked: !selectedElement.locked });
+        break;
+      case 'visibility':
+        handleElementUpdate({ visible: !selectedElement.visible });
+        break;
+    }
+  };
+
+  // Determine which sections to show based on context
+  const sections = useMemo(() => {
+    const baseSections = [];
+
+    // Always show layers section
+    baseSections.push({
+      id: 'layers',
+      title: 'Layers',
+      icon: Layers,
+      defaultExpanded: true,
+      content: <div className="text-xs text-gray-500">Layer management will be integrated here</div>,
+    });
+
+    // Show element-specific properties if element is selected
+    if (selectedElement) {
+      baseSections.push({
+        id: 'transform',
+        title: 'Transform',
+        icon: Move,
+        defaultExpanded: true,
+        content: <TransformProperties element={selectedElement} onUpdate={handleElementUpdate} />,
+      });
+
+      // Type-specific properties
+      if (selectedElement.type === 'text') {
+        baseSections.push({
+          id: 'text',
+          title: 'Text Properties',
+          icon: Type,
+          defaultExpanded: true,
+          content: <TextProperties element={selectedElement} onUpdate={handleElementUpdate} />,
+        });
+      }
+
+      if (selectedElement.type === 'image') {
+        baseSections.push({
+          id: 'image',
+          title: 'Image Properties',
+          icon: ImageIcon,
+          defaultExpanded: true,
+          content: <ImageProperties element={selectedElement} onUpdate={handleElementUpdate} />,
+        });
+      }
+
+      // Quick actions
+      baseSections.push({
+        id: 'actions',
+        title: 'Quick Actions',
+        icon: Zap,
