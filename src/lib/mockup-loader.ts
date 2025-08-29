@@ -207,3 +207,55 @@ class MockupAssetLoader {
       }
       if (!mockup.designArea.curvature || !mockup.designArea.curvature.points) {
         warnings.push('Design area curvature not defined, using rectangular area');
+      }
+    }
+
+    // Metadata validation
+    if (!mockup.metadata) {
+      warnings.push('Mockup metadata missing, using defaults');
+    }
+
+    return {
+      isValid: errors.length === 0,
+      errors,
+      warnings,
+    };
+  }
+
+  /**
+   * Clear cache
+   */
+  clearCache(): void {
+    this.cache.clear();
+    this.loadingPromises.clear();
+  }
+
+  /**
+   * Get cache statistics
+   */
+  getCacheStats() {
+    return {
+      cacheSize: this.cache.size,
+      loadingCount: this.loadingPromises.size,
+      loadedAssets: Array.from(this.cache.values()).filter(asset => asset.loaded).length,
+      failedAssets: Array.from(this.cache.values()).filter(asset => asset.error).length,
+    };
+  }
+
+  private delay(ms: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+}
+
+// Export singleton instance
+export const mockupLoader = new MockupAssetLoader();
+
+// Export utility functions
+export const loadMockup = (mockup: TshirtMockup, options?: MockupLoadOptions) => 
+  mockupLoader.loadMockupAsset(mockup, options);
+
+export const preloadMockups = (mockups: TshirtMockup[], options?: MockupLoadOptions) => 
+  mockupLoader.preloadMockups(mockups, options);
+
+export const validateMockup = (mockup: TshirtMockup) => 
+  mockupLoader.validateMockup(mockup);
