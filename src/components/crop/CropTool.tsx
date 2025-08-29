@@ -278,3 +278,59 @@ export const CropTool: React.FC<CropToolProps> = ({
     if (newCrop.height < minSize) {
       if (handleId.includes('n')) {
         newCrop.y = originalCrop.y + originalCrop.height - minSize;
+      }
+      newCrop.height = minSize;
+    }
+
+    return applyConstraints(newCrop);
+  }, [applyConstraints]);
+
+  // Handle mouse down on crop handles
+  const handleMouseDown = useCallback((e: React.MouseEvent, handleId: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const rect = containerRef.current?.getBoundingClientRect();
+    if (!rect) return;
+
+    setCropState(prev => ({
+      ...prev,
+      isDragging: true,
+      dragHandle: handleId,
+      startPosition: {
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top,
+      },
+    }));
+  }, []);
+
+  // Handle mouse move for dragging
+  useEffect(() => {
+    if (!cropState.isDragging || !cropState.dragHandle) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = containerRef.current?.getBoundingClientRect();
+      if (!rect) return;
+
+      const currentX = e.clientX - rect.left;
+      const currentY = e.clientY - rect.top;
+      const deltaX = currentX - cropState.startPosition.x;
+      const deltaY = currentY - cropState.startPosition.y;
+
+      const newCrop = calculateCropFromDrag(
+        cropState.dragHandle!,
+        deltaX,
+        deltaY,
+        cropState.originalCrop
+      );
+
+      setCropState(prev => ({
+        ...prev,
+        currentCrop: newCrop,
+        previewCrop: newCrop,
+      }));
+
+      onCropChange?.(newCrop);
+    };
+
+    const handleMouseUp = () => {
