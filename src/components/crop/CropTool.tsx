@@ -54,3 +54,59 @@ export const CropTool: React.FC<CropToolProps> = ({
     enablePresets = true,
     enableFreeform = true,
   } = config;
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  const imageRef = useRef<HTMLImageElement>(null);
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageDimensions, setImageDimensions] = useState({ width: 0, height: 0 });
+  const [selectedPreset, setSelectedPreset] = useState<string>('free');
+
+  // Initialize crop state
+  const [cropState, setCropState] = useState<CropState>(() => {
+    const defaultCrop: CropData = originalCrop || {
+      x: 0,
+      y: 0,
+      width: 100,
+      height: 100,
+      originalWidth: 100,
+      originalHeight: 100,
+    };
+
+    return {
+      isActive: true,
+      isDragging: false,
+      dragHandle: null,
+      startPosition: { x: 0, y: 0 },
+      currentCrop: defaultCrop,
+      originalCrop: defaultCrop,
+      previewCrop: null,
+    };
+  });
+
+  // Handle image load
+  const handleImageLoad = useCallback(() => {
+    if (!imageRef.current) return;
+
+    const img = imageRef.current;
+    const { naturalWidth, naturalHeight } = img;
+    
+    setImageDimensions({ width: naturalWidth, height: naturalHeight });
+    setImageLoaded(true);
+
+    // Initialize crop to center of image if no original crop
+    if (!originalCrop) {
+      const cropSize = Math.min(naturalWidth, naturalHeight) * 0.8;
+      const centerX = (naturalWidth - cropSize) / 2;
+      const centerY = (naturalHeight - cropSize) / 2;
+
+      const initialCrop: CropData = {
+        x: centerX,
+        y: centerY,
+        width: cropSize,
+        height: cropSize,
+        originalWidth: naturalWidth,
+        originalHeight: naturalHeight,
+      };
+
+      setCropState(prev => ({
+        ...prev,
