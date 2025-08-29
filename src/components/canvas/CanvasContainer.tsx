@@ -137,3 +137,49 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
         <div 
           className="absolute inset-0 opacity-20"
           style={{
+            backgroundImage: `
+              linear-gradient(rgba(0,0,0,0.1) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(0,0,0,0.1) 1px, transparent 1px)
+            `,
+            backgroundSize: '20px 20px',
+            transform: `translate(${layoutState.panX % 20}px, ${layoutState.panY % 20}px)`,
+          }}
+        />
+      </div>
+
+      {/* Panel collapse button */}
+      {onPanelToggle && (
+        <Button
+          variant="outline"
+          size="sm"
+          className={cn(
+            'absolute top-4 z-10 h-8 w-8 p-0 bg-white dark:bg-gray-800 shadow-md',
+            panelPosition === 'right' ? 'right-4' : 'left-4',
+            isPanelOpen && panelPosition === 'right' && 'right-[340px]',
+            isPanelOpen && panelPosition === 'left' && 'left-[340px]',
+            'transition-all duration-300 ease-out'
+          )}
+          onClick={onPanelToggle}
+        >
+          {isPanelOpen ? (
+            panelPosition === 'right' ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />
+          ) : (
+            panelPosition === 'right' ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />
+          )}
+        </Button>
+      )}
+
+      {/* Canvas controls */}
+      {showControls && (
+        <div className="absolute bottom-4 left-4 flex items-center gap-2 bg-white dark:bg-gray-800 rounded-lg shadow-md p-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleZoomOut}
+            className="h-8 w-8 p-0"
+            disabled={layoutState.zoom <= 0.1}
+          >
+            <ZoomOut className="h-4 w-4" />
+          </Button>
+          
+          <div className="px-2 text-sm font-mono min-w-[60px] text-center">
