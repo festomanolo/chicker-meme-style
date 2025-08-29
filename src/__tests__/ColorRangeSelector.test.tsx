@@ -104,3 +104,56 @@ describe('ColorRangeSelector', () => {
     );
 
     const advancedTab = screen.getByText('Advanced');
+    await user.click(advancedTab);
+
+    expect(screen.getByText(`Hue: ${mockColor.h}°`)).toBeInTheDocument();
+    expect(screen.getByText(`Saturation: ${mockColor.s}%`)).toBeInTheDocument();
+    expect(screen.getByText(`Brightness: ${mockColor.v}%`)).toBeInTheDocument();
+  });
+
+  it('should update color when hue slider changes', async () => {
+    const user = userEvent.setup();
+    
+    render(
+      <ColorRangeSelector
+        selectedColor={mockColor}
+        onColorChange={mockOnColorChange}
+      />
+    );
+
+    // Switch to advanced tab
+    const advancedTab = screen.getByText('Advanced');
+    await user.click(advancedTab);
+
+    // Find and interact with hue slider
+    const hueSlider = screen.getByLabelText(`Hue: ${mockColor.h}°`);
+    
+    // Simulate slider change (this is a simplified test - actual slider interaction is complex)
+    fireEvent.change(hueSlider, { target: { value: '180' } });
+
+    await waitFor(() => {
+      expect(mockOnColorChange).toHaveBeenCalled();
+    });
+  });
+
+  it('should update color when hex input changes', async () => {
+    const user = userEvent.setup();
+    
+    render(
+      <ColorRangeSelector
+        selectedColor={mockColor}
+        onColorChange={mockOnColorChange}
+      />
+    );
+
+    // Switch to advanced tab
+    const advancedTab = screen.getByText('Advanced');
+    await user.click(advancedTab);
+
+    // Find hex input
+    const hexInput = screen.getByLabelText('Hex Color');
+    
+    // Clear and type new hex value
+    await user.clear(hexInput);
+    await user.type(hexInput, '#FF0000');
+
