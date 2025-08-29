@@ -214,3 +214,57 @@ const Orders = () => {
     orders.forEach(order => {
       counts[order.status]++;
     });
+    
+    return counts;
+  };
+
+  const statusCounts = getStatusCounts();
+
+  const reorder = (orderId: string) => {
+    console.log("Reordering:", orderId);
+    alert("Items added to cart!");
+  };
+
+  const downloadInvoice = (orderId: string) => {
+    console.log("Downloading invoice for:", orderId);
+    alert("Invoice downloaded!");
+  };
+
+  const trackOrder = (tracking: string) => {
+    console.log("Tracking:", tracking);
+    alert(`Tracking order: ${tracking}`);
+  };
+
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <div className="glass-card border-b border-card-border px-6 py-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+            <div>
+              <h1 className="text-headline text-3xl font-bold text-foreground mb-2">
+                My Orders
+              </h1>
+              <p className="text-muted-foreground">
+                Track your meme t-shirt orders and view order history
+              </p>
+            </div>
+            
+            <div className="flex flex-col sm:flex-row gap-3">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search orders..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10 bg-input border-input-border w-64"
+                />
+              </div>
+              <Button variant="outline" className="glass border-glass-border">
+                <Filter className="h-4 w-4 mr-2" />
+                Filter
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
