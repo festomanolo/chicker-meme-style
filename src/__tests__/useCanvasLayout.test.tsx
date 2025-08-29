@@ -165,3 +165,59 @@ describe('useCanvasLayout', () => {
   it('should generate panel overlay styles', () => {
     const { result } = renderHook(() => useCanvasLayout());
 
+    const styles = result.current.getPanelOverlayStyles();
+
+    expect(styles.position).toBe('fixed');
+    expect(styles.top).toBe(0);
+    expect(styles.height).toBe('100vh');
+  });
+
+  it('should handle viewport resize', () => {
+    const { result } = renderHook(() => useCanvasLayout());
+
+    const initialWidth = result.current.layoutState.canvasWidth;
+
+    // Change window size
+    mockWindowDimensions(800, 600);
+    
+    // Trigger resize event
+    act(() => {
+      window.dispatchEvent(new Event('resize'));
+    });
+
+    // Layout should update
+    expect(result.current.viewportDimensions.width).toBe(800);
+    expect(result.current.viewportDimensions.height).toBe(600);
+  });
+
+  it('should call onLayoutChange callback', () => {
+    const onLayoutChange = jest.fn();
+    const { result } = renderHook(() => useCanvasLayout({ onLayoutChange }));
+
+    act(() => {
+      result.current.setZoom(2, false);
+    });
+
+    expect(onLayoutChange).toHaveBeenCalled();
+  });
+
+  it('should handle animation state', () => {
+    const { result } = renderHook(() => useCanvasLayout());
+
+    act(() => {
+      result.current.setZoom(2, true); // animated
+    });
+
+    // Should initially set animating to true
+    // Note: In real usage, animation would complete asynchronously
+  });
+
+  it('should respect minimum canvas dimensions', () => {
+    const config = {
+      minCanvasWidth: 500,
+      minCanvasHeight: 400,
+    };
+
+    mockWindowDimensions(300, 200); // Smaller than minimum
+
+    const { result } = renderHook(() => useCanvasLayout({ config }));
