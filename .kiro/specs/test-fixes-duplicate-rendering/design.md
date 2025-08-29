@@ -69,3 +69,38 @@ A centralized key management system ensures unique keys across all rendering con
 
 Fixed test utilities that properly isolate component instances and provide consistent mock data.
 
+#### 2. Assertion Helpers
+
+Specialized assertion functions to detect and prevent duplicate rendering in tests.
+
+## Data Models
+
+### Enhanced Layer Group Model
+
+Improved data structures to support proper rendering decisions and prevent conflicts.
+
+### Render Decision Engine
+
+A system to determine when and how layers should be rendered based on their context.
+
+## Error Handling
+
+### Duplicate Detection and Prevention
+
+Development-time detection system to catch duplicate rendering issues early.
+
+## Testing Strategy
+
+### Unit Tests for Fixed Components
+
+Comprehensive tests to ensure no duplicate rendering occurs in any scenario.
+
+### Integration Tests
+
+Tests that verify the complete layer management system works without duplicates.
+
+### Performance Tests
+
+Ensure the fixes don't impact rendering performance negatively.
+
+This design provides a comprehensive solution to the duplicate rendering issues by implementing proper key management, fixing conditional rendering logic, and providing robust test utilities to prevent regression.
