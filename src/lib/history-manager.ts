@@ -57,3 +57,62 @@ export class HistoryManager {
   undo(): UndoRedoResult {
     if (!this.canUndo()) {
       return {
+        success: false,
+        error: 'Nothing to undo',
+      };
+    }
+
+    this.currentIndex--;
+    const entry = this.entries[this.currentIndex];
+    
+    return {
+      success: true,
+      state: this.cloneState(entry.state),
+      description: `Undo: ${entry.description}`,
+    };
+  }
+
+  /**
+   * Redo the next action
+   */
+  redo(): UndoRedoResult {
+    if (!this.canRedo()) {
+      return {
+        success: false,
+        error: 'Nothing to redo',
+      };
+    }
+
+    this.currentIndex++;
+    const entry = this.entries[this.currentIndex];
+    
+    return {
+      success: true,
+      state: this.cloneState(entry.state),
+      description: `Redo: ${entry.description}`,
+    };
+  }
+
+  /**
+   * Check if undo is possible
+   */
+  canUndo(): boolean {
+    return this.currentIndex > 0;
+  }
+
+  /**
+   * Check if redo is possible
+   */
+  canRedo(): boolean {
+    return this.currentIndex < this.entries.length - 1;
+  }
+
+  /**
+   * Get current history stats
+   */
+  getStats(): HistoryStats {
+    const compressedCount = this.entries.filter(e => e.compressed).length;
+    const memoryUsage = this.calculateMemoryUsage();
+    
+    return {
+      totalEntries: this.entries.length,
