@@ -502,3 +502,59 @@ export const CropTool: React.FC<CropToolProps> = ({
                 {preset.id === 'square' && <Square className="h-3 w-3 mr-1" />}
                 {preset.id === 'phone' && <Smartphone className="h-3 w-3 mr-1" />}
                 {preset.id === 'landscape' && <Monitor className="h-3 w-3 mr-1" />}
+                {preset.id === 'portrait' && <Camera className="h-3 w-3 mr-1" />}
+                {preset.id === 'widescreen' && <Film className="h-3 w-3 mr-1" />}
+                {preset.name}
+              </Button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Crop area */}
+      <div className="flex-1 relative overflow-hidden bg-gray-100 dark:bg-gray-800">
+        <div
+          ref={containerRef}
+          className="relative w-full h-full flex items-center justify-center"
+          style={{ cursor: cropState.isDragging ? 'grabbing' : 'default' }}
+        >
+          {/* Image */}
+          <img
+            ref={imageRef}
+            src={imageUrl}
+            alt="Crop preview"
+            className="max-w-full max-h-full object-contain"
+            onLoad={handleImageLoad}
+            draggable={false}
+          />
+
+          {/* Crop overlay */}
+          {imageLoaded && (
+            <div className="absolute inset-0 pointer-events-none">
+              <svg
+                className="w-full h-full"
+                style={{ position: 'absolute', top: 0, left: 0 }}
+              >
+                {/* Dark overlay outside crop area */}
+                <defs>
+                  <mask id="crop-mask">
+                    <rect width="100%" height="100%" fill="white" />
+                    <rect
+                      x={cropState.currentCrop.x}
+                      y={cropState.currentCrop.y}
+                      width={cropState.currentCrop.width}
+                      height={cropState.currentCrop.height}
+                      fill="black"
+                    />
+                  </mask>
+                </defs>
+                <rect
+                  width="100%"
+                  height="100%"
+                  fill="black"
+                  opacity={overlayOpacity}
+                  mask="url(#crop-mask)"
+                />
+
+                {/* Crop rectangle border */}
+                <rect
