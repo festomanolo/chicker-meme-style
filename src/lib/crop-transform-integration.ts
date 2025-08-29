@@ -270,3 +270,58 @@ export class CropTransformIntegration {
     }
     
     return {
+      x: Math.max(0, cropX),
+      y: Math.max(0, cropY),
+      width: Math.min(cropWidth, originalWidth),
+      height: Math.min(cropHeight, originalHeight),
+      originalWidth,
+      originalHeight,
+    };
+  }
+
+  /**
+   * Check if crop operation would result in significant quality loss
+   */
+  static validateCropQuality(crop: CropData, targetDimensions: { width: number; height: number }): {
+    isValid: boolean;
+    qualityScore: number;
+    warnings: string[];
+  } {
+    const { width: targetWidth, height: targetHeight } = targetDimensions;
+    const warnings: string[] = [];
+    
+    // Calculate scale factors
+    const scaleX = targetWidth / crop.width;
+    const scaleY = targetHeight / crop.height;
+    const maxScale = Math.max(scaleX, scaleY);
+    
+    // Calculate quality score (0-1, where 1 is best quality)
+    let qualityScore = 1;
+    
+    if (maxScale > 2) {
+      qualityScore *= 0.5;
+      warnings.push('Significant upscaling detected - image may appear pixelated');
+    } else if (maxScale > 1.5) {
+      qualityScore *= 0.7;
+      warnings.push('Moderate upscaling detected - some quality loss expected');
+    }
+    
+    // Check crop size relative to original
+    const cropRatio = (crop.width * crop.height) / (crop.originalWidth * crop.originalHeight);
+    if (cropRatio < 0.1) {
+      qualityScore *= 0.6;
+      warnings.push('Very small crop area - consider using a larger selection');
+    } else if (cropRatio < 0.25) {
+      qualityScore *= 0.8;
+      warnings.push('Small crop area - quality may be reduced');
+    }
+    
+    const isValid = qualityScore > 0.3 && warnings.length < 3;
+    
+    return {
+      isValid,
+      qualityScore,
+      warnings,
+    };
+  }
+}
