@@ -176,3 +176,62 @@ const LayerItem: React.FC<{
     >
       {/* Drag handle */}
       {onDragStart && (
+        <div className="opacity-0 group-hover:opacity-100 transition-opacity cursor-grab active:cursor-grabbing">
+          <GripVertical className="h-4 w-4 text-gray-400" />
+        </div>
+      )}
+
+      {/* Thumbnail */}
+      {showThumbnail && (
+        <LayerThumbnail layer={layer} size={32} />
+      )}
+
+      {/* Layer info */}
+      <div className="flex-1 min-w-0">
+        {isEditing ? (
+          <Input
+            value={editName}
+            onChange={(e) => setEditName(e.target.value)}
+            onBlur={handleNameSubmit}
+            onKeyDown={handleKeyDown}
+            className="h-6 text-sm"
+            autoFocus
+          />
+        ) : (
+          <div className="flex items-center gap-2">
+            <LayerTypeIcon type={layer.type} />
+            <span className="text-sm font-medium truncate">{layer.name}</span>
+            {layer.groupId && (
+              <Badge variant="secondary" className="text-xs">
+                Grouped
+              </Badge>
+            )}
+          </div>
+        )}
+        
+        {/* Layer details */}
+        <div className="flex items-center gap-2 text-xs text-gray-500 mt-1">
+          <span>{layer.type}</span>
+          {layer.content && (
+            <>
+              <span>•</span>
+              <span className="truncate max-w-20">{layer.content}</span>
+            </>
+          )}
+          <span>•</span>
+          <span>{Math.round(layer.opacity * 100)}%</span>
+        </div>
+      </div>
+
+      {/* Layer controls */}
+      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+        <Button
+          variant="ghost"
+          size="sm"
+          className="h-6 w-6 p-0"
+          onClick={(e) => {
+            e.stopPropagation();
+            onVisibilityToggle(layer.id);
+          }}
+          aria-label={layer.visible ? 'Hide layer' : 'Show layer'}
+        >
