@@ -45,3 +45,50 @@ export const SnapGuides: React.FC<SnapGuidesProps> = ({
           y1={0}
           x2={x}
           y2={canvasSize.height}
+          stroke="currentColor"
+          strokeWidth={1 / zoom}
+          opacity={gridOpacity}
+        />
+      );
+    }
+
+    // Horizontal lines
+    for (let y = 0; y <= canvasSize.height; y += gridSize) {
+      lines.push(
+        <line
+          key={`h-${y}`}
+          x1={0}
+          y1={y}
+          x2={canvasSize.width}
+          y2={y}
+          stroke="currentColor"
+          strokeWidth={1 / zoom}
+          opacity={gridOpacity}
+        />
+      );
+    }
+
+    return lines;
+  }, [showGrid, gridSize, canvasSize, zoom, gridOpacity]);
+
+  // Get guide style based on type and state
+  const getGuideStyle = (guide: SnapGuide) => {
+    const baseStyle = {
+      strokeWidth: guide.temporary ? 2 / zoom : 1 / zoom,
+      opacity: guide.temporary ? 0.8 : 0.3,
+    };
+
+    switch (guide.type) {
+      case 'center':
+        return {
+          ...baseStyle,
+          stroke: '#3B82F6', // Blue
+          strokeDasharray: guide.temporary ? 'none' : `${4 / zoom} ${4 / zoom}`,
+        };
+      case 'mockup':
+        return {
+          ...baseStyle,
+          stroke: '#10B981', // Green
+          strokeDasharray: guide.temporary ? 'none' : `${6 / zoom} ${2 / zoom}`,
+        };
+      case 'element':
