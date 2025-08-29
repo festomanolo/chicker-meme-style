@@ -106,3 +106,57 @@ describe('TransformManager', () => {
       expect(coordinates.canvas).toBeDefined();
       expect(coordinates.world).toBeDefined();
     });
+  });
+
+  describe('transform operations', () => {
+    it('should apply transform to element', () => {
+      const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
+      
+      manager.applyTransform('element-1', mockTransform);
+
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'Updating element element-1 with transform:',
+        expect.objectContaining(mockTransform)
+      );
+
+      consoleSpy.mockRestore();
+    });
+
+    it('should generate transform matrix correctly', () => {
+      const matrix = manager.getTransformMatrix(mockTransform);
+
+      expect(matrix.a).toBeDefined(); // scaleX component
+      expect(matrix.b).toBeDefined(); // skewY component
+      expect(matrix.c).toBeDefined(); // skewX component
+      expect(matrix.d).toBeDefined(); // scaleY component
+      expect(matrix.e).toBeDefined(); // translateX component
+      expect(matrix.f).toBeDefined(); // translateY component
+    });
+
+    it('should generate CSS transform string', () => {
+      const cssTransform = manager.getCSSTransform(mockTransform);
+
+      expect(cssTransform).toContain('translate(100px, 100px)');
+      expect(cssTransform).toContain('rotate(45deg)');
+      expect(cssTransform).toContain('scale(1.2, 0.8)');
+    });
+
+    it('should calculate bounding box correctly', () => {
+      const simpleTransform: TransformData = {
+        x: 100,
+        y: 100,
+        width: 200,
+        height: 150,
+        rotation: 0,
+        scaleX: 1,
+        scaleY: 1,
+      };
+
+      const boundingBox = manager.getBoundingBox(simpleTransform);
+
+      expect(boundingBox.minX).toBe(100);
+      expect(boundingBox.minY).toBe(100);
+      expect(boundingBox.maxX).toBe(300);
+      expect(boundingBox.maxY).toBe(250);
+      expect(boundingBox.width).toBe(200);
+      expect(boundingBox.height).toBe(150);
