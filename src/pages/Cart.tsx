@@ -283,3 +283,60 @@ const Cart = () => {
                     </div>
                   ) : (
                     <div className="flex gap-2">
+                      <Input
+                        placeholder="Enter promo code"
+                        value={promoCode}
+                        onChange={(e) => setPromoCode(e.target.value)}
+                        className="flex-1"
+                      />
+                      <Button onClick={applyPromoCode} variant="outline">
+                        Apply
+                      </Button>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Order Summary */}
+            <div className="lg:col-span-1">
+              <div className="sticky top-24 space-y-6">
+                <Card className="glass-card">
+                  <CardHeader>
+                    <CardTitle>Order Summary</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="space-y-3">
+                      <div className="flex justify-between">
+                        <span>Subtotal</span>
+                        <span>TZS {subtotal.toLocaleString()}</span>
+                      </div>
+                      
+                      {discount > 0 && (
+                        <div className="flex justify-between text-success">
+                          <span>Discount (20%)</span>
+                          <span>-TZS {discount.toLocaleString()}</span>
+                        </div>
+                      )}
+                      
+                      <div className="flex justify-between">
+                        <span>Shipping</span>
+                        <span>
+                          {shipping === 0 ? (
+                            <span className="text-success">Free</span>
+                          ) : (
+                            `TZS ${shipping.toLocaleString()}`
+                          )}
+                        </span>
+                      </div>
+                      
+                      <Separator />
+                      
+                      <div className="flex justify-between text-lg font-bold">
+                        <span>Total</span>
+                        <span>TZS {total.toLocaleString()}</span>
+                      </div>
+                    </div>
+
+                    <Button
+                      onClick={proceedToCheckout}
