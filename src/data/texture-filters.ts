@@ -104,3 +104,55 @@ export const TEXTURE_FILTERS: TextureFilter[] = [
       kernel: [
         -0.2, -0.2, -0.2,
         -0.2, 2.6, -0.2,
+        -0.2, -0.2, -0.2
+      ],
+    },
+    preview: '/assets/textures/heavy-weave-preview.webp',
+    intensity: 70,
+    gpuAccelerated: false,
+  },
+
+  // Finish effects
+  {
+    id: 'matte-finish',
+    name: 'Matte Finish',
+    description: 'Non-reflective surface with reduced shine',
+    category: 'finish',
+    cssFilter: 'brightness(0.95) contrast(1.05) saturate(0.9)',
+    canvasFilter: {
+      type: 'color-matrix',
+      matrix: [
+        0.95, 0, 0, 0, 0,
+        0, 0.95, 0, 0, 0,
+        0, 0, 0.95, 0, 0,
+        0, 0, 0, 1, 0
+      ],
+    },
+    preview: '/assets/textures/matte-finish-preview.webp',
+    intensity: 25,
+    gpuAccelerated: true,
+  },
+  {
+    id: 'satin-finish',
+    name: 'Satin Finish',
+    description: 'Subtle sheen with smooth appearance',
+    category: 'finish',
+    cssFilter: 'brightness(1.05) contrast(1.1) saturate(1.05)',
+    canvasFilter: {
+      type: 'color-matrix',
+      matrix: [
+        1.05, 0, 0, 0, 5,
+        0, 1.05, 0, 0, 5,
+        0, 0, 1.05, 0, 5,
+        0, 0, 0, 1, 0
+      ],
+    },
+    preview: '/assets/textures/satin-finish-preview.webp',
+    intensity: 35,
+    gpuAccelerated: true,
+  },
+  {
+    id: 'glossy-finish',
+    name: 'Glossy Finish',
+    description: 'High shine with reflective surface',
+    category: 'finish',
