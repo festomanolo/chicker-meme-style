@@ -216,3 +216,57 @@ export class CropTransformIntegration {
     // Calculate scale to fit crop in container
     const scaleX = containerWidth / crop.originalWidth;
     const scaleY = containerHeight / crop.originalHeight;
+    const scale = Math.min(scaleX, scaleY);
+    
+    // Calculate crop position and size in container
+    const cropLeft = crop.x * scale;
+    const cropTop = crop.y * scale;
+    const cropWidth = crop.width * scale;
+    const cropHeight = crop.height * scale;
+    
+    return {
+      clipPath: `inset(${cropTop}px ${containerWidth - cropLeft - cropWidth}px ${containerHeight - cropTop - cropHeight}px ${cropLeft}px)`,
+      transform: `scale(${scale})`,
+      transformOrigin: 'top left',
+    };
+  }
+
+  /**
+   * Calculate optimal crop for current viewport
+   */
+  static calculateOptimalCrop(
+    element: LayerElement,
+    viewportDimensions: { width: number; height: number }
+  ): CropData {
+    if (element.type !== 'image') {
+      throw new Error('Can only calculate crop for image elements');
+    }
+
+    const { width: viewportWidth, height: viewportHeight } = viewportDimensions;
+    const aspectRatio = viewportWidth / viewportHeight;
+    
+    // Use element dimensions as original if no crop data exists
+    const originalWidth = element.cropData?.originalWidth || element.width;
+    const originalHeight = element.cropData?.originalHeight || element.height;
+    const originalAspectRatio = originalWidth / originalHeight;
+    
+    let cropWidth: number;
+    let cropHeight: number;
+    let cropX: number;
+    let cropY: number;
+    
+    if (aspectRatio > originalAspectRatio) {
+      // Viewport is wider - crop height
+      cropWidth = originalWidth;
+      cropHeight = originalWidth / aspectRatio;
+      cropX = 0;
+      cropY = (originalHeight - cropHeight) / 2;
+    } else {
+      // Viewport is taller - crop width
+      cropHeight = originalHeight;
+      cropWidth = originalHeight * aspectRatio;
+      cropY = 0;
+      cropX = (originalWidth - cropWidth) / 2;
+    }
+    
+    return {
