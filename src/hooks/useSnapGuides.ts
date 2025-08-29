@@ -55,3 +55,59 @@ export const useSnapGuides = (options: UseSnapGuidesOptions = {}): UseSnapGuides
         temporary: false,
         priority: 1,
       }
+    );
+
+    // Mockup centerline guides
+    if (mockupBounds) {
+      guides.push(
+        {
+          type: 'mockup',
+          position: mockupBounds.x + mockupBounds.width / 2,
+          axis: 'x',
+          temporary: false,
+          priority: 2,
+        },
+        {
+          type: 'mockup',
+          position: mockupBounds.y + mockupBounds.height / 2,
+          axis: 'y',
+          temporary: false,
+          priority: 2,
+        },
+        // Mockup edges
+        {
+          type: 'mockup',
+          position: mockupBounds.x,
+          axis: 'x',
+          temporary: false,
+          priority: 3,
+        },
+        {
+          type: 'mockup',
+          position: mockupBounds.x + mockupBounds.width,
+          axis: 'x',
+          temporary: false,
+          priority: 3,
+        },
+        {
+          type: 'mockup',
+          position: mockupBounds.y,
+          axis: 'y',
+          temporary: false,
+          priority: 3,
+        },
+        {
+          type: 'mockup',
+          position: mockupBounds.y + mockupBounds.height,
+          axis: 'y',
+          temporary: false,
+          priority: 3,
+        }
+      );
+    }
+
+    // Element guides
+    elements.forEach(element => {
+      if (element.visible && !element.locked) {
+        const { x, y, width, height } = element;
+        
