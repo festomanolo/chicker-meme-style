@@ -342,3 +342,60 @@ describe('HistoryManager', () => {
       expect(entries[0].action.type).toBe('layer_add');
       expect(entries[0].action.elementId).toBe(layer.id);
       expect(entries[0].description).toContain('Add text layer');
+    });
+
+    it('should add remove layer action', () => {
+      historyManager.removeLayerAction('layer-1', mockState);
+      
+      const entries = historyManager.getRecentEntries(1);
+      expect(entries[0].action.type).toBe('layer_remove');
+      expect(entries[0].action.elementId).toBe('layer-1');
+    });
+
+    it('should add update layer action', () => {
+      const updates = { name: 'Updated Layer' };
+      historyManager.updateLayerAction('layer-1', updates, mockState);
+      
+      const entries = historyManager.getRecentEntries(1);
+      expect(entries[0].action.type).toBe('layer_update');
+      expect(entries[0].action.data).toEqual(updates);
+    });
+
+    it('should add transform action', () => {
+      historyManager.transformAction('layer-1', mockState);
+      
+      const entries = historyManager.getRecentEntries(1);
+      expect(entries[0].action.type).toBe('transform_update');
+    });
+
+    it('should add crop action', () => {
+      historyManager.cropAction('layer-1', mockState);
+      
+      const entries = historyManager.getRecentEntries(1);
+      expect(entries[0].action.type).toBe('crop_apply');
+    });
+
+    it('should add color change action', () => {
+      historyManager.colorChangeAction('layer-1', mockState);
+      
+      const entries = historyManager.getRecentEntries(1);
+      expect(entries[0].action.type).toBe('color_change');
+    });
+
+    it('should add bulk update action', () => {
+      const elementIds = ['layer-1', 'layer-2', 'layer-3'];
+      historyManager.bulkUpdateAction(elementIds, mockState);
+      
+      const entries = historyManager.getRecentEntries(1);
+      expect(entries[0].action.type).toBe('bulk_update');
+      expect(entries[0].action.elementIds).toEqual(elementIds);
+      expect(entries[0].description).toContain('Update 3 elements');
+    });
+  });
+
+  describe('debouncing', () => {
+    beforeEach(() => {
+      jest.useFakeTimers();
+    });
+
+    afterEach(() => {
