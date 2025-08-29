@@ -40,3 +40,45 @@
 
 ## 🔧 Technical Implementation
 
+### Protected Routes Structure
+```
+/cart -> ProtectedRoute -> Cart
+/account -> ProtectedRoute -> Account  
+/orders -> ProtectedRoute -> Orders
+/checkout -> ProtectedRoute -> Checkout
+```
+
+### Authentication Flow
+1. User visits protected route
+2. ProtectedRoute checks authentication status
+3. If not authenticated, redirect to `/auth` with return path
+4. After successful login, redirect to intended destination
+5. AuthRedirect component handles the navigation
+
+### Database Schema
+- **Users**: `{ id, name, email, password_hash, created_at }`
+- **Carts**: `{ id, user_id, created_at }`
+- **Cart Items**: `{ id, cart_id, product_id, name, price, quantity, size, color }`
+- **Orders**: `{ id, user_id, items[], total, status, shipping_address, tracking }`
+
+### Security Features
+- Password validation (min 6 chars, letters + numbers)
+- Email format validation
+- Secure password hashing with salt
+- Session token generation
+- Input sanitization
+- Protected API endpoints
+
+## 🚀 Usage Instructions
+
+### Demo Login
+- Email: `demo@chicker.com`
+- Password: `password123`
+
+### User Registration
+- Navigate to `/auth`
+- Switch to "Sign Up" tab
+- Fill in name, email, and password
+- Password must be at least 6 characters with letters and numbers
+
+### Protected Features
