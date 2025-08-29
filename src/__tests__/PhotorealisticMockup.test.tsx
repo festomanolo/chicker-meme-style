@@ -162,3 +162,57 @@ describe('PhotorealisticMockup', () => {
 
     expect(screen.queryByText('Failed to load mockup')).not.toBeInTheDocument();
   });
+
+  it('should apply custom className and style', async () => {
+    mockLoadMockup.mockResolvedValue({
+      url: '/test-2x.webp',
+      width: 1040,
+      height: 1200,
+      loaded: true,
+    });
+
+    const { container } = render(
+      <PhotorealisticMockup 
+        mockup={mockMockup} 
+        className="custom-class"
+        style={{ backgroundColor: 'red' }}
+      />
+    );
+
+    await waitFor(() => {
+      expect(screen.getByAltText('Test Mockup')).toBeInTheDocument();
+    });
+
+    const wrapper = container.firstChild as HTMLElement;
+    expect(wrapper).toHaveClass('custom-class');
+    expect(wrapper).toHaveStyle({ backgroundColor: 'red' });
+  });
+
+  it('should show design area overlay in development mode', async () => {
+    const originalEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+
+    mockLoadMockup.mockResolvedValue({
+      url: '/test-2x.webp',
+      width: 1040,
+      height: 1200,
+      loaded: true,
+    });
+
+    const { container } = render(<PhotorealisticMockup mockup={mockMockup} />);
+
+    await waitFor(() => {
+      expect(screen.getByAltText('Test Mockup')).toBeInTheDocument();
+    });
+
+    // Check for design area overlay
+    const overlay = container.querySelector('.border-dashed.border-blue-400');
+    expect(overlay).toBeInTheDocument();
+
+    process.env.NODE_ENV = originalEnv;
+  });
+
+  it('should not show design area overlay in production mode', async () => {
+    const originalEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'production';
+
