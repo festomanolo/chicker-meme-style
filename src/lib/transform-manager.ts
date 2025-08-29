@@ -329,3 +329,58 @@ export class TransformManager {
   }
 
   /**
+   * Get temporary guide lines for visual feedback
+   */
+  getTemporaryGuides(): SnapGuide[] {
+    return this.activeSnapGuides.map(guide => ({
+      ...guide,
+      temporary: true,
+    }));
+  }
+
+  /**
+   * Validate bounds for element
+   */
+  validateBounds(transform: TransformData, canvasBounds: Rect): TransformData {
+    const bounds = this.getBoundingBox(transform);
+    
+    let adjustedTransform = { ...transform };
+    
+    // Check if element is within canvas bounds
+    if (bounds.minX < canvasBounds.x) {
+      adjustedTransform.x += canvasBounds.x - bounds.minX;
+    }
+    if (bounds.minY < canvasBounds.y) {
+      adjustedTransform.y += canvasBounds.y - bounds.minY;
+    }
+    if (bounds.maxX > canvasBounds.x + canvasBounds.width) {
+      adjustedTransform.x -= bounds.maxX - (canvasBounds.x + canvasBounds.width);
+    }
+    if (bounds.maxY > canvasBounds.y + canvasBounds.height) {
+      adjustedTransform.y -= bounds.maxY - (canvasBounds.y + canvasBounds.height);
+    }
+    
+    return adjustedTransform;
+  }
+
+  /**
+   * Pan and zoom operations
+   */
+  setPanZoom(panZoom: Partial<PanZoomState>): void {
+    this.panZoomState = {
+      ...this.panZoomState,
+      ...panZoom,
+      scale: Math.max(
+        this.panZoomState.minScale,
+        Math.min(this.panZoomState.maxScale, panZoom.scale || this.panZoomState.scale)
+      ),
+    };
+  }
+
+  getPanZoom(): PanZoomState {
+    return { ...this.panZoomState };
+  }
+
+  /**
+   * Zoom to fit content
+   */
