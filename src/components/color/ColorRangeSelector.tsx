@@ -231,3 +231,61 @@ export const ColorRangeSelector: React.FC<ColorRangeSelectorProps> = ({
             <div className="grid grid-cols-4 gap-2">
               {presetColors.map((preset) => (
                 <Button
+                  key={preset.id}
+                  variant="outline"
+                  className={cn(
+                    "h-12 p-1 relative overflow-hidden",
+                    selectedColor.hex === preset.color.hex && "ring-2 ring-primary"
+                  )}
+                  onClick={() => handlePresetColorSelect(preset)}
+                  disabled={disabled}
+                  aria-label={`Select ${preset.name} color`}
+                >
+                  <div
+                    className="w-full h-full rounded-sm"
+                    style={{ backgroundColor: preset.color.hex }}
+                  />
+                  <Badge
+                    variant="secondary"
+                    className="absolute bottom-0 left-0 right-0 text-xs py-0 rounded-none rounded-b-sm"
+                  >
+                    {preset.name}
+                  </Badge>
+                </Button>
+              ))}
+            </div>
+          </TabsContent>
+
+          {/* Advanced Color Selection Tab */}
+          <TabsContent value="advanced" className="space-y-6">
+            {/* HSV Sliders */}
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="hue-slider" className="text-sm font-medium">
+                  Hue: {hue}°
+                </Label>
+                <div className="relative">
+                  <Slider
+                    id="hue-slider"
+                    min={0}
+                    max={360}
+                    step={1}
+                    value={[hue]}
+                    onValueChange={handleHueChange}
+                    disabled={disabled}
+                    className="w-full"
+                    style={{
+                      background: hueGradient,
+                    }}
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="saturation-slider" className="text-sm font-medium">
+                  Saturation: {saturation}%
+                </Label>
+                <div className="relative">
+                  <Slider
+                    id="saturation-slider"
+                    min={0}
