@@ -329,3 +329,58 @@ describe('TransformControls', () => {
 
   it('should snap rotation to 15-degree increments when close', async () => {
     render(
+      <TransformControls
+        element={mockElement}
+        isSelected={true}
+        onTransform={mockOnTransform}
+        onTransformEnd={mockOnTransformEnd}
+        canvasRect={mockCanvasRect}
+        zoom={1}
+        showRotationHandle={true}
+      />
+    );
+
+    const rotationHandle = screen.getByLabelText('Rotation handle');
+    
+    // Simulate rotation close to 45 degrees
+    fireEvent.mouseDown(rotationHandle, { clientX: 200, clientY: 70 });
+    fireEvent.mouseMove(document, { clientX: 230, clientY: 100 });
+
+    await waitFor(() => {
+      expect(mockOnTransform).toHaveBeenCalled();
+    });
+
+    const lastCall = mockOnTransform.mock.calls[mockOnTransform.mock.calls.length - 1][0];
+    // Should snap to nearest 15-degree increment
+    expect(lastCall.rotation % 15).toBeCloseTo(0, 0);
+  });
+
+  it('should show numeric readout during drag when enabled', async () => {
+    render(
+      <TransformControls
+        element={mockElement}
+        isSelected={true}
+        onTransform={mockOnTransform}
+        onTransformEnd={mockOnTransformEnd}
+        canvasRect={mockCanvasRect}
+        zoom={1}
+        showNumericReadout={true}
+      />
+    );
+
+    const handle = screen.getByLabelText('Resize handle se');
+    
+    fireEvent.mouseDown(handle, { clientX: 300, clientY: 250 });
+    fireEvent.mouseMove(document, { clientX: 320, clientY: 270 });
+
+    await waitFor(() => {
+      expect(screen.getByText(/W:/)).toBeInTheDocument();
+      expect(screen.getByText(/H:/)).toBeInTheDocument();
+    });
+  });
+
+  it('should not show numeric readout when disabled', async () => {
+    render(
+      <TransformControls
+        element={mockElement}
+        isSelected={true}
