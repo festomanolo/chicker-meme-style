@@ -169,3 +169,60 @@ const Checkout = () => {
                   <Label htmlFor="phone">Phone Number</Label>
                   <Input
                     id="phone"
+                    value={shippingInfo.phone}
+                    onChange={(e) => handleInputChange("phone", e.target.value)}
+                    placeholder="+255 123 456 789"
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="address">Address</Label>
+                  <Input
+                    id="address"
+                    value={shippingInfo.address}
+                    onChange={(e) => handleInputChange("address", e.target.value)}
+                    placeholder="Street address"
+                    required
+                  />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="city">City</Label>
+                    <Input
+                      id="city"
+                      value={shippingInfo.city}
+                      onChange={(e) => handleInputChange("city", e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="country">Country</Label>
+                    <Input
+                      id="country"
+                      value={shippingInfo.country}
+                      onChange={(e) => handleInputChange("country", e.target.value)}
+                      required
+                    />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Payment Method */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <CreditCard className="h-5 w-5" />
+                  Payment Method
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-3">
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="radio"
+                      id="mpesa"
+                      name="payment"
+                      value="mpesa"
+                      checked={paymentMethod === "mpesa"}
+                      onChange={(e) => setPaymentMethod(e.target.value)}
