@@ -151,3 +151,54 @@ export const useCanvasLayout = (options: UseCanvasLayoutOptions = {}) => {
     const handleResize = () => {
       setViewportDimensions({
         width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Update layout when viewport or panel state changes
+  useEffect(() => {
+    updateCanvasLayout();
+  }, [viewportDimensions, isPanelOpen]);
+
+  // Cleanup animation on unmount
+  useEffect(() => {
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+    };
+  }, []);
+
+  // Public API
+  const openPanel = useCallback((animated = true) => {
+    setIsPanelOpen(true);
+  }, []);
+
+  const closePanel = useCallback((animated = true) => {
+    setIsPanelOpen(false);
+  }, []);
+
+  const togglePanel = useCallback((animated = true) => {
+    setIsPanelOpen(prev => !prev);
+  }, []);
+
+  const setZoom = useCallback((zoom: number, animated = true) => {
+    const newState = { ...layoutState, zoom };
+    
+    if (animated) {
+      animateLayoutChange(layoutState, newState);
+    } else {
+      setLayoutState(newState);
+      onLayoutChange?.(newState);
+    }
+  }, [layoutState, animateLayoutChange, onLayoutChange]);
+
+  const setPan = useCallback((panX: number, panY: number, animated = true) => {
+    const newState = { ...layoutState, panX, panY };
+    
+    if (animated) {
+      animateLayoutChange(layoutState, newState);
