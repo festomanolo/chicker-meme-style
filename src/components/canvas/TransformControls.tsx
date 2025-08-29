@@ -386,3 +386,58 @@ export const TransformControls: React.FC<TransformControlsProps> = ({
   }, [dragState, canvasRect, calculateTransform, onTransform, onTransformEnd]);
 
   // Handle touch move for mobile
+  useEffect(() => {
+    if (!dragState.isDragging) return;
+
+    const handleTouchMove = (e: TouchEvent) => {
+      e.preventDefault();
+      
+      const touch = e.touches[0];
+      const rect = canvasRect;
+      const currentPosition = {
+        x: touch.clientX - rect.left,
+        y: touch.clientY - rect.top,
+      };
+
+      setDragState(prev => ({ ...prev, currentPosition }));
+
+      if (dragState.handlePosition) {
+        const newTransform = calculateTransform(
+          currentPosition,
+          dragState.startPosition,
+          dragState.handlePosition
+        );
+        
+        setLiveTransform(newTransform);
+        onTransform(newTransform);
+      }
+    };
+
+    const handleTouchEnd = () => {
+      setDragState({
+        isDragging: false,
+        startPosition: { x: 0, y: 0 },
+        currentPosition: { x: 0, y: 0 },
+        offset: { x: 0, y: 0 },
+        elementId: null,
+      });
+      setLiveTransform(null);
+      onTransformEnd();
+    };
+
+    document.addEventListener('touchmove', handleTouchMove, { passive: false });
+    document.addEventListener('touchend', handleTouchEnd);
+
+    return () => {
+      document.removeEventListener('touchmove', handleTouchMove);
+      document.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, [dragState, canvasRect, calculateTransform, onTransform, onTransformEnd]);
+
+  if (!isSelected || disabled) return null;
+
+  const currentTransform = liveTransform || element;
+
+  return (
+    <div className={cn("absolute pointer-events-none", className)}>
+      {/* Selection outline */}
