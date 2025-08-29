@@ -54,3 +54,60 @@ The system follows a modular component architecture with clear separation of con
 3. **Data Layer**: State management and persistence
 4. **Integration Layer**: External service integrations
 
+## Components and Interfaces
+
+### Core Components
+
+#### 1. PhotorealisticCanvas Component
+
+```typescript
+interface PhotorealisticCanvasProps {
+  selectedMockup: TshirtMockup;
+  selectedColor: TshirtColor;
+  designElements: DesignElement[];
+  selectedElementId: string | null;
+  canvasZoom: number;
+  onElementSelect: (elementId: string | null) => void;
+  onElementUpdate: (elementId: string, updates: Partial<DesignElement>) => void;
+  onElementAdd: (element: DesignElement) => void;
+  onElementDelete: (elementId: string) => void;
+}
+
+interface TshirtMockup {
+  id: string;
+  name: string;
+  type: 'front' | 'back';
+  variants: {
+    '1x': string;
+    '2x': string;
+    '3x': string;
+  };
+  maskUrl: string;
+  designArea: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    curvature: BezierPath;
+  };
+}
+```
+
+#### 2. ColorRangeSelector Component
+
+```typescript
+interface ColorRangeSelectorProps {
+  selectedColor: TshirtColor;
+  onColorChange: (color: TshirtColor) => void;
+  presetColors: TshirtColor[];
+  textureFilters: TextureFilter[];
+  onTextureChange: (filter: TextureFilter) => void;
+}
+
+interface TshirtColor {
+  h: number; // 0-360
+  s: number; // 0-100
+  v: number; // 0-100
+  r: number; // 0-255
+  g: number; // 0-255
+  b: number; // 0-255
