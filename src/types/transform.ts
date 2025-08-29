@@ -83,3 +83,46 @@ export interface TransformConstraints {
   maxWidth?: number;
   minHeight?: number;
   maxHeight?: number;
+  aspectRatio?: number;
+  lockAspectRatio?: boolean;
+  bounds?: Rect;
+  snapToGrid?: boolean;
+  gridSize?: number;
+  snapThreshold?: number;
+}
+
+export interface TransformHandle {
+  id: string;
+  type: 'corner' | 'edge' | 'rotation';
+  position: 'nw' | 'n' | 'ne' | 'e' | 'se' | 's' | 'sw' | 'w' | 'rotate';
+  cursor: string;
+  bounds: Rect;
+  active: boolean;
+}
+
+export interface DragState {
+  isDragging: boolean;
+  startPosition: Point;
+  currentPosition: Point;
+  offset: Point;
+  elementId: string | null;
+  handleType?: TransformHandle['type'];
+  handlePosition?: TransformHandle['position'];
+}
+
+export interface PanZoomState {
+  scale: number;
+  translateX: number;
+  translateY: number;
+  minScale: number;
+  maxScale: number;
+  bounds?: Rect;
+}
+
+export interface CoordinateSystemConfig {
+  canvasSize: Size;
+  viewportSize: Size;
+  devicePixelRatio: number;
+  origin: Point;
+  flipY: boolean;
+}
