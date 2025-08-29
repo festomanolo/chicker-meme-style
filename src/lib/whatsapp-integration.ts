@@ -149,3 +149,53 @@ export class WhatsAppIntegration {
       userName?: string;
       projectName?: string;
       pageUrl?: string;
+      timestamp?: number;
+    }
+  ): string {
+    let message = template;
+    
+    if (context?.userName) {
+      message = `Hi, I'm ${context.userName}. ${message}`;
+    }
+    
+    if (context?.projectName) {
+      message += ` I'm working on "${context.projectName}".`;
+    }
+    
+    if (context?.pageUrl) {
+      message += `\n\nPage: ${context.pageUrl}`;
+    }
+    
+    if (context?.timestamp) {
+      const date = new Date(context.timestamp).toLocaleString();
+      message += `\nTime: ${date}`;
+    }
+    
+    return message;
+  }
+
+  /**
+   * Track WhatsApp interaction
+   */
+  static trackInteraction(
+    action: 'link_generated' | 'link_clicked' | 'chat_opened',
+    metadata?: Record<string, any>
+  ): void {
+    // This would integrate with your analytics service
+    if (typeof window !== 'undefined' && (window as any).gtag) {
+      (window as any).gtag('event', 'whatsapp_interaction', {
+        action,
+        ...metadata,
+      });
+    }
+    
+    // Custom analytics
+    if (typeof window !== 'undefined' && (window as any).analytics) {
+      (window as any).analytics.track('WhatsApp Interaction', {
+        action,
+        timestamp: Date.now(),
+        ...metadata,
+      });
+    }
+  }
+}
