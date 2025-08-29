@@ -53,3 +53,58 @@ describe('TransformControls', () => {
 
     expect(container.firstChild).toBeNull();
   });
+
+  it('should render transform handles when element is selected', () => {
+    render(
+      <TransformControls
+        element={mockElement}
+        isSelected={true}
+        onTransform={mockOnTransform}
+        onTransformEnd={mockOnTransformEnd}
+        canvasRect={mockCanvasRect}
+        zoom={1}
+      />
+    );
+
+    // Should render selection outline
+    expect(document.querySelector('.border-blue-400')).toBeInTheDocument();
+
+    // Should render 8 resize handles (4 corners + 4 edges)
+    const handles = document.querySelectorAll('[role="button"]');
+    expect(handles.length).toBeGreaterThanOrEqual(8);
+  });
+
+  it('should render rotation handle when showRotationHandle is true', () => {
+    render(
+      <TransformControls
+        element={mockElement}
+        isSelected={true}
+        onTransform={mockOnTransform}
+        onTransformEnd={mockOnTransformEnd}
+        canvasRect={mockCanvasRect}
+        zoom={1}
+        showRotationHandle={true}
+      />
+    );
+
+    const rotationHandle = screen.getByLabelText('Rotation handle');
+    expect(rotationHandle).toBeInTheDocument();
+  });
+
+  it('should not render rotation handle when showRotationHandle is false', () => {
+    render(
+      <TransformControls
+        element={mockElement}
+        isSelected={true}
+        onTransform={mockOnTransform}
+        onTransformEnd={mockOnTransformEnd}
+        canvasRect={mockCanvasRect}
+        zoom={1}
+        showRotationHandle={false}
+      />
+    );
+
+    const rotationHandle = screen.queryByLabelText('Rotation handle');
+    expect(rotationHandle).not.toBeInTheDocument();
+  });
+
