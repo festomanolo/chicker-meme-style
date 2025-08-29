@@ -244,3 +244,52 @@ export const useWhatsAppNotification = (options: UseWhatsAppNotificationOptions 
     handlePageChange();
 
     return () => {
+      window.removeEventListener('popstate', handlePageChange);
+    };
+  }, [isPageExcluded, state.isVisible]);
+
+  // Manual controls for testing/debugging
+  const forceShow = useCallback(() => {
+    setState(prev => ({ ...prev, isVisible: true }));
+  }, []);
+
+  const forceHide = useCallback(() => {
+    setState(prev => ({ ...prev, isVisible: false }));
+  }, []);
+
+  const resetState = useCallback(() => {
+    const initialState: NotificationState = {
+      isVisible: false,
+      lastShown: 0,
+      dismissedAt: null,
+      clickCount: 0,
+      showCount: 0,
+      lastActivity: Date.now(),
+      cooldownUntil: 0,
+    };
+    setState(initialState);
+    saveState(initialState);
+  }, [saveState]);
+
+  return {
+    // State
+    isVisible: state.isVisible,
+    showCount: state.showCount,
+    clickCount: state.clickCount,
+    
+    // Actions
+    dismiss: dismissNotification,
+    handleLinkClick,
+    
+    // Config
+    config,
+    
+    // Debug/testing
+    forceShow,
+    forceHide,
+    resetState,
+    
+    // Analytics
+    onAnalytics,
+  };
+};
