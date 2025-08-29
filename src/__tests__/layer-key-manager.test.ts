@@ -46,3 +46,51 @@ describe('LayerKeyManager', () => {
     });
 
     it('should return existing key when requested again', () => {
+      const key1 = keyManager.getKey('individual', 'layer-1');
+      const key2 = keyManager.getKey('individual', 'layer-1');
+
+      expect(key1).toBe(key2);
+      expect(key1).toBe('individual-layer-1');
+    });
+  });
+
+  describe('Key Management', () => {
+    it('should clear all keys', () => {
+      keyManager.generateKey('individual', 'layer-1');
+      keyManager.generateKey('group', 'layer-2', 'group-1');
+      
+      expect(keyManager.getDebugInfo().totalKeys).toBe(2);
+      
+      keyManager.clearKeys();
+      
+      expect(keyManager.getDebugInfo().totalKeys).toBe(0);
+    });
+
+    it('should clear keys for specific context', () => {
+      keyManager.generateKey('individual', 'layer-1');
+      keyManager.generateKey('group', 'layer-2', 'group-1');
+      keyManager.generateKey('search', 'layer-3');
+      
+      expect(keyManager.getDebugInfo().totalKeys).toBe(3);
+      
+      keyManager.clearContextKeys('individual');
+      
+      const debugInfo = keyManager.getDebugInfo();
+      expect(debugInfo.totalKeys).toBe(2);
+      expect(debugInfo.keysByContext.individual).toBeUndefined();
+    });
+
+    it('should validate unique keys', () => {
+      keyManager.generateKey('individual', 'layer-1');
+      keyManager.generateKey('group', 'layer-2', 'group-1');
+      
+      expect(keyManager.validateUniqueKeys()).toBe(true);
+    });
+
+    it('should provide debug information', () => {
+      keyManager.generateKey('individual', 'layer-1');
+      keyManager.generateKey('individual', 'layer-2');
+      keyManager.generateKey('group', 'layer-3', 'group-1');
+      
+      const debugInfo = keyManager.getDebugInfo();
+      
