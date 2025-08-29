@@ -168,3 +168,60 @@ describe('useWhatsAppNotification', () => {
     // Mock current time
     jest.spyOn(Date, 'now').mockReturnValue(1000000);
   });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  it('should initialize with default state', () => {
+    const { result } = renderHook(() => useWhatsAppNotification());
+    
+    expect(result.current.isVisible).toBe(false);
+    expect(result.current.showCount).toBe(0);
+    expect(result.current.clickCount).toBe(0);
+  });
+
+  it('should load state from localStorage', () => {
+    const savedState = {
+      lastShown: 500000,
+      dismissedAt: null,
+      clickCount: 2,
+      showCount: 1,
+      cooldownUntil: 0,
+    };
+    
+    mockLocalStorage.getItem.mockReturnValue(JSON.stringify(savedState));
+    
+    const { result } = renderHook(() => useWhatsAppNotification());
+    
+    expect(result.current.clickCount).toBe(2);
+    expect(result.current.showCount).toBe(1);
+  });
+
+  it('should handle localStorage errors gracefully', () => {
+    mockLocalStorage.getItem.mockImplementation(() => {
+      throw new Error('Storage error');
+    });
+    
+    const { result } = renderHook(() => useWhatsAppNotification());
+    
+    expect(result.current.isVisible).toBe(false);
+  });
+
+  it('should save state to localStorage', () => {
+    const { result } = renderHook(() => useWhatsAppNotification());
+    
+    act(() => {
+      result.current.dismiss();
+    });
+    
+    expect(mockLocalStorage.setItem).toHaveBeenCalledWith(
+      'whatsapp_notification_state',
+      expect.stringContaining('dismissedAt')
+    );
+  });
+
+  it('should handle link click and open WhatsApp', () => {
+    const { result } = renderHook(() => useWhatsAppNotification());
+    
+    act(() => {
