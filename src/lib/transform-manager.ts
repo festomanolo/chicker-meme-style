@@ -494,3 +494,58 @@ export class TransformManager {
       constrainedTransform.y = Math.round(constrainedTransform.y / gridSize) * gridSize;
     }
 
+    return constrainedTransform;
+  }
+
+  private updateElementTransform(elementId: string, transform: TransformData): void {
+    // This would update the actual element in the application state
+    // Implementation depends on the state management system being used
+    console.log(`Updating element ${elementId} with transform:`, transform);
+  }
+}
+
+// Export utility functions
+export const createTransformManager = (config: CoordinateSystemConfig) => 
+  new TransformManager(config);
+
+export const createDefaultConfig = (canvasSize: Size, viewportSize: Size): CoordinateSystemConfig => ({
+  canvasSize,
+  viewportSize,
+  devicePixelRatio: window.devicePixelRatio || 1,
+  origin: { x: 0, y: 0 },
+  flipY: false,
+});
+
+// Matrix utility functions
+export const multiplyMatrices = (a: TransformMatrix, b: TransformMatrix): TransformMatrix => ({
+  a: a.a * b.a + a.c * b.b,
+  b: a.b * b.a + a.d * b.b,
+  c: a.a * b.c + a.c * b.d,
+  d: a.b * b.c + a.d * b.d,
+  e: a.a * b.e + a.c * b.f + a.e,
+  f: a.b * b.e + a.d * b.f + a.f,
+});
+
+export const invertMatrix = (matrix: TransformMatrix): TransformMatrix => {
+  const { a, b, c, d, e, f } = matrix;
+  const det = a * d - b * c;
+  
+  if (Math.abs(det) < 1e-10) {
+    // Matrix is not invertible, return identity
+    return { a: 1, b: 0, c: 0, d: 1, e: 0, f: 0 };
+  }
+  
+  return {
+    a: d / det,
+    b: -b / det,
+    c: -c / det,
+    d: a / det,
+    e: (c * f - d * e) / det,
+    f: (b * e - a * f) / det,
+  };
+};
+
+export const transformPoint = (point: Point, matrix: TransformMatrix): Point => ({
+  x: matrix.a * point.x + matrix.c * point.y + matrix.e,
+  y: matrix.b * point.x + matrix.d * point.y + matrix.f,
+});
