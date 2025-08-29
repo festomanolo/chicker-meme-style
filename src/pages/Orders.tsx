@@ -376,3 +376,57 @@ const Orders = () => {
                                   Track Package
                                 </Button>
                                 <span className="text-sm text-muted-foreground self-center">
+                                  Tracking: {order.tracking}
+                                </span>
+                              </div>
+                            )}
+                            
+                            {order.estimatedDelivery && (
+                              <p className="text-sm text-muted-foreground mt-2">
+                                <MapPin className="h-4 w-4 inline mr-1" />
+                                Estimated delivery: {order.estimatedDelivery}
+                              </p>
+                            )}
+                          </div>
+
+                          {/* Order Items */}
+                          <div>
+                            <h4 className="font-semibold mb-3">Order Items</h4>
+                            <div className="space-y-3">
+                              {order.items.map((item) => (
+                                <div key={item.id} className="flex items-center gap-4 p-3 glass rounded-lg">
+                                  <div className="w-16 h-16 bg-muted rounded-lg flex items-center justify-center">
+                                    <Shirt className="h-6 w-6 text-muted-foreground" />
+                                  </div>
+                                  <div className="flex-1">
+                                    <h5 className="font-medium">{item.name}</h5>
+                                    <p className="text-sm text-muted-foreground">
+                                      Size: {item.size} | Color: {item.color} | Qty: {item.quantity}
+                                    </p>
+                                  </div>
+                                  <div className="text-right">
+                                    <p className="font-semibold">
+                                      TZS {(item.price * item.quantity).toLocaleString()}
+                                    </p>
+                                    <p className="text-sm text-muted-foreground">
+                                      TZS {item.price.toLocaleString()} each
+                                    </p>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Shipping Address */}
+                          <div>
+                            <h4 className="font-semibold mb-3">Shipping Address</h4>
+                            <div className="p-3 glass rounded-lg">
+                              <p className="font-medium">{order.shippingAddress.name}</p>
+                              <p className="text-sm text-muted-foreground">
+                                {order.shippingAddress.address}
+                              </p>
+                              <p className="text-sm text-muted-foreground">
+                                {order.shippingAddress.city}, {order.shippingAddress.country}
+                              </p>
+                            </div>
+                          </div>
