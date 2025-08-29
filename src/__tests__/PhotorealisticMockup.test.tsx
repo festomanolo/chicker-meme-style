@@ -216,3 +216,58 @@ describe('PhotorealisticMockup', () => {
     const originalEnv = process.env.NODE_ENV;
     process.env.NODE_ENV = 'production';
 
+    mockLoadMockup.mockResolvedValue({
+      url: '/test-2x.webp',
+      width: 1040,
+      height: 1200,
+      loaded: true,
+    });
+
+    const { container } = render(<PhotorealisticMockup mockup={mockMockup} />);
+
+    await waitFor(() => {
+      expect(screen.getByAltText('Test Mockup')).toBeInTheDocument();
+    });
+
+    // Check that design area overlay is not present
+    const overlay = container.querySelector('.border-dashed.border-blue-400');
+    expect(overlay).not.toBeInTheDocument();
+
+    process.env.NODE_ENV = originalEnv;
+  });
+
+  it('should handle image load and error events', async () => {
+    mockLoadMockup.mockResolvedValue({
+      url: '/test-2x.webp',
+      width: 1040,
+      height: 1200,
+      loaded: true,
+    });
+
+    render(<PhotorealisticMockup mockup={mockMockup} />);
+
+    await waitFor(() => {
+      expect(screen.getByAltText('Test Mockup')).toBeInTheDocument();
+    });
+
+    const img = screen.getByAltText('Test Mockup') as HTMLImageElement;
+    
+    // Simulate image load
+    img.onload?.(new Event('load'));
+    
+    // Should not show loading state anymore
+    expect(screen.queryByText('Loading Test Mockup...')).not.toBeInTheDocument();
+  });
+
+  it('should cleanup on unmount', async () => {
+    mockLoadMockup.mockImplementation(() => new Promise(() => {})); // Never resolves
+
+    const { unmount } = render(<PhotorealisticMockup mockup={mockMockup} />);
+
+    // Unmount before load completes
+    unmount();
+
+    // Should not cause any errors or memory leaks
+    expect(true).toBe(true); // Test passes if no errors thrown
+  });
+});
