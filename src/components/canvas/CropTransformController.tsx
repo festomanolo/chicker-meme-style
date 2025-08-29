@@ -228,3 +228,61 @@ export const CropTransformController: React.FC<CropTransformControllerProps> = (
       {/* Mode switcher and controls */}
       <div className="flex items-center justify-between p-3 border-b border-gray-200 dark:border-gray-700">
         <div className="flex items-center gap-2">
+          {enableModeSwitch && (
+            <div className="flex items-center gap-1 p-1 bg-gray-100 dark:bg-gray-800 rounded-md">
+              <Button
+                variant={mode === 'transform' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => handleModeSwitch('transform')}
+                disabled={isTransitioning}
+                className="h-8 px-3"
+              >
+                <Move className="h-4 w-4 mr-1" />
+                Transform
+              </Button>
+              <Button
+                variant={mode === 'crop' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => handleModeSwitch('crop')}
+                disabled={isTransitioning || element.type !== 'image'}
+                className="h-8 px-3"
+              >
+                <Crop className="h-4 w-4 mr-1" />
+                Crop
+              </Button>
+            </div>
+          )}
+          
+          <Badge variant="secondary" className="text-xs">
+            {mode === 'crop' ? 'Crop Mode' : 'Transform Mode'}
+          </Badge>
+        </div>
+
+        <div className="flex items-center gap-2">
+          {showPreview && mode === 'crop' && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setPreviewVisible(!previewVisible)}
+              className="h-8 px-2"
+            >
+              {previewVisible ? (
+                <EyeOff className="h-4 w-4" />
+              ) : (
+                <Eye className="h-4 w-4" />
+              )}
+            </Button>
+          )}
+          
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleReset}
+            disabled={isTransitioning}
+          >
+            <RotateCcw className="h-4 w-4 mr-1" />
+            Reset
+          </Button>
+          
+          <Button
+            variant="outline"
