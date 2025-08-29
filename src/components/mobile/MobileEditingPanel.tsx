@@ -48,3 +48,53 @@ export const MobileEditingPanel: React.FC<MobileEditingPanelProps> = ({
 
   // Calculate panel dimensions based on viewport
   const calculateDimensions = useCallback(() => {
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    
+    const isSmallPhone = viewportWidth < 375;
+    const isTablet = viewportWidth >= 768;
+    
+    let panelWidth: number;
+    
+    if (isSmallPhone) {
+      // Small phones: 75% width, full height
+      panelWidth = Math.floor(viewportWidth * 0.75);
+    } else if (isTablet) {
+      // Tablets: 42% width with constraints
+      panelWidth = Math.max(260, Math.min(420, Math.floor(viewportWidth * 0.42)));
+    } else {
+      // Regular phones: 42% width with constraints
+      panelWidth = Math.max(260, Math.min(420, Math.floor(viewportWidth * 0.42)));
+    }
+
+    setDimensions({
+      width: panelWidth,
+      height: viewportHeight,
+      isSmallPhone,
+      isTablet,
+    });
+  }, []);
+
+  // Update dimensions on resize
+  useEffect(() => {
+    calculateDimensions();
+    
+    const handleResize = () => {
+      calculateDimensions();
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [calculateDimensions]);
+
+  // Handle swipe gestures
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    if (!enableSwipeGestures) return;
+    
+    const touch = e.touches[0];
+    setIsDragging(true);
+    setDragStartX(touch.clientX);
+    setDragOffset(0);
+  }, [enableSwipeGestures]);
+
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
