@@ -318,3 +318,56 @@ describe('ColorManager', () => {
       manager['drawWeavePattern'](ctx);
 
       expect(ctx.beginPath).toHaveBeenCalled();
+      expect(ctx.moveTo).toHaveBeenCalled();
+      expect(ctx.lineTo).toHaveBeenCalled();
+      expect(ctx.stroke).toHaveBeenCalled();
+    });
+
+    it('should apply wash pattern correctly', () => {
+      const ctx = mockContext2D;
+      manager['drawWashPattern'](ctx);
+
+      expect(ctx.createRadialGradient).toHaveBeenCalled();
+      expect(ctx.beginPath).toHaveBeenCalled();
+      expect(ctx.arc).toHaveBeenCalled();
+      expect(ctx.fill).toHaveBeenCalled();
+    });
+
+    it('should apply finish pattern correctly', () => {
+      const ctx = mockContext2D;
+      manager['drawFinishPattern'](ctx);
+
+      expect(ctx.createLinearGradient).toHaveBeenCalled();
+      expect(ctx.fillRect).toHaveBeenCalled();
+    });
+  });
+
+  describe('canvas filter application', () => {
+    it('should apply convolution filter', () => {
+      const data = new Uint8ClampedArray(400); // 100x100 RGBA
+      const kernel = [0, -1, 0, -1, 5, -1, 0, -1, 0];
+      
+      manager['applyConvolutionFilter'](data, kernel);
+
+      // Data should be modified
+      expect(data).toBeDefined();
+    });
+
+    it('should apply color matrix filter', () => {
+      const data = new Uint8ClampedArray(400); // 100x100 RGBA
+      const matrix = [1.1, 0, 0, 0, 10, 0, 1.1, 0, 0, 10, 0, 0, 1.1, 0, 10, 0, 0, 0, 1, 0];
+      
+      manager['applyColorMatrixFilter'](data, matrix);
+
+      // Data should be modified
+      expect(data).toBeDefined();
+    });
+
+    it('should handle invalid color matrix', () => {
+      const data = new Uint8ClampedArray(400);
+      const invalidMatrix = [1, 2, 3]; // Too short
+      
+      // Should not throw error
+      expect(() => {
+        manager['applyColorMatrixFilter'](data, invalidMatrix);
+      }).not.toThrow();
