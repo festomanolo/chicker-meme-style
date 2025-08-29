@@ -117,3 +117,62 @@ describe('CropTransformIntegration', () => {
         width: 600,
         height: 600,
       };
+
+      const originalDimensions = { width: 400, height: 400 };
+      const result = CropTransformIntegration.transformToCrop(largeTransform, originalDimensions);
+
+      expect(result.x).toBeGreaterThanOrEqual(0);
+      expect(result.y).toBeGreaterThanOrEqual(0);
+      expect(result.width).toBeLessThanOrEqual(400);
+      expect(result.height).toBeLessThanOrEqual(400);
+    });
+  });
+
+  describe('calculateCropBounds', () => {
+    it('should calculate correct crop bounds', () => {
+      const imageDimensions = { width: 400, height: 400 };
+      const result = CropTransformIntegration.calculateCropBounds(mockTransformData, imageDimensions);
+
+      expect(result.minX).toBeGreaterThanOrEqual(0);
+      expect(result.minY).toBeGreaterThanOrEqual(0);
+      expect(result.maxX).toBeLessThanOrEqual(400);
+      expect(result.maxY).toBeLessThanOrEqual(400);
+    });
+
+    it('should handle negative transform positions', () => {
+      const negativeTransform: TransformData = {
+        ...mockTransformData,
+        x: -50,
+        y: -50,
+      };
+
+      const imageDimensions = { width: 400, height: 400 };
+      const result = CropTransformIntegration.calculateCropBounds(negativeTransform, imageDimensions);
+
+      expect(result.minX).toBeGreaterThan(0);
+      expect(result.minY).toBeGreaterThan(0);
+    });
+  });
+
+  describe('validateCropWithTransform', () => {
+    it('should validate crop within bounds', () => {
+      const result = CropTransformIntegration.validateCropWithTransform(mockCropData, mockTransformData);
+
+      expect(result.x).toBeGreaterThanOrEqual(0);
+      expect(result.y).toBeGreaterThanOrEqual(0);
+      expect(result.width).toBeGreaterThan(0);
+      expect(result.height).toBeGreaterThan(0);
+    });
+
+    it('should enforce minimum crop size', () => {
+      const smallCrop: CropData = {
+        ...mockCropData,
+        width: 5,
+        height: 5,
+      };
+
+      const result = CropTransformIntegration.validateCropWithTransform(smallCrop, mockTransformData);
+
+      expect(result.width).toBeGreaterThanOrEqual(10);
+      expect(result.height).toBeGreaterThanOrEqual(10);
+    });
