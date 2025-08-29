@@ -294,3 +294,63 @@ export class HistoryManager {
   }
 
   private generateDescription(action: HistoryAction): string {
+    const descriptions: Record<HistoryActionType, string> = {
+      layer_add: 'Add layer',
+      layer_remove: 'Remove layer',
+      layer_update: 'Update layer',
+      layer_reorder: 'Reorder layers',
+      layer_duplicate: 'Duplicate layer',
+      layer_group: 'Group layers',
+      layer_ungroup: 'Ungroup layers',
+      transform_update: 'Transform element',
+      crop_apply: 'Apply crop',
+      color_change: 'Change color',
+      visibility_toggle: 'Toggle visibility',
+      lock_toggle: 'Toggle lock',
+      canvas_update: 'Update canvas',
+      bulk_update: 'Bulk update',
+      import_state: 'Import state',
+      reset_canvas: 'Reset canvas',
+    };
+
+    let description = descriptions[action.type] || 'Unknown action';
+    
+    if (action.elementId) {
+      description += ` (${action.elementId})`;
+    } else if (action.elementIds && action.elementIds.length > 0) {
+      description += ` (${action.elementIds.length} items)`;
+    }
+
+    return description;
+  }
+
+  private cloneState(state: CanvasState): CanvasState {
+    try {
+      return JSON.parse(JSON.stringify(state, this.getSerializationReplacer()));
+    } catch (error) {
+      throw new Error('Failed to clone state: ' + error);
+    }
+  }
+
+  private getSerializationReplacer() {
+    return (key: string, value: any) => {
+      // Handle circular references and non-serializable values
+      if (typeof value === 'function') return undefined;
+      if (value instanceof HTMLElement) return undefined;
+      if (value instanceof Event) return undefined;
+      return value;
+    };
+  }
+
+  private compressEntry(entry: HistoryEntry): HistoryEntry {
+    const compressed: HistoryEntry = {
+      ...entry,
+      compressed: true,
+      state: {
+        ...entry.state,
+        layers: entry.state.layers.map(layer => ({
+          id: layer.id,
+          name: layer.name,
+          type: layer.type,
+          visible: layer.visible,
+          locked: layer.locked,
