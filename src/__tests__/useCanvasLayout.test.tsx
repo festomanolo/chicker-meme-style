@@ -110,3 +110,58 @@ describe('useCanvasLayout', () => {
   it('should update pan position', () => {
     const { result } = renderHook(() => useCanvasLayout());
 
+    act(() => {
+      result.current.setPan(100, 50, false);
+    });
+
+    expect(result.current.layoutState.panX).toBe(100);
+    expect(result.current.layoutState.panY).toBe(50);
+  });
+
+  it('should reset view to defaults', () => {
+    const { result } = renderHook(() => useCanvasLayout());
+
+    // Change zoom and pan
+    act(() => {
+      result.current.setZoom(2, false);
+      result.current.setPan(100, 50, false);
+    });
+
+    expect(result.current.layoutState.zoom).toBe(2);
+    expect(result.current.layoutState.panX).toBe(100);
+
+    // Reset view
+    act(() => {
+      result.current.resetView(false);
+    });
+
+    expect(result.current.layoutState.zoom).toBe(1);
+    expect(result.current.layoutState.panX).toBe(0);
+    expect(result.current.layoutState.panY).toBe(0);
+  });
+
+  it('should fit content to canvas', () => {
+    const { result } = renderHook(() => useCanvasLayout());
+
+    act(() => {
+      result.current.fitToCanvas(false);
+    });
+
+    // Should calculate optimal zoom and centering
+    expect(result.current.layoutState.zoom).toBeGreaterThan(0);
+  });
+
+  it('should generate canvas styles', () => {
+    const { result } = renderHook(() => useCanvasLayout());
+
+    const styles = result.current.getCanvasStyles();
+
+    expect(styles.position).toBe('absolute');
+    expect(styles.transform).toContain('translate');
+    expect(styles.transform).toContain('scale');
+    expect(styles.transformOrigin).toBe('0 0');
+  });
+
+  it('should generate panel overlay styles', () => {
+    const { result } = renderHook(() => useCanvasLayout());
+
