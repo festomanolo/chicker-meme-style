@@ -334,3 +334,59 @@ export const CropTool: React.FC<CropToolProps> = ({
     };
 
     const handleMouseUp = () => {
+      setCropState(prev => ({
+        ...prev,
+        isDragging: false,
+        dragHandle: null,
+        originalCrop: prev.currentCrop,
+        previewCrop: null,
+      }));
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [cropState.isDragging, cropState.dragHandle, cropState.startPosition, cropState.originalCrop, calculateCropFromDrag, onCropChange]);
+
+  // Handle preset selection
+  const handlePresetSelect = useCallback((preset: CropPreset) => {
+    setSelectedPreset(preset.id);
+
+    if (preset.aspectRatio === 0) {
+      // Free form - remove aspect ratio constraint
+      return;
+    }
+
+    const { currentCrop } = cropState;
+    const newHeight = currentCrop.width / preset.aspectRatio;
+    const newCrop = applyConstraints({
+      ...currentCrop,
+      height: newHeight,
+      aspectRatio: preset.aspectRatio,
+    });
+
+    setCropState(prev => ({
+      ...prev,
+      currentCrop: newCrop,
+      originalCrop: newCrop,
+    }));
+
+    onCropChange?.(newCrop);
+  }, [cropState, applyConstraints, onCropChange]);
+
+  // Handle crop confirm
+  const handleConfirm = useCallback(() => {
+    onCropConfirm(cropState.currentCrop);
+  }, [cropState.currentCrop, onCropConfirm]);
+
+  // Handle crop reset
+  const handleReset = useCallback(() => {
+    const resetCrop = originalCrop || {
+      x: 0,
+      y: 0,
+      width: imageDimensions.width,
+      height: imageDimensions.height,
