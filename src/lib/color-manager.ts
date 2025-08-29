@@ -179,3 +179,63 @@ export class ColorManager {
   ): ColorBlendResult {
     const cssFilter = this.generateCSSFilter(color, textureFilter);
 
+    return {
+      blendedColor: cssFilter,
+      cssFilter,
+      performanceMetrics: {
+        blendTime: 0,
+        method: 'css',
+      },
+    };
+  }
+
+  /**
+   * Generate CSS filter string for color application
+   */
+  private generateCSSFilter(color: TshirtColor, textureFilter?: TextureFilter): string {
+    const filters: string[] = [];
+
+    // Convert color to HSL for better CSS filter control
+    const hsl = ColorConverter.rgbToHsl(color.r, color.g, color.b);
+
+    // Apply hue rotation
+    if (hsl.h !== 0) {
+      filters.push(`hue-rotate(${hsl.h}deg)`);
+    }
+
+    // Apply saturation
+    if (hsl.s !== 100) {
+      filters.push(`saturate(${hsl.s}%)`);
+    }
+
+    // Apply brightness
+    if (hsl.l !== 50) {
+      const brightness = (hsl.l / 50) * 100;
+      filters.push(`brightness(${brightness}%)`);
+    }
+
+    // Apply texture filter if provided
+    if (textureFilter) {
+      filters.push(textureFilter.cssFilter);
+    }
+
+    return filters.length > 0 ? filters.join(' ') : 'none';
+  }
+
+  /**
+   * Generate simple CSS filter for fallback
+   */
+  private generateSimpleCSSFilter(color: TshirtColor): string {
+    const hsl = ColorConverter.rgbToHsl(color.r, color.g, color.b);
+    return `hue-rotate(${hsl.h}deg) saturate(${hsl.s}%) brightness(${(hsl.l / 50) * 100}%)`;
+  }
+
+  /**
+   * Apply texture filter using Canvas API
+   */
+  private async applyCanvasTextureFilter(textureFilter: TextureFilter): Promise<void> {
+    if (!textureFilter.canvasFilter) return;
+
+    const imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+    const data = imageData.data;
+
