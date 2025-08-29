@@ -431,3 +431,57 @@ export class ColorManipulator {
     ];
   }
 
+  /**
+   * Get analogous colors
+   */
+  static getAnalogous(color: TshirtColor): [TshirtColor, TshirtColor] {
+    return [
+      this.adjustHue(color, 30),
+      this.adjustHue(color, -30),
+    ];
+  }
+
+  /**
+   * Calculate color contrast ratio
+   */
+  static getContrastRatio(color1: TshirtColor, color2: TshirtColor): number {
+    const getLuminance = (color: TshirtColor) => {
+      const [r, g, b] = [color.r, color.g, color.b].map(c => {
+        c = c / 255;
+        return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+      });
+      return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    };
+
+    const lum1 = getLuminance(color1);
+    const lum2 = getLuminance(color2);
+    const brightest = Math.max(lum1, lum2);
+    const darkest = Math.min(lum1, lum2);
+
+    return (brightest + 0.05) / (darkest + 0.05);
+  }
+
+  /**
+   * Check if color is light or dark
+   */
+  static isLight(color: TshirtColor): boolean {
+    const luminance = (0.299 * color.r + 0.587 * color.g + 0.114 * color.b) / 255;
+    return luminance > 0.5;
+  }
+
+  /**
+   * Get readable text color for background
+   */
+  static getReadableTextColor(backgroundColor: TshirtColor): TshirtColor {
+    return this.isLight(backgroundColor) 
+      ? ColorConverter.createTshirtColor(0, 0, 0, 'Black')
+      : ColorConverter.createTshirtColor(255, 255, 255, 'White');
+  }
+}
+
+// Export utility functions
+export const createTshirtColor = ColorConverter.createTshirtColor;
+export const createTshirtColorFromHex = ColorConverter.createTshirtColorFromHex;
+export const createTshirtColorFromHsv = ColorConverter.createTshirtColorFromHsv;
+export const validateTshirtColor = ColorValidator.validateTshirtColor;
+export const convertColorSpace = ColorConverter.convertColorSpace;
