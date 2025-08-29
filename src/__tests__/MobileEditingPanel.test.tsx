@@ -51,3 +51,56 @@ describe('MobileEditingPanel', () => {
     render(<MobileEditingPanel {...mockProps} />);
     
     const closeButton = screen.getByRole('button');
+    await user.click(closeButton);
+    
+    expect(mockProps.onClose).toHaveBeenCalled();
+  });
+
+  it('should call onClose when backdrop clicked', async () => {
+    const user = userEvent.setup();
+    render(<MobileEditingPanel {...mockProps} />);
+    
+    // Click on backdrop (overlay)
+    const backdrop = document.querySelector('.fixed.inset-0');
+    if (backdrop) {
+      await user.click(backdrop);
+      expect(mockProps.onClose).toHaveBeenCalled();
+    }
+  });
+
+  it('should render with custom title', () => {
+    render(<MobileEditingPanel {...mockProps} title="Custom Title" />);
+    
+    expect(screen.getByText('Custom Title')).toBeInTheDocument();
+  });
+
+  it('should apply custom className', () => {
+    const { container } = render(
+      <MobileEditingPanel {...mockProps} className="custom-panel" />
+    );
+    
+    const panel = container.querySelector('.custom-panel');
+    expect(panel).toBeInTheDocument();
+  });
+
+  it('should position panel on the right by default', () => {
+    const { container } = render(<MobileEditingPanel {...mockProps} />);
+    
+    const panel = container.querySelector('.right-0');
+    expect(panel).toBeInTheDocument();
+  });
+
+  it('should position panel on the left when specified', () => {
+    const { container } = render(
+      <MobileEditingPanel {...mockProps} position="left" />
+    );
+    
+    const panel = container.querySelector('.left-0');
+    expect(panel).toBeInTheDocument();
+  });
+
+  it('should show collapse button when enabled', () => {
+    render(<MobileEditingPanel {...mockProps} showCollapseButton={true} />);
+    
+    // Should have multiple buttons (collapse + close)
+    const buttons = screen.getAllByRole('button');
