@@ -102,3 +102,55 @@ describe('WhatsAppIntegration', () => {
       const link = WhatsAppIntegration.getOptimalLink(mockConfig);
       expect(link).toContain('wa.me');
     });
+
+    it('should return web link for desktop devices', () => {
+      Object.defineProperty(navigator, 'userAgent', {
+        value: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+        writable: true,
+      });
+      
+      const link = WhatsAppIntegration.getOptimalLink(mockConfig);
+      expect(link).toContain('web.whatsapp.com');
+    });
+  });
+
+  describe('openWhatsApp', () => {
+    it('should open WhatsApp link in new window', () => {
+      const mockOpen = jest.fn().mockReturnValue({});
+      window.open = mockOpen;
+      
+      WhatsAppIntegration.openWhatsApp(mockConfig);
+      
+      expect(mockOpen).toHaveBeenCalledWith(
+        expect.stringContaining('wa.me'),
+        '_blank',
+        'noopener,noreferrer'
+      );
+    });
+
+    it('should fallback to location.href if popup blocked', () => {
+      const mockOpen = jest.fn().mockReturnValue(null);
+      window.open = mockOpen;
+      
+      const originalLocation = window.location;
+      delete (window as any).location;
+      window.location = { ...originalLocation, href: '' } as any;
+      
+      WhatsAppIntegration.openWhatsApp(mockConfig);
+      
+      expect(window.location.href).toContain('wa.me');
+      
+      // Restore location
+      window.location = originalLocation;
+    });
+  });
+
+  describe('validatePhoneNumber', () => {
+    it('should validate correct phone numbers', () => {
+      const result = WhatsAppIntegration.validatePhoneNumber('1234567890');
+      
+      expect(result.isValid).toBe(true);
+      expect(result.formatted).toBe('(123) 456-7890');
+    });
+
+    it('should validate phone numbers with country code', () => {
