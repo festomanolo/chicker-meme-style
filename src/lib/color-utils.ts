@@ -377,3 +377,57 @@ export class ColorManipulator {
   /**
    * Lighten a color by a percentage
    */
+  static lighten(color: TshirtColor, percentage: number): TshirtColor {
+    const newV = Math.min(100, color.v + (percentage * 100));
+    return ColorConverter.createTshirtColorFromHsv(color.h, color.s, newV, color.name);
+  }
+
+  /**
+   * Darken a color by a percentage
+   */
+  static darken(color: TshirtColor, percentage: number): TshirtColor {
+    const newV = Math.max(0, color.v - (percentage * 100));
+    return ColorConverter.createTshirtColorFromHsv(color.h, color.s, newV, color.name);
+  }
+
+  /**
+   * Saturate a color by a percentage
+   */
+  static saturate(color: TshirtColor, percentage: number): TshirtColor {
+    const newS = Math.min(100, color.s + (percentage * 100));
+    return ColorConverter.createTshirtColorFromHsv(color.h, newS, color.v, color.name);
+  }
+
+  /**
+   * Desaturate a color by a percentage
+   */
+  static desaturate(color: TshirtColor, percentage: number): TshirtColor {
+    const newS = Math.max(0, color.s - (percentage * 100));
+    return ColorConverter.createTshirtColorFromHsv(color.h, newS, color.v, color.name);
+  }
+
+  /**
+   * Adjust hue by degrees
+   */
+  static adjustHue(color: TshirtColor, degrees: number): TshirtColor {
+    const newH = (color.h + degrees + 360) % 360;
+    return ColorConverter.createTshirtColorFromHsv(newH, color.s, color.v, color.name);
+  }
+
+  /**
+   * Get complementary color
+   */
+  static getComplementary(color: TshirtColor): TshirtColor {
+    return this.adjustHue(color, 180);
+  }
+
+  /**
+   * Get triadic colors
+   */
+  static getTriadic(color: TshirtColor): [TshirtColor, TshirtColor] {
+    return [
+      this.adjustHue(color, 120),
+      this.adjustHue(color, 240),
+    ];
+  }
+
