@@ -166,3 +166,59 @@ export const CropTool: React.FC<CropToolProps> = ({
         id: 'e',
         type: 'edge',
         position: 'e',
+        cursor: 'e-resize',
+        bounds: { x: x + width - halfHandle, y: y + height/2 - halfHandle, width: handleSize, height: handleSize },
+      },
+      {
+        id: 's',
+        type: 'edge',
+        position: 's',
+        cursor: 's-resize',
+        bounds: { x: x + width/2 - halfHandle, y: y + height - halfHandle, width: handleSize, height: handleSize },
+      },
+      {
+        id: 'w',
+        type: 'edge',
+        position: 'w',
+        cursor: 'w-resize',
+        bounds: { x: x - halfHandle, y: y + height/2 - halfHandle, width: handleSize, height: handleSize },
+      },
+    ];
+  }, [cropState, imageLoaded, handleSize]);
+
+  // Apply constraints to crop
+  const applyConstraints = useCallback((crop: CropData): CropData => {
+    let constrainedCrop = { ...crop };
+
+    // Apply size constraints
+    if (constraints.minWidth) {
+      constrainedCrop.width = Math.max(constraints.minWidth, constrainedCrop.width);
+    }
+    if (constraints.maxWidth) {
+      constrainedCrop.width = Math.min(constraints.maxWidth, constrainedCrop.width);
+    }
+    if (constraints.minHeight) {
+      constrainedCrop.height = Math.max(constraints.minHeight, constrainedCrop.height);
+    }
+    if (constraints.maxHeight) {
+      constrainedCrop.height = Math.min(constraints.maxHeight, constrainedCrop.height);
+    }
+
+    // Apply aspect ratio constraint
+    if (constraints.aspectRatio && constraints.lockAspectRatio) {
+      const currentRatio = constrainedCrop.width / constrainedCrop.height;
+      if (Math.abs(currentRatio - constraints.aspectRatio) > 0.01) {
+        constrainedCrop.height = constrainedCrop.width / constraints.aspectRatio;
+      }
+    }
+
+    // Keep within image bounds
+    constrainedCrop.x = Math.max(0, Math.min(constrainedCrop.x, imageDimensions.width - constrainedCrop.width));
+    constrainedCrop.y = Math.max(0, Math.min(constrainedCrop.y, imageDimensions.height - constrainedCrop.height));
+    constrainedCrop.width = Math.min(constrainedCrop.width, imageDimensions.width - constrainedCrop.x);
+    constrainedCrop.height = Math.min(constrainedCrop.height, imageDimensions.height - constrainedCrop.y);
+
+    return constrainedCrop;
+  }, [constraints, imageDimensions]);
+
+  // Calculate new crop based on handle drag
