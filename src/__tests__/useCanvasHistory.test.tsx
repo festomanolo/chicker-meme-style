@@ -309,3 +309,55 @@ describe('useCanvasHistory', () => {
 
     // Add an entry
     act(() => {
+      result.current.addLayer(mockLayer, mockState);
+    });
+
+    expect(result.current.canUndo).toBe(true);
+
+    // Simulate Ctrl+Z keydown
+    const undoEvent = new KeyboardEvent('keydown', {
+      key: 'z',
+      ctrlKey: true,
+      bubbles: true,
+    });
+
+    act(() => {
+      document.dispatchEvent(undoEvent);
+    });
+
+    // Should still be able to undo (keyboard shortcut didn't work)
+    expect(result.current.canUndo).toBe(true);
+  });
+
+  it('should handle multiple operations in sequence', () => {
+    const { result } = renderHook(() => useCanvasHistory());
+
+    // Perform multiple operations
+    act(() => {
+      result.current.addLayer(mockLayer, mockState);
+      result.current.updateLayer('layer-1', { name: 'Updated' }, mockState);
+      result.current.transformElement('layer-1', mockState);
+      result.current.cropElement('layer-1', mockState);
+    });
+
+    expect(result.current.canUndo).toBe(true);
+
+    // Undo multiple times
+    act(() => {
+      result.current.undo(); // Undo crop
+      result.current.undo(); // Undo transform
+      result.current.undo(); // Undo update
+    });
+
+    expect(result.current.canUndo).toBe(true); // Still can undo add layer
+    expect(result.current.canRedo).toBe(true);
+
+    // Undo the last operation
+    act(() => {
+      result.current.undo(); // Undo add layer
+    });
+
+    expect(result.current.canUndo).toBe(false);
+    expect(result.current.canRedo).toBe(true);
+  });
+});
