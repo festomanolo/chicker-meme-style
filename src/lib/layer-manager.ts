@@ -482,3 +482,63 @@ export class LayerManager {
       }
     }
   }
+
+  /**
+   * Private helper methods
+   */
+  private generateId(): string {
+    return `layer_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  }
+
+  private generateName(type: LayerElement['type']): string {
+    if (!this.config.autoGenerateNames) return `${type} layer`;
+
+    const typeCount = this.state.elements.filter(el => el.type === type).length;
+    const baseName = type.charAt(0).toUpperCase() + type.slice(1);
+    return `${baseName} ${typeCount + 1}`;
+  }
+
+  private getNextZIndex(): number {
+    if (this.state.elements.length === 0) return 1;
+    return Math.max(...this.state.elements.map(el => el.zIndex)) + 1;
+  }
+
+  private updateZIndices(): void {
+    this.state.elements.forEach((element, index) => {
+      element.zIndex = index + 1;
+      element.updatedAt = Date.now();
+    });
+  }
+
+  private recordOperation(operation: LayerOperation): void {
+    this.operationHistory.push(operation);
+    
+    // Keep only last 50 operations
+    if (this.operationHistory.length > 50) {
+      this.operationHistory.shift();
+    }
+  }
+
+  private emit(event: string, data?: any): void {
+    const callbacks = this.listeners.get(event);
+    if (callbacks) {
+      callbacks.forEach(callback => callback(data));
+    }
+  }
+}
+
+// Export singleton instance
+export const layerManager = new LayerManager();
+
+// Export utility functions
+export const addLayer = (element: Omit<LayerElement, 'id' | 'createdAt' | 'updatedAt' | 'zIndex'>) =>
+  layerManager.addLayer(element);
+
+export const removeLayer = (elementId: string) =>
+  layerManager.removeLayer(elementId);
+
+export const reorderLayer = (elementId: string, newIndex: number) =>
+  layerManager.reorderLayer(elementId, newIndex);
+
+export const searchLayers = (query: string) =>
+  layerManager.searchLayers(query);
