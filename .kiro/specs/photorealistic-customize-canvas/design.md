@@ -223,3 +223,60 @@ type ColorSpace = 'rgb' | 'hsv' | 'hsl' | 'lab';
 ```typescript
 interface LayerManager {
   addLayer(element: DesignElement): void;
+  removeLayer(elementId: string): void;
+  reorderLayer(elementId: string, newIndex: number): void;
+  duplicateLayer(elementId: string): DesignElement;
+  toggleLayerVisibility(elementId: string): void;
+  lockLayer(elementId: string, locked: boolean): void;
+  searchLayers(query: string): DesignElement[];
+}
+```
+
+#### 4. History Manager
+
+```typescript
+interface HistoryManager {
+  saveState(state: CanvasState): void;
+  undo(): CanvasState | null;
+  redo(): CanvasState | null;
+  canUndo(): boolean;
+  canRedo(): boolean;
+  clearHistory(): void;
+  getHistorySize(): number;
+}
+
+interface CanvasState {
+  elements: DesignElement[];
+  selectedElementId: string | null;
+  canvasZoom: number;
+  timestamp: number;
+}
+```
+
+## Data Models
+
+### Core Data Models
+
+#### DesignElement Model
+
+```typescript
+interface DesignElement {
+  id: string;
+  type: 'text' | 'image' | 'shape' | 'sticker';
+  name: string;
+  
+  // Position and Transform
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  rotation: number;
+  scaleX: number;
+  scaleY: number;
+  
+  // Appearance
+  opacity: number;
+  visible: boolean;
+  locked: boolean;
+  blendMode: BlendMode;
+  
