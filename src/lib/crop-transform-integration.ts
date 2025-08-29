@@ -52,3 +52,58 @@ export class CropTransformIntegration {
     // Calculate crop based on transform
     const cropWidth = transform.width / transform.scaleX;
     const cropHeight = transform.height / transform.scaleY;
+    
+    // Calculate crop position
+    const cropX = Math.max(0, -transform.x / transform.scaleX);
+    const cropY = Math.max(0, -transform.y / transform.scaleY);
+    
+    return {
+      x: cropX,
+      y: cropY,
+      width: Math.min(cropWidth, originalWidth - cropX),
+      height: Math.min(cropHeight, originalHeight - cropY),
+      originalWidth,
+      originalHeight,
+    };
+  }
+
+  /**
+   * Calculate crop bounds based on current transform
+   */
+  static calculateCropBounds(transform: TransformData, imageDimensions: { width: number; height: number }): CropBounds {
+    const { width: imageWidth, height: imageHeight } = imageDimensions;
+    
+    // Calculate the visible area based on current transform
+    const visibleLeft = Math.max(0, -transform.x / transform.scaleX);
+    const visibleTop = Math.max(0, -transform.y / transform.scaleY);
+    const visibleRight = Math.min(imageWidth, visibleLeft + transform.width / transform.scaleX);
+    const visibleBottom = Math.min(imageHeight, visibleTop + transform.height / transform.scaleY);
+    
+    return {
+      minX: visibleLeft,
+      minY: visibleTop,
+      maxX: visibleRight,
+      maxY: visibleBottom,
+    };
+  }
+
+  /**
+   * Validate crop against transform constraints
+   */
+  static validateCropWithTransform(crop: CropData, transform: TransformData): CropData {
+    let validatedCrop = { ...crop };
+    
+    // Ensure crop doesn't exceed original dimensions
+    validatedCrop.width = Math.min(validatedCrop.width, crop.originalWidth - validatedCrop.x);
+    validatedCrop.height = Math.min(validatedCrop.height, crop.originalHeight - validatedCrop.y);
+    
+    // Ensure minimum crop size
+    const minSize = 10;
+    validatedCrop.width = Math.max(minSize, validatedCrop.width);
+    validatedCrop.height = Math.max(minSize, validatedCrop.height);
+    
+    // Adjust position if crop extends beyond bounds
+    validatedCrop.x = Math.max(0, Math.min(validatedCrop.x, crop.originalWidth - validatedCrop.width));
+    validatedCrop.y = Math.max(0, Math.min(validatedCrop.y, crop.originalHeight - validatedCrop.height));
+    
+    return validatedCrop;
