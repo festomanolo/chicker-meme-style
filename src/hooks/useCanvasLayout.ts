@@ -49,3 +49,54 @@ export const useCanvasLayout = (options: UseCanvasLayoutOptions = {}) => {
     panY: 0,
     isAnimating: false,
   });
+
+  const [isPanelOpen, setIsPanelOpen] = useState(false);
+  const [viewportDimensions, setViewportDimensions] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
+
+  const animationRef = useRef<number>();
+  const previousStateRef = useRef<CanvasLayoutState>(layoutState);
+
+  // Calculate canvas dimensions based on viewport and panel state
+  const calculateCanvasDimensions = useCallback(() => {
+    const { width: viewportWidth, height: viewportHeight } = viewportDimensions;
+    const { panelWidth, panelPosition, minCanvasWidth, minCanvasHeight } = defaultConfig;
+
+    let availableWidth = viewportWidth;
+    let canvasX = 0;
+
+    if (isPanelOpen) {
+      availableWidth -= panelWidth;
+      if (panelPosition === 'left') {
+        canvasX = panelWidth;
+      }
+    }
+
+    const canvasWidth = Math.max(minCanvasWidth, availableWidth);
+    const canvasHeight = Math.max(minCanvasHeight, viewportHeight);
+
+    return {
+      canvasWidth,
+      canvasHeight,
+      canvasX,
+      canvasY: 0,
+    };
+  }, [viewportDimensions, isPanelOpen, defaultConfig]);
+
+  // Animate layout changes
+  const animateLayoutChange = useCallback((
+    fromState: CanvasLayoutState,
+    toState: Partial<CanvasLayoutState>
+  ) => {
+    const startTime = Date.now();
+    const { animationDuration } = defaultConfig;
+
+    const animate = () => {
+      const elapsed = Date.now() - startTime;
+      const progress = Math.min(elapsed / animationDuration, 1);
+      
+      // Easing function (ease-out)
+      const easeOut = 1 - Math.pow(1 - progress, 3);
+
