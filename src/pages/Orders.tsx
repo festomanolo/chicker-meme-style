@@ -268,3 +268,57 @@ const Orders = () => {
           </div>
         </div>
       </div>
+
+      <div className="max-w-7xl mx-auto px-6 py-8">
+        {/* Order Status Tabs */}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
+          <TabsList className="grid grid-cols-3 lg:grid-cols-6 w-full">
+            <TabsTrigger value="all" className="flex items-center gap-2">
+              All
+              <Badge variant="secondary" className="text-xs">
+                {statusCounts.all}
+              </Badge>
+            </TabsTrigger>
+            <TabsTrigger value="awaiting-payment" className="flex items-center gap-2">
+              <Clock className="h-3 w-3" />
+              Pending
+              <Badge variant="secondary" className="text-xs">
+                {statusCounts["awaiting-payment"]}
+              </Badge>
+            </TabsTrigger>
+            <TabsTrigger value="printing" className="flex items-center gap-2">
+              <Package className="h-3 w-3" />
+              Printing
+              <Badge variant="secondary" className="text-xs">
+                {statusCounts.printing}
+              </Badge>
+            </TabsTrigger>
+            <TabsTrigger value="shipped" className="flex items-center gap-2">
+              <Truck className="h-3 w-3" />
+              Shipped
+              <Badge variant="secondary" className="text-xs">
+                {statusCounts.shipped}
+              </Badge>
+            </TabsTrigger>
+            <TabsTrigger value="delivered" className="flex items-center gap-2">
+              <CheckCircle className="h-3 w-3" />
+              Delivered
+              <Badge variant="secondary" className="text-xs">
+                {statusCounts.delivered}
+              </Badge>
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value={activeTab} className="space-y-6">
+            {isLoading ? (
+              <Loading className="py-16" size="lg" />
+            ) : filteredOrders.length > 0 ? (
+              <div className="space-y-6">
+                {filteredOrders.map((order) => {
+                  const statusInfo = statusConfig[order.status];
+                  const StatusIcon = statusInfo.icon;
+                  
+                  return (
+                    <Card key={order.id} className="glass-card hover:shadow-macos transition-all duration-300">
+                      <CardHeader>
+                        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
