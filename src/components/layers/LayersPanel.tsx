@@ -413,3 +413,62 @@ export const LayersPanel: React.FC<LayersPanelProps> = ({
   filter = {},
   className,
   showThumbnails = true,
+  enableInlineEdit = true,
+  enableDragReorder = true,
+}) => {
+  const [editingLayerId, setEditingLayerId] = useState<string | null>(null);
+  const [draggedLayerId, setDraggedLayerId] = useState<string | null>(null);
+
+  // Initialize centralized key management
+  const keyManager = useLayerKeys();
+
+  // Development-time key validation
+  React.useEffect(() => {
+    if (process.env.NODE_ENV === 'development') {
+      const isValid = keyManager.validateKeys();
+      if (!isValid) {
+        console.warn('LayersPanel: Duplicate keys detected', keyManager.getDebugInfo());
+      }
+    }
+  }, [layers, groups, searchQuery, keyManager]);
+
+  // Get layers that belong to groups to avoid duplication
+  const groupedLayerIds = useMemo(() => {
+    const ids = new Set<string>();
+    groups.forEach(group => {
+      group.children.forEach(layerId => ids.add(layerId));
+    });
+    return ids;
+  }, [groups]);
+
+  // Filter and sort layers - exclude grouped layers from individual list
+  const filteredLayers = useMemo(() => {
+    let filtered = [...layers];
+
+    // First, exclude layers that belong to groups (to prevent duplication)
+    filtered = filtered.filter(layer => !groupedLayerIds.has(layer.id));
+
+    // Apply search filter
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(layer =>
+        layer.name.toLowerCase().includes(query) ||
+        layer.content?.toLowerCase().includes(query) ||
+        layer.type.toLowerCase().includes(query)
+      );
+    }
+
+    // Apply type filter
+    if (filter.type && filter.type.length > 0) {
+      filtered = filtered.filter(layer => filter.type!.includes(layer.type));
+    }
+
+    // Apply visibility filter
+    if (filter.visible !== undefined) {
+      filtered = filtered.filter(layer => layer.visible === filter.visible);
+    }
+
+    // Apply lock filter
+    if (filter.locked !== undefined) {
+      filtered = filtered.filter(layer => layer.locked === filter.locked);
+    }
