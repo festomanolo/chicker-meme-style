@@ -170,3 +170,60 @@ describe('ColorConverter', () => {
   });
 
   describe('Color space conversion', () => {
+    it('should convert between RGB and HSV', () => {
+      const rgb = { r: 255, g: 128, b: 64 };
+      const hsv = convertColorSpace(rgb, 'rgb', 'hsv');
+      const backToRgb = convertColorSpace(hsv, 'hsv', 'rgb');
+      
+      expect(backToRgb.r).toBeCloseTo(rgb.r, 0);
+      expect(backToRgb.g).toBeCloseTo(rgb.g, 0);
+      expect(backToRgb.b).toBeCloseTo(rgb.b, 0);
+    });
+
+    it('should convert from hex to RGB', () => {
+      const result = convertColorSpace('#FF8040', 'hex', 'rgb');
+      expect(result).toEqual({ r: 255, g: 128, b: 64 });
+    });
+
+    it('should return same value for same color space', () => {
+      const rgb = { r: 255, g: 128, b: 64 };
+      const result = convertColorSpace(rgb, 'rgb', 'rgb');
+      expect(result).toEqual(rgb);
+    });
+
+    it('should throw error for unsupported color space', () => {
+      const rgb = { r: 255, g: 128, b: 64 };
+      expect(() => convertColorSpace(rgb, 'invalid' as any, 'rgb')).toThrow();
+      expect(() => convertColorSpace(rgb, 'rgb', 'invalid' as any)).toThrow();
+    });
+  });
+});
+
+describe('ColorValidator', () => {
+  describe('TshirtColor validation', () => {
+    it('should validate correct TshirtColor', () => {
+      const color: TshirtColor = {
+        r: 255, g: 128, b: 64,
+        h: 20, s: 75, v: 100,
+        hex: '#FF8040'
+      };
+      
+      const result = validateTshirtColor(color);
+      expect(result.isValid).toBe(true);
+      expect(result.errors).toHaveLength(0);
+      expect(result.normalized).toBeDefined();
+    });
+
+    it('should detect invalid RGB values', () => {
+      const color = {
+        r: 300, g: -10, b: 64,
+        h: 20, s: 75, v: 100,
+        hex: '#FF8040'
+      };
+      
+      const result = validateTshirtColor(color);
+      expect(result.isValid).toBe(false);
+      expect(result.errors).toContain('Red value must be between 0 and 255');
+      expect(result.errors).toContain('Green value must be between 0 and 255');
+    });
+
