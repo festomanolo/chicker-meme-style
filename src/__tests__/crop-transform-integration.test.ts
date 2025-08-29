@@ -354,3 +354,62 @@ describe('CropTransformIntegration', () => {
 
     it('should handle tall viewport aspect ratios', () => {
       const tallViewport = { width: 200, height: 400 };
+      const result = CropTransformIntegration.calculateOptimalCrop(mockImageElement, tallViewport);
+
+      expect(result.width).toBeLessThanOrEqual(mockImageElement.width);
+      expect(result.height).toBeLessThanOrEqual(mockImageElement.height);
+    });
+  });
+
+  describe('validateCropQuality', () => {
+    it('should validate good quality crop', () => {
+      const targetDimensions = { width: 200, height: 200 };
+      const result = CropTransformIntegration.validateCropQuality(mockCropData, targetDimensions);
+
+      expect(result.isValid).toBe(true);
+      expect(result.qualityScore).toBeGreaterThan(0.5);
+      expect(result.warnings).toHaveLength(0);
+    });
+
+    it('should detect upscaling issues', () => {
+      const smallCrop: CropData = {
+        ...mockCropData,
+        width: 50,
+        height: 50,
+      };
+      const targetDimensions = { width: 200, height: 200 };
+      const result = CropTransformIntegration.validateCropQuality(smallCrop, targetDimensions);
+
+      expect(result.qualityScore).toBeLessThan(1);
+      expect(result.warnings.length).toBeGreaterThan(0);
+      expect(result.warnings.some(w => w.includes('upscaling'))).toBe(true);
+    });
+
+    it('should detect small crop area issues', () => {
+      const tinyCrop: CropData = {
+        ...mockCropData,
+        width: 20,
+        height: 20,
+      };
+      const targetDimensions = { width: 100, height: 100 };
+      const result = CropTransformIntegration.validateCropQuality(tinyCrop, targetDimensions);
+
+      expect(result.qualityScore).toBeLessThan(1);
+      expect(result.warnings.length).toBeGreaterThan(0);
+      expect(result.warnings.some(w => w.includes('crop area'))).toBe(true);
+    });
+
+    it('should mark invalid crops with low quality score', () => {
+      const badCrop: CropData = {
+        ...mockCropData,
+        width: 10,
+        height: 10,
+      };
+      const targetDimensions = { width: 400, height: 400 };
+      const result = CropTransformIntegration.validateCropQuality(badCrop, targetDimensions);
+
+      expect(result.isValid).toBe(false);
+      expect(result.qualityScore).toBeLessThan(0.3);
+    });
+  });
+});
