@@ -225,3 +225,59 @@ describe('useWhatsAppNotification', () => {
     const { result } = renderHook(() => useWhatsAppNotification());
     
     act(() => {
+      result.current.handleLinkClick();
+    });
+    
+    expect(window.open).toHaveBeenCalledWith(
+      expect.stringContaining('wa.me'),
+      '_blank',
+      'noopener,noreferrer'
+    );
+  });
+
+  it('should force show notification', () => {
+    const { result } = renderHook(() => useWhatsAppNotification());
+    
+    expect(result.current.isVisible).toBe(false);
+    
+    act(() => {
+      result.current.forceShow();
+    });
+    
+    expect(result.current.isVisible).toBe(true);
+  });
+
+  it('should force hide notification', () => {
+    const { result } = renderHook(() => useWhatsAppNotification());
+    
+    act(() => {
+      result.current.forceShow();
+    });
+    
+    expect(result.current.isVisible).toBe(true);
+    
+    act(() => {
+      result.current.forceHide();
+    });
+    
+    expect(result.current.isVisible).toBe(false);
+  });
+
+  it('should reset state', () => {
+    const { result } = renderHook(() => useWhatsAppNotification());
+    
+    act(() => {
+      result.current.forceShow();
+    });
+    
+    expect(result.current.isVisible).toBe(true);
+    
+    act(() => {
+      result.current.resetState();
+    });
+    
+    expect(result.current.isVisible).toBe(false);
+    expect(result.current.showCount).toBe(0);
+    expect(result.current.clickCount).toBe(0);
+  });
+
