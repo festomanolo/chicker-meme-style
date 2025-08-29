@@ -413,3 +413,62 @@ export class HistoryManager {
       },
       state,
       `Remove layer`
+    );
+  }
+
+  updateLayerAction(layerId: string, updates: Partial<LayerElement>, state: CanvasState): void {
+    this.addEntry(
+      {
+        type: 'layer_update',
+        elementId: layerId,
+        data: updates,
+      },
+      state,
+      `Update layer`
+    );
+  }
+
+  transformAction(elementId: string, state: CanvasState): void {
+    this.addEntry(
+      {
+        type: 'transform_update',
+        elementId,
+      },
+      state,
+      `Transform element`
+    );
+  }
+
+  cropAction(elementId: string, state: CanvasState): void {
+    this.addEntry(
+      {
+        type: 'crop_apply',
+        elementId,
+      },
+      state,
+      `Apply crop`
+    );
+  }
+
+  colorChangeAction(elementId: string, state: CanvasState): void {
+    this.addEntry(
+      {
+        type: 'color_change',
+        elementId,
+      },
+      state,
+      `Change color`
+    );
+  }
+
+  bulkUpdateAction(elementIds: string[], state: CanvasState): void {
+    this.addEntry(
+      {
+        type: 'bulk_update',
+        elementIds,
+      },
+      state,
+      `Update ${elementIds.length} elements`
+    );
+  }
+}
