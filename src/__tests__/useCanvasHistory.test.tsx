@@ -205,3 +205,55 @@ describe('useCanvasHistory', () => {
     });
 
     expect(redoResult.success).toBe(true);
+    expect(redoResult.state).toBeDefined();
+    expect(result.current.canUndo).toBe(true);
+    expect(result.current.canRedo).toBe(false);
+  });
+
+  it('should handle failed undo when nothing to undo', () => {
+    const { result } = renderHook(() => useCanvasHistory());
+
+    let undoResult: any;
+    act(() => {
+      undoResult = result.current.undo();
+    });
+
+    expect(undoResult.success).toBe(false);
+    expect(undoResult.error).toBeDefined();
+  });
+
+  it('should handle failed redo when nothing to redo', () => {
+    const { result } = renderHook(() => useCanvasHistory());
+
+    let redoResult: any;
+    act(() => {
+      redoResult = result.current.redo();
+    });
+
+    expect(redoResult.success).toBe(false);
+    expect(redoResult.error).toBeDefined();
+  });
+
+  it('should save arbitrary state', () => {
+    const { result } = renderHook(() => useCanvasHistory());
+
+    act(() => {
+      result.current.saveState(mockState, 'Custom state save');
+    });
+
+    expect(result.current.canUndo).toBe(true);
+  });
+
+  it('should clear history', () => {
+    const { result } = renderHook(() => useCanvasHistory());
+
+    // Add some entries
+    act(() => {
+      result.current.addLayer(mockLayer, mockState);
+      result.current.updateLayer('layer-1', { name: 'Updated' }, mockState);
+    });
+
+    expect(result.current.canUndo).toBe(true);
+
+    // Clear history
+    act(() => {
