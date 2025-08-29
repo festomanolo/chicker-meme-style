@@ -122,3 +122,45 @@ export const WhatsAppNotification: React.FC<WhatsAppNotificationProps> = ({
           >
             <X className="h-4 w-4" />
           </Button>
+        </div>
+
+        {/* Content */}
+        <div className="p-4">
+          <p 
+            id="whatsapp-notification-description"
+            className="text-sm text-gray-700 dark:text-gray-300 mb-4"
+          >
+            Get instant support and answers to your questions. We're here to help!
+          </p>
+
+          {/* Action button */}
+          <Button
+            onClick={handleLinkClick}
+            className="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-2.5 rounded-lg transition-colors"
+          >
+            <MessageCircle className="w-4 h-4 mr-2" />
+            Chat on WhatsApp
+            <ExternalLink className="w-3 h-3 ml-2 opacity-70" />
+          </Button>
+
+          {/* Footer */}
+          <div className="mt-3 flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+            <span>Usually replies instantly</span>
+            <div className="flex items-center gap-1">
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+              <span>Online</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Subtle animation indicator */}
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-400 to-green-600 opacity-20"></div>
+      </div>
+
+      {/* Backdrop blur effect */}
+      <div className="absolute inset-0 -z-10 bg-black/5 backdrop-blur-sm rounded-xl"></div>
+    </div>
+  );
+};
+
+export default WhatsAppNotification;
