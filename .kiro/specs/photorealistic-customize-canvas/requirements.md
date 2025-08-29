@@ -44,3 +44,50 @@ This feature specification outlines the complete rewrite and enhancement of the 
 4. WHEN on small phones THEN the panel SHALL be full height and 75% width
 5. WHEN the panel is open THEN the canvas SHALL shrink but maintain zoom and pan functionality
 6. WHEN organizing panel content THEN the system SHALL group tools in sections: Tools row (top), Layers (middle), Properties (context-sensitive), Quick Actions (bottom)
+7. WHEN displaying tool icons THEN each icon SHALL have 44px touch targets for accessibility
+
+### Requirement 4: Precise Canvas Interactions
+
+**User Story:** As a user editing designs on the canvas, I want precise drag-resize controls with live feedback, so that I can position and size elements exactly as intended.
+
+#### Acceptance Criteria
+
+1. WHEN clicking or tapping an element THEN the system SHALL show 8 visible transform handles (corners and edges)
+2. WHEN dragging corner handles THEN the system SHALL resize proportionally by default
+3. WHEN holding Shift during resize THEN the system SHALL toggle free transform mode
+4. WHEN resizing elements THEN the system SHALL show live preview with numeric width/height readout
+5. WHEN rotating elements THEN the system SHALL show rotation handle above selection with snap to 15-degree increments
+6. WHEN dragging elements THEN the system SHALL provide snapping to canvas center, mockup centerline, other elements, and grid lines
+7. WHEN snapping occurs THEN the system SHALL show temporary guide lines during drag operations
+8. WHEN interacting with canvas THEN the coordinate system SHALL be independent of page scroll using internal transform matrix
+
+### Requirement 5: Advanced Cropping and Transform Controls
+
+**User Story:** As a user working with images, I want non-destructive cropping tools with precise controls, so that I can adjust image composition without losing original data.
+
+#### Acceptance Criteria
+
+1. WHEN using the crop tool THEN the system SHALL show mask overlay with draggable crop rectangle
+2. WHEN cropping is active THEN the system SHALL provide confirm/cancel buttons
+3. WHEN cropping is applied THEN the operation SHALL be non-destructive, preserving original image data in element metadata
+4. WHEN cropping is complete THEN the user SHALL be able to reset to original image
+5. WHEN transform controls are used THEN all actions SHALL be undoable and recorded in history stack with maximum 50 entries
+6. WHEN using keyboard shortcuts THEN the system SHALL support Tab order, Enter to confirm, Esc to cancel, arrow keys to nudge by 1px, Shift+arrow to nudge by 10px
+
+### Requirement 6: Layer Management System
+
+**User Story:** As a user with multiple design elements, I want comprehensive layer management, so that I can organize and control the visibility and order of my design components.
+
+#### Acceptance Criteria
+
+1. WHEN managing layers THEN the system SHALL support bring forward, send back, lock, hide, duplicate, and delete operations
+2. WHEN displaying layers THEN the list SHALL show thumbnail, name, visibility toggle, lock icon, and re-order handle
+3. WHEN working with many layers THEN the layers list SHALL be searchable
+4. WHEN tapping a layer THEN properties SHALL be revealed inline instead of opening a modal
+5. WHEN reordering layers THEN the system SHALL provide drag-and-drop functionality with visual feedback
+
+### Requirement 7: Timed WhatsApp Notification System
+
+**User Story:** As a business owner, I want to periodically prompt users to contact us via WhatsApp, so that I can provide personalized assistance and increase customer engagement.
+
+#### Acceptance Criteria
