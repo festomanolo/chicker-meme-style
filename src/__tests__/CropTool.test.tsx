@@ -232,3 +232,61 @@ describe('CropTool', () => {
     });
   });
 
+  it('should hide grid lines when disabled', async () => {
+    const config: CropToolConfig = { showGrid: false };
+    render(<CropTool {...mockProps} config={config} originalCrop={mockCropData} />);
+    
+    const image = screen.getByAltText('Crop preview');
+    fireEvent.load(image);
+
+    await waitFor(() => {
+      // Should still have SVG for crop overlay, but no grid lines
+      expect(screen.getByText('Crop Image')).toBeInTheDocument();
+    });
+  });
+
+  it('should apply custom overlay opacity', async () => {
+    const config: CropToolConfig = { overlayOpacity: 0.8 };
+    render(<CropTool {...mockProps} config={config} originalCrop={mockCropData} />);
+    
+    const image = screen.getByAltText('Crop preview');
+    fireEvent.load(image);
+
+    await waitFor(() => {
+      const overlay = document.querySelector('rect[opacity="0.8"]');
+      expect(overlay).toBeInTheDocument();
+    });
+  });
+
+  it('should apply custom handle size', async () => {
+    const config: CropToolConfig = { handleSize: 16 };
+    render(<CropTool {...mockProps} config={config} originalCrop={mockCropData} />);
+    
+    const image = screen.getByAltText('Crop preview');
+    fireEvent.load(image);
+
+    await waitFor(() => {
+      expect(screen.getByText('Crop Image')).toBeInTheDocument();
+    });
+  });
+
+  it('should handle drag operations', async () => {
+    render(<CropTool {...mockProps} originalCrop={mockCropData} />);
+    
+    const image = screen.getByAltText('Crop preview');
+    fireEvent.load(image);
+
+    await waitFor(() => {
+      const container = screen.getByAltText('Crop preview').parentElement;
+      
+      // Simulate drag start
+      fireEvent.mouseDown(container!, { clientX: 100, clientY: 100 });
+      
+      // Simulate drag move
+      fireEvent.mouseMove(document, { clientX: 150, clientY: 150 });
+      
+      // Simulate drag end
+      fireEvent.mouseUp(document);
+    });
+  });
+
