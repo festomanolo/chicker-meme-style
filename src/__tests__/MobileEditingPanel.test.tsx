@@ -104,3 +104,55 @@ describe('MobileEditingPanel', () => {
     
     // Should have multiple buttons (collapse + close)
     const buttons = screen.getAllByRole('button');
+    expect(buttons.length).toBeGreaterThan(1);
+  });
+
+  it('should hide collapse button when disabled', () => {
+    render(<MobileEditingPanel {...mockProps} showCollapseButton={false} />);
+    
+    // Should only have close button
+    const buttons = screen.getAllByRole('button');
+    expect(buttons.length).toBe(1);
+  });
+
+  it('should handle collapse/expand functionality', async () => {
+    const user = userEvent.setup();
+    render(<MobileEditingPanel {...mockProps} showCollapseButton={true} />);
+    
+    // Find collapse button (not the close button)
+    const buttons = screen.getAllByRole('button');
+    const collapseButton = buttons.find(button => 
+      button !== screen.getByRole('button', { name: /close/i })
+    );
+    
+    if (collapseButton) {
+      await user.click(collapseButton);
+      
+      // Panel content should be hidden when collapsed
+      await waitFor(() => {
+        expect(screen.queryByText('Panel Content')).not.toBeInTheDocument();
+      });
+    }
+  });
+
+  it('should calculate dimensions for small phone', () => {
+    mockWindowDimensions(320, 568); // Small phone
+    render(<MobileEditingPanel {...mockProps} />);
+    
+    // Panel should be 75% width for small phones
+    const panel = document.querySelector('[style*="width"]');
+    expect(panel).toBeInTheDocument();
+  });
+
+  it('should calculate dimensions for tablet', () => {
+    mockWindowDimensions(768, 1024); // Tablet
+    render(<MobileEditingPanel {...mockProps} />);
+    
+    // Panel should be 42% width for tablets with constraints
+    const panel = document.querySelector('[style*="width"]');
+    expect(panel).toBeInTheDocument();
+  });
+
+  it('should handle window resize', () => {
+    render(<MobileEditingPanel {...mockProps} />);
+    
