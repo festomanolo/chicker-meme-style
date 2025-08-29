@@ -107,3 +107,58 @@ describe('PhotorealisticMockup', () => {
     };
 
     mockLoadMockup.mockResolvedValue(assetInfo);
+
+    render(<PhotorealisticMockup mockup={mockMockup} onLoad={onLoad} />);
+
+    await waitFor(() => {
+      expect(onLoad).toHaveBeenCalledWith(assetInfo);
+    });
+  });
+
+  it('should call onError callback on load failure', async () => {
+    const onError = jest.fn();
+    const errorMessage = 'Failed to load image';
+
+    mockLoadMockup.mockRejectedValue(new Error(errorMessage));
+
+    render(<PhotorealisticMockup mockup={mockMockup} onError={onError} />);
+
+    await waitFor(() => {
+      expect(onError).toHaveBeenCalledWith(errorMessage);
+    });
+  });
+
+  it('should render custom loading component when provided', () => {
+    mockLoadMockup.mockImplementation(() => new Promise(() => {})); // Never resolves
+
+    const customLoading = <div data-testid="custom-loading">Custom Loading...</div>;
+
+    render(
+      <PhotorealisticMockup 
+        mockup={mockMockup} 
+        loadingComponent={customLoading} 
+      />
+    );
+
+    expect(screen.getByTestId('custom-loading')).toBeInTheDocument();
+    expect(screen.queryByText('Loading Test Mockup...')).not.toBeInTheDocument();
+  });
+
+  it('should render custom fallback component on error when provided', async () => {
+    mockLoadMockup.mockRejectedValue(new Error('Load failed'));
+
+    const customFallback = <div data-testid="custom-fallback">Custom Error</div>;
+
+    render(
+      <PhotorealisticMockup 
+        mockup={mockMockup} 
+        fallbackComponent={customFallback} 
+      />
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('custom-fallback')).toBeInTheDocument();
+    });
+
+    expect(screen.queryByText('Failed to load mockup')).not.toBeInTheDocument();
+  });
