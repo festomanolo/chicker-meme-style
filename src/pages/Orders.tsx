@@ -322,3 +322,57 @@ const Orders = () => {
                     <Card key={order.id} className="glass-card hover:shadow-macos transition-all duration-300">
                       <CardHeader>
                         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                          <div className="flex items-center gap-4">
+                            <div>
+                              <CardTitle className="text-lg">{order.id}</CardTitle>
+                              <p className="text-sm text-muted-foreground">
+                                Ordered on {new Date(order.date).toLocaleDateString()}
+                              </p>
+                            </div>
+                            
+                            <Badge className={`${statusInfo.color} text-white flex items-center gap-1`}>
+                              <StatusIcon className="h-3 w-3" />
+                              {statusInfo.label}
+                            </Badge>
+                          </div>
+                          
+                          <div className="flex items-center gap-3">
+                            <span className="font-bold text-lg">
+                              TZS {order.total.toLocaleString()}
+                            </span>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setSelectedOrder(selectedOrder?.id === order.id ? null : order)}
+                              className="glass border-glass-border"
+                            >
+                              <Eye className="h-4 w-4 mr-1" />
+                              {selectedOrder?.id === order.id ? "Hide" : "View"}
+                            </Button>
+                          </div>
+                        </div>
+                      </CardHeader>
+
+                      {selectedOrder?.id === order.id && (
+                        <CardContent className="space-y-6">
+                          {/* Status Timeline */}
+                          <div className="p-4 bg-muted/30 rounded-lg">
+                            <h4 className="font-semibold mb-3 flex items-center gap-2">
+                              <StatusIcon className="h-5 w-5" />
+                              Order Status
+                            </h4>
+                            <p className="text-muted-foreground mb-4">
+                              {statusInfo.description}
+                            </p>
+                            
+                            {order.tracking && (
+                              <div className="flex flex-col sm:flex-row gap-3">
+                                <Button 
+                                  variant="outline" 
+                                  size="sm"
+                                  onClick={() => trackOrder(order.tracking!)}
+                                  className="glass border-glass-border"
+                                >
+                                  Track Package
+                                </Button>
+                                <span className="text-sm text-muted-foreground self-center">
