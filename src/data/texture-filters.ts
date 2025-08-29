@@ -209,3 +209,56 @@ export const TEXTURE_FILTERS: TextureFilter[] = [
     id: 'distressed',
     name: 'Distressed',
     description: 'Worn and weathered with random fade patterns',
+    category: 'effect',
+    cssFilter: 'brightness(1.15) contrast(0.85) saturate(0.75) sepia(0.05)',
+    canvasFilter: {
+      type: 'custom',
+      customShader: 'distressed-shader',
+    },
+    preview: '/assets/textures/distressed-preview.webp',
+    intensity: 65,
+    gpuAccelerated: true,
+  },
+  {
+    id: 'tie-dye',
+    name: 'Tie Dye Base',
+    description: 'Prepared base for tie-dye effects with enhanced color absorption',
+    category: 'effect',
+    cssFilter: 'saturate(1.3) contrast(1.1) brightness(1.05)',
+    canvasFilter: {
+      type: 'color-matrix',
+      matrix: [
+        1.1, 0, 0, 0, 0,
+        0, 1.1, 0, 0, 0,
+        0, 0, 1.1, 0, 0,
+        0, 0, 0, 1, 0
+      ],
+    },
+    preview: '/assets/textures/tie-dye-preview.webp',
+    intensity: 55,
+    gpuAccelerated: true,
+  },
+];
+
+// Helper functions for texture filter management
+export const getTextureFiltersByCategory = (category: TextureFilter['category']) =>
+  TEXTURE_FILTERS.filter(filter => filter.category === category);
+
+export const getTextureFilterById = (id: string) =>
+  TEXTURE_FILTERS.find(filter => filter.id === id);
+
+export const getGPUAcceleratedFilters = () =>
+  TEXTURE_FILTERS.filter(filter => filter.gpuAccelerated);
+
+export const getTextureFiltersByIntensity = (minIntensity: number, maxIntensity: number) =>
+  TEXTURE_FILTERS.filter(filter => 
+    filter.intensity >= minIntensity && filter.intensity <= maxIntensity
+  );
+
+// Texture filter categories for UI organization
+export const TEXTURE_CATEGORIES = [
+  { id: 'wash', name: 'Wash Effects', description: 'Faded and worn appearances' },
+  { id: 'weave', name: 'Fabric Weave', description: 'Texture and weave patterns' },
+  { id: 'finish', name: 'Surface Finish', description: 'Shine and surface treatments' },
+  { id: 'effect', name: 'Special Effects', description: 'Unique styling effects' },
+] as const;
