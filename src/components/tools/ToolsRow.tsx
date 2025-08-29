@@ -188,3 +188,51 @@ export const ToolsRow: React.FC<ToolsRowProps> = ({
       )}>
         {DEFAULT_TOOLS.map(renderTool)}
         
+        {/* Separator for navigation tools */}
+        <div className={cn(
+          'bg-gray-200 dark:bg-gray-700',
+          orientation === 'horizontal' ? 'w-px h-8 mx-1' : 'h-px w-8 my-1'
+        )} />
+        
+        {/* Navigation tools */}
+        {[
+          {
+            id: 'zoom' as ToolType,
+            name: 'Zoom',
+            icon: ZoomIn,
+            shortcut: 'Z',
+            description: 'Zoom in and out',
+            category: 'navigation' as const,
+          },
+          {
+            id: 'hand' as ToolType,
+            name: 'Hand',
+            icon: Hand,
+            shortcut: 'H',
+            description: 'Pan around canvas',
+            category: 'navigation' as const,
+          },
+        ].map(renderTool)}
+        
+        {/* Tool labels row (if enabled) */}
+        {showLabels && (
+          <div className={cn(
+            'flex gap-1 mt-2 text-xs text-gray-600 dark:text-gray-400',
+            orientation === 'vertical' && 'flex-col'
+          )}>
+            {DEFAULT_TOOLS.map(tool => (
+              <div key={`${tool.id}-label`} className="text-center min-w-[44px]">
+                {tool.name}
+                {showShortcuts && tool.shortcut && (
+                  <div className="text-gray-400">({tool.shortcut})</div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </TooltipProvider>
+  );
+};
+
+export default ToolsRow;
