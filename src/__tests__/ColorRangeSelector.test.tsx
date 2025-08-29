@@ -262,3 +262,56 @@ describe('ColorRangeSelector', () => {
     render(
       <ColorRangeSelector
         selectedColor={mockColor}
+        onColorChange={mockOnColorChange}
+        showPreview={true}
+      />
+    );
+
+    // Find and click reset button
+    const resetButton = screen.getByRole('button', { name: /reset/i });
+    await user.click(resetButton);
+
+    // Should reset to original color values
+    expect(screen.getByText(mockColor.hex)).toBeInTheDocument();
+  });
+
+  it('should disable all inputs when disabled prop is true', () => {
+    render(
+      <ColorRangeSelector
+        selectedColor={mockColor}
+        onColorChange={mockOnColorChange}
+        disabled={true}
+      />
+    );
+
+    // Check that preset buttons are disabled
+    const presetButtons = screen.getAllByRole('button');
+    presetButtons.forEach(button => {
+      expect(button).toBeDisabled();
+    });
+  });
+
+  it('should highlight selected preset color', () => {
+    const redColor = createTshirtColor(255, 0, 0, 'Red');
+    
+    render(
+      <ColorRangeSelector
+        selectedColor={redColor}
+        onColorChange={mockOnColorChange}
+        presetColors={mockPresets}
+      />
+    );
+
+    const redButton = screen.getByLabelText('Select Red color');
+    expect(redButton).toHaveClass('ring-2', 'ring-primary');
+  });
+
+  it('should update internal state when selectedColor prop changes', () => {
+    const { rerender } = render(
+      <ColorRangeSelector
+        selectedColor={mockColor}
+        onColorChange={mockOnColorChange}
+        showPreview={true}
+      />
+    );
+
