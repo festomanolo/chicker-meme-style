@@ -160,3 +160,57 @@ const statusConfig = {
   },
   "delivered": {
     label: "Delivered",
+    color: "bg-success",
+    icon: CheckCircle,
+    description: "Order successfully delivered"
+  }
+};
+
+const Orders = () => {
+  const [activeTab, setActiveTab] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const { user } = useAuthStore();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const loadOrders = async () => {
+      if (!user) return;
+      
+      try {
+        setIsLoading(true);
+        const userOrders = await db.getOrdersForUser(user.id);
+        setOrders(userOrders || mockOrders); // Fallback to mock data for now
+      } catch (error) {
+        console.error('Failed to load orders:', error);
+        setOrders(mockOrders); // Fallback to mock data
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadOrders();
+  }, [user]);
+
+  const filteredOrders = orders.filter(order => {
+    const matchesTab = activeTab === "all" || order.status === activeTab;
+    const matchesSearch = order.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         order.items.some(item => item.name.toLowerCase().includes(searchQuery.toLowerCase()));
+    return matchesTab && matchesSearch;
+  });
+
+  const getStatusCounts = () => {
+    const counts = {
+      all: orders.length,
+      "awaiting-payment": 0,
+      paid: 0,
+      printing: 0,
+      shipped: 0,
+      delivered: 0
+    };
+    
+    orders.forEach(order => {
+      counts[order.status]++;
+    });
