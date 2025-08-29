@@ -24,3 +24,29 @@ export interface LABColor {
 }
 
 export interface RGBColor {
+  r: number; // Red: 0-255
+  g: number; // Green: 0-255
+  b: number; // Blue: 0-255
+}
+
+export interface HSVColor {
+  h: number; // Hue: 0-360
+  s: number; // Saturation: 0-100
+  v: number; // Value: 0-100
+}
+
+export type ColorSpace = 'rgb' | 'hsv' | 'hsl' | 'lab' | 'hex';
+
+export interface ColorValidationResult {
+  isValid: boolean;
+  errors: string[];
+  normalized?: TshirtColor;
+}
+
+export interface ColorPreset {
+  id: string;
+  name: string;
+  color: TshirtColor;
+  category: 'basic' | 'popular' | 'trending' | 'custom';
+  preview?: string;
+}
