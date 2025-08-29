@@ -280,3 +280,59 @@ interface DesignElement {
   locked: boolean;
   blendMode: BlendMode;
   
+  // Type-specific properties
+  textProperties?: TextProperties;
+  imageProperties?: ImageProperties;
+  shapeProperties?: ShapeProperties;
+  
+  // Metadata
+  createdAt: number;
+  updatedAt: number;
+  zIndex: number;
+}
+
+interface TextProperties {
+  content: string;
+  fontFamily: string;
+  fontSize: number;
+  fontWeight: number;
+  fontStyle: 'normal' | 'italic';
+  color: string;
+  textAlign: 'left' | 'center' | 'right';
+  lineHeight: number;
+  letterSpacing: number;
+  textShadow?: TextShadow;
+}
+
+interface ImageProperties {
+  src: string;
+  originalSrc: string;
+  cropData?: CropData;
+  filters: ImageFilter[];
+  backgroundRemoved: boolean;
+}
+
+interface CropData {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  originalWidth: number;
+  originalHeight: number;
+}
+```
+
+#### Canvas State Model
+
+```typescript
+interface CanvasState {
+  // T-shirt Configuration
+  selectedMockup: TshirtMockup;
+  selectedColor: TshirtColor;
+  selectedTexture: TextureFilter;
+  
+  // Design Elements
+  elements: DesignElement[];
+  selectedElementId: string | null;
+  
+  // Canvas Settings
