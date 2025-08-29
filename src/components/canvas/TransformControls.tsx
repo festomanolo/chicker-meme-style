@@ -164,3 +164,59 @@ export const TransformControls: React.FC<TransformControlsProps> = ({
     };
   }, [element, isSelected, disabled, showRotationHandle, zoom]);
 
+  // Handle mouse down on transform handles
+  const handleMouseDown = useCallback((e: React.MouseEvent, handle: TransformHandle) => {
+    if (disabled) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    const rect = canvasRect;
+    const startPosition = {
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    };
+
+    setDragState({
+      isDragging: true,
+      startPosition,
+      currentPosition: startPosition,
+      offset: { x: 0, y: 0 },
+      elementId: element.id,
+      handleType: handle.type,
+      handlePosition: handle.position,
+    });
+
+    setLiveTransform({
+      x: element.x,
+      y: element.y,
+      width: element.width,
+      height: element.height,
+      rotation: element.rotation || 0,
+      scaleX: element.scaleX || 1,
+      scaleY: element.scaleY || 1,
+    });
+  }, [disabled, canvasRect, element]);
+
+  // Handle touch start for mobile
+  const handleTouchStart = useCallback((e: React.TouchEvent, handle: TransformHandle) => {
+    if (disabled) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    const touch = e.touches[0];
+    const rect = canvasRect;
+    const startPosition = {
+      x: touch.clientX - rect.left,
+      y: touch.clientY - rect.top,
+    };
+
+    setDragState({
+      isDragging: true,
+      startPosition,
+      currentPosition: startPosition,
+      offset: { x: 0, y: 0 },
+      elementId: element.id,
+      handleType: handle.type,
+      handlePosition: handle.position,
