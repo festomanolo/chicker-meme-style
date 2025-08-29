@@ -257,3 +257,55 @@ describe('useCanvasHistory', () => {
 
     // Clear history
     act(() => {
+      result.current.clear();
+    });
+
+    expect(result.current.canUndo).toBe(false);
+    expect(result.current.canRedo).toBe(false);
+  });
+
+  it('should provide stats', () => {
+    const { result } = renderHook(() => useCanvasHistory());
+
+    act(() => {
+      result.current.addLayer(mockLayer, mockState);
+    });
+
+    const stats = result.current.getStats();
+    expect(stats).toBeDefined();
+    expect(stats.totalEntries).toBeGreaterThan(0);
+  });
+
+  it('should handle keyboard shortcuts when enabled', () => {
+    const { result } = renderHook(() => 
+      useCanvasHistory({ enableKeyboardShortcuts: true })
+    );
+
+    // Add an entry
+    act(() => {
+      result.current.addLayer(mockLayer, mockState);
+    });
+
+    expect(result.current.canUndo).toBe(true);
+
+    // Simulate Ctrl+Z keydown
+    const undoEvent = new KeyboardEvent('keydown', {
+      key: 'z',
+      ctrlKey: true,
+      bubbles: true,
+    });
+
+    act(() => {
+      document.dispatchEvent(undoEvent);
+    });
+
+    expect(result.current.canRedo).toBe(true);
+  });
+
+  it('should not handle keyboard shortcuts when disabled', () => {
+    const { result } = renderHook(() => 
+      useCanvasHistory({ enableKeyboardShortcuts: false })
+    );
+
+    // Add an entry
+    act(() => {
