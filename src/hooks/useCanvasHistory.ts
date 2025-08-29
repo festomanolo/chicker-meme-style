@@ -45,3 +45,50 @@ export const useCanvasHistory = (options: UseCanvasHistoryOptions = {}): CanvasH
     historyManagerRef.current = new HistoryManager({
       maxEntries,
       debounceMs,
+      enableCompression,
+      enableChecksums: true,
+    });
+  }
+
+  const updateUndoRedoState = useCallback(() => {
+    if (historyManagerRef.current) {
+      setCanUndo(historyManagerRef.current.canUndo());
+      setCanRedo(historyManagerRef.current.canRedo());
+    }
+  }, []);
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    if (!enableKeyboardShortcuts) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && !e.shiftKey && e.key === 'z') {
+        e.preventDefault();
+        undo();
+      } else if (
+        ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'z') ||
+        ((e.ctrlKey || e.metaKey) && e.key === 'y')
+      ) {
+        e.preventDefault();
+        redo();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [enableKeyboardShortcuts]);
+
+  const undo = useCallback((): UndoRedoResult => {
+    if (!historyManagerRef.current) {
+      return { success: false, error: 'History manager not initialized' };
+    }
+
+    const result = historyManagerRef.current.undo();
+    updateUndoRedoState();
+    return result;
+  }, [updateUndoRedoState]);
+
+  const redo = useCallback((): UndoRedoResult => {
+    if (!historyManagerRef.current) {
+      return { success: false, error: 'History manager not initialized' };
+    }
