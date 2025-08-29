@@ -86,3 +86,48 @@ export class PerformanceMonitor {
     return { ...this.metrics };
   }
 
+  /**
+   * Check if performance meets requirements
+   */
+  checkPerformance(): {
+    isOptimal: boolean;
+    warnings: string[];
+    recommendations: string[];
+  } {
+    const warnings: string[] = [];
+    const recommendations: string[] = [];
+
+    // Check render time (should be < 60ms for 60fps)
+    if (this.metrics.renderTime > 60) {
+      warnings.push(`Render time is ${this.metrics.renderTime.toFixed(2)}ms (target: <60ms)`);
+      recommendations.push('Consider optimizing component renders and reducing DOM complexity');
+    }
+
+    // Check FPS (should be close to 60)
+    if (this.metrics.fps < 50) {
+      warnings.push(`FPS is ${this.metrics.fps} (target: 60fps)`);
+      recommendations.push('Enable GPU acceleration and optimize animations');
+    }
+
+    // Check memory usage (should be reasonable)
+    if (this.metrics.memoryUsage > 100) {
+      warnings.push(`Memory usage is ${this.metrics.memoryUsage.toFixed(2)}MB`);
+      recommendations.push('Check for memory leaks and optimize image loading');
+    }
+
+    // Check load time (should be < 3s)
+    if (this.metrics.loadTime > 3000) {
+      warnings.push(`Load time is ${this.metrics.loadTime}ms (target: <3000ms)`);
+      recommendations.push('Optimize bundle size and enable code splitting');
+    }
+
+    return {
+      isOptimal: warnings.length === 0,
+      warnings,
+      recommendations,
+    };
+  }
+
+  /**
+   * Log performance metrics
+   */
