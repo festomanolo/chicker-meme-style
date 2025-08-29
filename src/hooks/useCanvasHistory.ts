@@ -139,3 +139,50 @@ export const useCanvasHistory = (options: UseCanvasHistoryOptions = {}): CanvasH
 
   const cropElement = useCallback((elementId: string, state: CanvasState) => {
     if (!historyManagerRef.current) return;
+
+    historyManagerRef.current.cropAction(elementId, state);
+    updateUndoRedoState();
+  }, [updateUndoRedoState]);
+
+  const changeColor = useCallback((elementId: string, state: CanvasState) => {
+    if (!historyManagerRef.current) return;
+
+    historyManagerRef.current.colorChangeAction(elementId, state);
+    updateUndoRedoState();
+  }, [updateUndoRedoState]);
+
+  const bulkUpdate = useCallback((elementIds: string[], state: CanvasState) => {
+    if (!historyManagerRef.current) return;
+
+    historyManagerRef.current.bulkUpdateAction(elementIds, state);
+    updateUndoRedoState();
+  }, [updateUndoRedoState]);
+
+  const clear = useCallback(() => {
+    if (!historyManagerRef.current) return;
+
+    historyManagerRef.current.clear();
+    updateUndoRedoState();
+  }, [updateUndoRedoState]);
+
+  const getStats = useCallback(() => {
+    return historyManagerRef.current?.getStats() || null;
+  }, []);
+
+  return {
+    canUndo,
+    canRedo,
+    undo,
+    redo,
+    saveState,
+    addLayer,
+    removeLayer,
+    updateLayer,
+    transformElement,
+    cropElement,
+    changeColor,
+    bulkUpdate,
+    clear,
+    getStats,
+  };
+};
