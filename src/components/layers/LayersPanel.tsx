@@ -472,3 +472,62 @@ export const LayersPanel: React.FC<LayersPanelProps> = ({
     if (filter.locked !== undefined) {
       filtered = filtered.filter(layer => layer.locked === filter.locked);
     }
+
+    // Sort by z-index (layer order)
+    return filtered.sort((a, b) => b.zIndex - a.zIndex);
+  }, [layers, groupedLayerIds, searchQuery, filter]);
+
+  // For search results, we need to show all matching layers including grouped ones
+  const searchResults = useMemo(() => {
+    if (!searchQuery.trim()) return [];
+    
+    const query = searchQuery.toLowerCase();
+    return layers.filter(layer =>
+      layer.name.toLowerCase().includes(query) ||
+      layer.content?.toLowerCase().includes(query) ||
+      layer.type.toLowerCase().includes(query)
+    ).sort((a, b) => b.zIndex - a.zIndex);
+  }, [layers, searchQuery]);
+
+  // Handle drag and drop reordering
+  const handleDragStart = useCallback((e: React.DragEvent, layerId: string) => {
+    setDraggedLayerId(layerId);
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', layerId);
+  }, []);
+
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  }, []);
+
+  const handleDrop = useCallback((e: React.DragEvent, targetLayerId: string) => {
+    e.preventDefault();
+    
+    if (!draggedLayerId || draggedLayerId === targetLayerId) return;
+
+    const draggedIndex = layers.findIndex(l => l.id === draggedLayerId);
+    const targetIndex = layers.findIndex(l => l.id === targetLayerId);
+
+    if (draggedIndex !== -1 && targetIndex !== -1) {
+      onLayerReorder(draggedLayerId, targetIndex);
+    }
+
+    setDraggedLayerId(null);
+  }, [draggedLayerId, layers, onLayerReorder]);
+
+  const handleDragEnd = useCallback(() => {
+    setDraggedLayerId(null);
+  }, []);
+
+  return (
+    <div className={cn("flex flex-col h-full", className)}>
+      {/* Search bar */}
+      {onSearchChange && (
+        <div className="p-3 border-b">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Input
+              placeholder="Search layers..."
+              value={searchQuery}
+              onChange={(e) => onSearchChange(e.target.value)}
