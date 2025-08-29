@@ -53,3 +53,59 @@ export const TransformControls: React.FC<TransformControlsProps> = ({
       if (e.key === 'Shift') setIsShiftPressed(false);
     };
 
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+    };
+  }, []);
+
+  // Generate transform handles
+  const handles = useMemo((): TransformHandle[] => {
+    if (!isSelected || disabled) return [];
+
+    const { x, y, width, height } = element;
+    const handleSize = 8 / zoom; // Scale handle size with zoom
+    const offset = handleSize / 2;
+
+    return [
+      // Corner handles
+      {
+        id: 'nw',
+        type: 'corner',
+        position: 'nw',
+        cursor: 'nw-resize',
+        bounds: { x: x - offset, y: y - offset, width: handleSize, height: handleSize },
+        active: false,
+      },
+      {
+        id: 'ne',
+        type: 'corner',
+        position: 'ne',
+        cursor: 'ne-resize',
+        bounds: { x: x + width - offset, y: y - offset, width: handleSize, height: handleSize },
+        active: false,
+      },
+      {
+        id: 'se',
+        type: 'corner',
+        position: 'se',
+        cursor: 'se-resize',
+        bounds: { x: x + width - offset, y: y + height - offset, width: handleSize, height: handleSize },
+        active: false,
+      },
+      {
+        id: 'sw',
+        type: 'corner',
+        position: 'sw',
+        cursor: 'sw-resize',
+        bounds: { x: x - offset, y: y + height - offset, width: handleSize, height: handleSize },
+        active: false,
+      },
+      // Edge handles
+      {
+        id: 'n',
+        type: 'edge',
+        position: 'n',
