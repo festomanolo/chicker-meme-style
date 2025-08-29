@@ -179,3 +179,64 @@ export class LayerManager {
     });
 
     return duplicatedElement;
+  }
+
+  /**
+   * Toggle layer visibility
+   */
+  toggleLayerVisibility(elementId: string): boolean {
+    const element = this.state.elements.find(el => el.id === elementId);
+    if (!element) return false;
+
+    element.visible = !element.visible;
+    element.updatedAt = Date.now();
+
+    this.emit('layerVisibilityChanged', { element, visible: element.visible });
+    this.emit('stateChanged', this.state);
+
+    return true;
+  }
+
+  /**
+   * Lock/unlock layer
+   */
+  lockLayer(elementId: string, locked: boolean): boolean {
+    const element = this.state.elements.find(el => el.id === elementId);
+    if (!element) return false;
+
+    element.locked = locked;
+    element.updatedAt = Date.now();
+
+    this.emit('layerLockChanged', { element, locked });
+    this.emit('stateChanged', this.state);
+
+    return true;
+  }
+
+  /**
+   * Bring layer forward
+   */
+  bringForward(elementId: string): boolean {
+    const currentIndex = this.state.elements.findIndex(el => el.id === elementId);
+    if (currentIndex === -1 || currentIndex === this.state.elements.length - 1) return false;
+
+    return this.reorderLayer(elementId, currentIndex + 1);
+  }
+
+  /**
+   * Send layer backward
+   */
+  sendBackward(elementId: string): boolean {
+    const currentIndex = this.state.elements.findIndex(el => el.id === elementId);
+    if (currentIndex === -1 || currentIndex === 0) return false;
+
+    return this.reorderLayer(elementId, currentIndex - 1);
+  }
+
+  /**
+   * Bring layer to front
+   */
+  bringToFront(elementId: string): boolean {
+    return this.reorderLayer(elementId, this.state.elements.length - 1);
+  }
+
