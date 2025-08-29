@@ -284,3 +284,61 @@ describe('ColorValidator', () => {
     it('should reject invalid HSV values', () => {
       expect(ColorValidator.validateHsvValues(-1, 50, 75)).toBe(false);
       expect(ColorValidator.validateHsvValues(361, 50, 75)).toBe(false);
+      expect(ColorValidator.validateHsvValues(180, -1, 75)).toBe(false);
+      expect(ColorValidator.validateHsvValues(180, 101, 75)).toBe(false);
+      expect(ColorValidator.validateHsvValues(180, 50, -1)).toBe(false);
+      expect(ColorValidator.validateHsvValues(180, 50, 101)).toBe(false);
+    });
+  });
+});
+
+describe('ColorManipulator', () => {
+  const testColor = createTshirtColor(255, 128, 64, 'Orange');
+
+  describe('Lightening and darkening', () => {
+    it('should lighten color correctly', () => {
+      const lightened = ColorManipulator.lighten(testColor, 0.2);
+      expect(lightened.v).toBeGreaterThan(testColor.v);
+      expect(lightened.h).toBe(testColor.h);
+      expect(lightened.s).toBe(testColor.s);
+    });
+
+    it('should darken color correctly', () => {
+      const darkened = ColorManipulator.darken(testColor, 0.2);
+      expect(darkened.v).toBeLessThan(testColor.v);
+      expect(darkened.h).toBe(testColor.h);
+      expect(darkened.s).toBe(testColor.s);
+    });
+
+    it('should not exceed bounds when lightening', () => {
+      const lightened = ColorManipulator.lighten(testColor, 1.0);
+      expect(lightened.v).toBeLessThanOrEqual(100);
+    });
+
+    it('should not go below bounds when darkening', () => {
+      const darkened = ColorManipulator.darken(testColor, 1.0);
+      expect(darkened.v).toBeGreaterThanOrEqual(0);
+    });
+  });
+
+  describe('Saturation adjustment', () => {
+    it('should saturate color correctly', () => {
+      const saturated = ColorManipulator.saturate(testColor, 0.2);
+      expect(saturated.s).toBeGreaterThan(testColor.s);
+      expect(saturated.h).toBe(testColor.h);
+      expect(saturated.v).toBe(testColor.v);
+    });
+
+    it('should desaturate color correctly', () => {
+      const desaturated = ColorManipulator.desaturate(testColor, 0.2);
+      expect(desaturated.s).toBeLessThan(testColor.s);
+      expect(desaturated.h).toBe(testColor.h);
+      expect(desaturated.v).toBe(testColor.v);
+    });
+  });
+
+  describe('Hue adjustment', () => {
+    it('should adjust hue correctly', () => {
+      const adjusted = ColorManipulator.adjustHue(testColor, 90);
+      expect(adjusted.h).toBe((testColor.h + 90) % 360);
+      expect(adjusted.s).toBe(testColor.s);
