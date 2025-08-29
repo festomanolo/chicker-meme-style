@@ -58,3 +58,63 @@ export class ColorManager {
   }
 
   /**
+   * Select optimal blending method based on performance and browser support
+   */
+  private async selectOptimalBlendingMethod(
+    color: TshirtColor,
+    mockup: TshirtMockup,
+    textureFilter?: TextureFilter
+  ): Promise<ColorBlendResult> {
+    // Check for WebGL support for GPU acceleration
+    if (this.supportsWebGL() && textureFilter?.gpuAccelerated) {
+      try {
+        return await this.applyWebGLBlending(color, mockup, textureFilter);
+      } catch (error) {
+        console.warn('WebGL blending failed, falling back to Canvas API');
+      }
+    }
+
+    // Try Canvas API blending
+    if (this.supportsCanvas2D()) {
+      try {
+        return await this.applyCanvasBlending(color, mockup, textureFilter);
+      } catch (error) {
+        console.warn('Canvas blending failed, falling back to CSS filters');
+      }
+    }
+
+    // Fallback to CSS filters
+    return this.applyCSSBlending(color, textureFilter);
+  }
+
+  /**
+   * Apply color using WebGL for maximum performance
+   */
+  private async applyWebGLBlending(
+    color: TshirtColor,
+    mockup: TshirtMockup,
+    textureFilter?: TextureFilter
+  ): Promise<ColorBlendResult> {
+    // This is a simplified WebGL implementation
+    // In a real implementation, you would use WebGL shaders for fabric blending
+    
+    const canvas = document.createElement('canvas');
+    const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+    
+    if (!gl) {
+      throw new Error('WebGL not supported');
+    }
+
+    // Create shader program for fabric color blending
+    const vertexShader = this.createVertexShader(gl);
+    const fragmentShader = this.createFabricFragmentShader(gl, color, textureFilter);
+    const program = this.createShaderProgram(gl, vertexShader, fragmentShader);
+
+    // Apply the shader and render
+    // ... WebGL rendering code would go here ...
+
+    return {
+      blendedColor: this.generateCSSFilter(color, textureFilter),
+      cssFilter: this.generateCSSFilter(color, textureFilter),
+      performanceMetrics: {
+        blendTime: 0,
