@@ -286,3 +286,60 @@ export const CropTransformController: React.FC<CropTransformControllerProps> = (
           
           <Button
             variant="outline"
+            size="sm"
+            onClick={handleCancel}
+            disabled={isTransitioning}
+          >
+            <X className="h-4 w-4 mr-1" />
+            Cancel
+          </Button>
+        </div>
+      </div>
+
+      {/* Quality warnings for crop mode */}
+      {mode === 'crop' && cropQuality && !cropQuality.isValid && (
+        <div className="p-3 bg-yellow-50 dark:bg-yellow-900/20 border-b border-yellow-200 dark:border-yellow-800">
+          <div className="flex items-start gap-2">
+            <div className="text-yellow-600 dark:text-yellow-400 text-sm">
+              <strong>Quality Warning:</strong>
+              <ul className="mt-1 space-y-1">
+                {cropQuality.warnings.map((warning, index) => (
+                  <li key={index} className="text-xs">• {warning}</li>
+                ))}
+              </ul>
+            </div>
+            <Badge variant="outline" className="text-xs">
+              Quality: {Math.round(cropQuality.qualityScore * 100)}%
+            </Badge>
+          </div>
+        </div>
+      )}
+
+      {/* Main content area */}
+      <div className="flex-1 relative">
+        {mode === 'crop' && element.type === 'image' ? (
+          <CropTool
+            imageUrl={element.imageUrl || ''}
+            originalCrop={currentCrop}
+            onCropChange={handleCropChange}
+            onCropConfirm={handleCropConfirm}
+            onCropCancel={handleCancel}
+            className="h-full"
+          />
+        ) : (
+          <div className="h-full flex items-center justify-center">
+            <TransformControls
+              element={element}
+              transform={currentTransform}
+              onTransformChange={handleTransformChange}
+              onTransformConfirm={handleTransformConfirm}
+              onCancel={handleCancel}
+              className="max-w-md"
+            />
+          </div>
+        )}
+
+        {/* Transition overlay */}
+        {isTransitioning && (
+          <div className="absolute inset-0 bg-white/50 dark:bg-gray-900/50 flex items-center justify-center z-10">
+            <div className="text-center">
