@@ -111,3 +111,59 @@ interface TshirtColor {
   r: number; // 0-255
   g: number; // 0-255
   b: number; // 0-255
+  hex: string;
+  name?: string;
+}
+
+interface TextureFilter {
+  id: string;
+  name: string;
+  shader: string;
+  preview: string;
+}
+```
+
+#### 3. MobileEditingPanel Component
+
+```typescript
+interface MobileEditingPanelProps {
+  isOpen: boolean;
+  onToggle: () => void;
+  selectedTool: EditingTool;
+  onToolChange: (tool: EditingTool) => void;
+  layers: DesignElement[];
+  selectedElementId: string | null;
+  onLayerSelect: (elementId: string) => void;
+  onLayerReorder: (fromIndex: number, toIndex: number) => void;
+  properties: ElementProperties;
+  onPropertyChange: (property: string, value: any) => void;
+}
+
+type EditingTool = 'move' | 'crop' | 'text' | 'image' | 'mask' | 'pen' | 'eyedropper';
+```
+
+#### 4. TransformControls Component
+
+```typescript
+interface TransformControlsProps {
+  element: DesignElement;
+  isSelected: boolean;
+  onTransform: (transform: TransformData) => void;
+  onTransformEnd: () => void;
+  canvasRect: DOMRect;
+  zoom: number;
+}
+
+interface TransformData {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  rotation: number;
+  scaleX: number;
+  scaleY: number;
+}
+```
+
+#### 5. WhatsAppNotification Component
+
