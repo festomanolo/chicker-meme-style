@@ -209,3 +209,56 @@ describe('MobileEditingPanel', () => {
   it('should show resize handle on tablets', () => {
     mockWindowDimensions(768, 1024); // Tablet
     const { container } = render(<MobileEditingPanel {...mockProps} />);
+    
+    const resizeHandle = container.querySelector('.cursor-col-resize');
+    expect(resizeHandle).toBeInTheDocument();
+  });
+
+  it('should not show resize handle on phones', () => {
+    mockWindowDimensions(375, 667); // Phone
+    const { container } = render(<MobileEditingPanel {...mockProps} />);
+    
+    const resizeHandle = container.querySelector('.cursor-col-resize');
+    expect(resizeHandle).not.toBeInTheDocument();
+  });
+});
+
+describe('useMobileEditingPanel', () => {
+  it('should initialize with closed state', () => {
+    const { result } = renderHook(() => useMobileEditingPanel());
+    
+    expect(result.current.isOpen).toBe(false);
+    expect(result.current.activePanel).toBe(null);
+  });
+
+  it('should open panel', () => {
+    const { result } = renderHook(() => useMobileEditingPanel());
+    
+    act(() => {
+      result.current.openPanel('test-panel');
+    });
+    
+    expect(result.current.isOpen).toBe(true);
+    expect(result.current.activePanel).toBe('test-panel');
+  });
+
+  it('should close panel', () => {
+    const { result } = renderHook(() => useMobileEditingPanel());
+    
+    act(() => {
+      result.current.openPanel('test-panel');
+    });
+    
+    expect(result.current.isOpen).toBe(true);
+    
+    act(() => {
+      result.current.closePanel();
+    });
+    
+    expect(result.current.isOpen).toBe(false);
+    expect(result.current.activePanel).toBe(null);
+  });
+
+  it('should toggle panel', () => {
+    const { result } = renderHook(() => useMobileEditingPanel());
+    
