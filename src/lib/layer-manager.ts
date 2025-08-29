@@ -361,3 +361,63 @@ export class LayerManager {
    * Create a group from selected layers
    */
   createGroup(elementIds: string[], groupName?: string): LayerGroup | null {
+    if (!this.config.enableGrouping || elementIds.length < 2) return null;
+
+    const elements = elementIds
+      .map(id => this.state.elements.find(el => el.id === id))
+      .filter(Boolean) as LayerElement[];
+
+    if (elements.length < 2) return null;
+
+    const now = Date.now();
+    const group: LayerGroup = {
+      id: this.generateId(),
+      name: groupName || `Group ${this.state.groups.length + 1}`,
+      visible: true,
+      locked: false,
+      expanded: true,
+      children: elementIds,
+      zIndex: Math.max(...elements.map(el => el.zIndex)),
+      createdAt: now,
+      updatedAt: now,
+    };
+
+    // Update elements to reference the group
+    elements.forEach(element => {
+      element.groupId = group.id;
+      element.updatedAt = now;
+    });
+
+    this.state.groups.push(group);
+
+    this.emit('groupCreated', group);
+    this.emit('stateChanged', this.state);
+
+    return group;
+  }
+
+  /**
+   * Ungroup layers
+   */
+  ungroup(groupId: string): boolean {
+    const groupIndex = this.state.groups.findIndex(g => g.id === groupId);
+    if (groupIndex === -1) return false;
+
+    const group = this.state.groups[groupIndex];
+    
+    // Remove group reference from elements
+    group.children.forEach(elementId => {
+      const element = this.state.elements.find(el => el.id === elementId);
+      if (element) {
+        delete element.groupId;
+        element.updatedAt = Date.now();
+      }
+    });
+
+    this.state.groups.splice(groupIndex, 1);
+
+    this.emit('groupRemoved', group);
+    this.emit('stateChanged', this.state);
+
+    return true;
+  }
