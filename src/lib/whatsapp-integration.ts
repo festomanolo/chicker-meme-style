@@ -98,3 +98,54 @@ export class WhatsAppIntegration {
     const formatted = this.formatPhoneNumber(cleaned);
     
     return { isValid: true, formatted };
+  }
+
+  /**
+   * Format phone number for display
+   */
+  static formatPhoneNumber(phoneNumber: string): string {
+    const cleaned = phoneNumber.replace(/\D/g, '');
+    
+    if (cleaned.length === 10) {
+      // US format: (123) 456-7890
+      return `(${cleaned.slice(0, 3)}) ${cleaned.slice(3, 6)}-${cleaned.slice(6)}`;
+    }
+    
+    if (cleaned.length === 11 && cleaned.startsWith('1')) {
+      // US with country code: +1 (123) 456-7890
+      return `+1 (${cleaned.slice(1, 4)}) ${cleaned.slice(4, 7)}-${cleaned.slice(7)}`;
+    }
+    
+    // International format: +XX XXXXXXXXX
+    if (cleaned.length > 10) {
+      const countryCode = cleaned.slice(0, -10);
+      const number = cleaned.slice(-10);
+      return `+${countryCode} ${number}`;
+    }
+    
+    return cleaned;
+  }
+
+  /**
+   * Generate message templates
+   */
+  static getMessageTemplates(): Record<string, string> {
+    return {
+      support: 'Hi! I need help with my design project.',
+      question: 'Hi! I have a question about your service.',
+      feedback: 'Hi! I\'d like to share some feedback.',
+      custom: 'Hi! I\'d like to get in touch.',
+      order: 'Hi! I need help with my order.',
+      technical: 'Hi! I\'m experiencing a technical issue.',
+    };
+  }
+
+  /**
+   * Create personalized message
+   */
+  static createPersonalizedMessage(
+    template: string,
+    context?: {
+      userName?: string;
+      projectName?: string;
+      pageUrl?: string;
