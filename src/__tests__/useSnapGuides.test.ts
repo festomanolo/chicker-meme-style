@@ -286,3 +286,61 @@ describe('useSnapGuides', () => {
     const snapResult = result.current.snapToGuides(position);
 
     expect(snapResult.snapped).toBe(true);
+    expect(snapResult.position.x).toBe(400);
+    expect(snapResult.position.y).toBe(300);
+  });
+
+  it('should handle snapping to only one axis', () => {
+    const { result } = renderHook(() => useSnapGuides({ snapThreshold: 15 }));
+
+    act(() => {
+      result.current.generateGuides(mockElements, mockCanvasSize);
+    });
+
+    const position: Point = { x: 405, y: 350 }; // Close to center X, far from center Y
+    const snapResult = result.current.snapToGuides(position);
+
+    expect(snapResult.snapped).toBe(true);
+    expect(snapResult.position.x).toBe(400); // Snapped
+    expect(snapResult.position.y).toBe(350); // Not snapped
+  });
+
+  it('should calculate correct snap distance', () => {
+    const { result } = renderHook(() => useSnapGuides({ snapThreshold: 15 }));
+
+    act(() => {
+      result.current.generateGuides(mockElements, mockCanvasSize);
+    });
+
+    const position: Point = { x: 405, y: 295 }; // 5px from center on both axes
+    const snapResult = result.current.snapToGuides(position);
+
+    expect(snapResult.snapDistance).toBe(5);
+  });
+
+  it('should handle custom snap threshold', () => {
+    const { result } = renderHook(() => useSnapGuides({ snapThreshold: 20 }));
+
+    act(() => {
+      result.current.generateGuides(mockElements, mockCanvasSize);
+    });
+
+    const position: Point = { x: 415, y: 285 }; // 15px from center
+    const snapResult = result.current.snapToGuides(position);
+
+    expect(snapResult.snapped).toBe(true); // Should snap with 20px threshold
+  });
+
+  it('should not snap with smaller threshold', () => {
+    const { result } = renderHook(() => useSnapGuides({ snapThreshold: 10 }));
+
+    act(() => {
+      result.current.generateGuides(mockElements, mockCanvasSize);
+    });
+
+    const position: Point = { x: 415, y: 285 }; // 15px from center
+    const snapResult = result.current.snapToGuides(position);
+
+    expect(snapResult.snapped).toBe(false); // Should not snap with 10px threshold
+  });
+});
