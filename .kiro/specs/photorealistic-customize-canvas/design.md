@@ -167,3 +167,59 @@ interface TransformData {
 
 #### 5. WhatsAppNotification Component
 
+```typescript
+interface WhatsAppNotificationProps {
+  isVisible: boolean;
+  onDismiss: () => void;
+  onWhatsAppClick: () => void;
+  config: NotificationConfig;
+}
+
+interface NotificationConfig {
+  phoneNumber: string;
+  defaultMessage: string;
+  cooldownMinutes: number;
+  intervalMinutes: number;
+  excludedPages: string[];
+}
+```
+
+### Service Interfaces
+
+#### 1. Transform Manager
+
+```typescript
+interface TransformManager {
+  applyTransform(elementId: string, transform: TransformData): void;
+  getTransformMatrix(element: DesignElement): DOMMatrix;
+  snapToGuides(position: Point, threshold: number): Point;
+  getSnapGuides(element: DesignElement, allElements: DesignElement[]): SnapGuide[];
+  validateBounds(element: DesignElement, canvasBounds: Rect): DesignElement;
+}
+
+interface SnapGuide {
+  type: 'center' | 'edge' | 'element' | 'grid';
+  position: number;
+  axis: 'x' | 'y';
+  temporary: boolean;
+}
+```
+
+#### 2. Color Manager
+
+```typescript
+interface ColorManager {
+  applyColorToFabric(color: TshirtColor, mockup: TshirtMockup): Promise<string>;
+  convertColorSpace(color: any, from: ColorSpace, to: ColorSpace): any;
+  generateColorPreview(color: TshirtColor, texture: TextureFilter): string;
+  blendColorWithFabric(color: TshirtColor, fabricBase: string): string;
+}
+
+type ColorSpace = 'rgb' | 'hsv' | 'hsl' | 'lab';
+```
+
+#### 3. Layer Manager
+
+```typescript
+interface LayerManager {
+  addLayer(element: DesignElement): void;
