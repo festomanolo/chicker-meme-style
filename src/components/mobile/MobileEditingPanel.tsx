@@ -98,3 +98,53 @@ export const MobileEditingPanel: React.FC<MobileEditingPanelProps> = ({
   }, [enableSwipeGestures]);
 
   const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    if (!isDragging || !enableSwipeGestures) return;
+    
+    const touch = e.touches[0];
+    const deltaX = touch.clientX - dragStartX;
+    
+    // Only allow dragging in the close direction
+    const closeDirection = position === 'right' ? 1 : -1;
+    const offset = Math.max(0, deltaX * closeDirection);
+    
+    setDragOffset(offset);
+  }, [isDragging, dragStartX, enableSwipeGestures, position]);
+
+  const handleTouchEnd = useCallback(() => {
+    if (!isDragging || !enableSwipeGestures) return;
+    
+    setIsDragging(false);
+    
+    // Close panel if dragged more than 30% of its width
+    if (dragOffset > dimensions.width * 0.3) {
+      onClose();
+    }
+    
+    setDragOffset(0);
+  }, [isDragging, dragOffset, dimensions.width, onClose, enableSwipeGestures]);
+
+  // Handle backdrop click
+  const handleBackdropClick = useCallback((e: React.MouseEvent) => {
+    if (e.target === overlayRef.current) {
+      onClose();
+    }
+  }, [onClose]);
+
+  // Panel transform styles
+  const panelTransform = () => {
+    const baseTransform = position === 'right' 
+      ? `translateX(${isOpen ? 0 : 100}%)`
+      : `translateX(${isOpen ? 0 : -100}%)`;
+    
+    if (isDragging && dragOffset > 0) {
+      const dragTransform = position === 'right' 
+        ? `translateX(${dragOffset}px)`
+        : `translateX(-${dragOffset}px)`;
+      return dragTransform;
+    }
+    
+    return baseTransform;
+  };
+
+  // Backdrop opacity based on drag
+  const backdropOpacity = () => {
