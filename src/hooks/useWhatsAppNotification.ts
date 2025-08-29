@@ -96,3 +96,53 @@ export const useWhatsAppNotification = (options: UseWhatsAppNotificationOptions 
     if (state.showCount >= config.maxShowsPerSession) return false;
     
     // Don't show if recently dismissed
+    if (state.dismissedAt && (now - state.dismissedAt) < config.cooldownMs) return false;
+    
+    // Don't show if not enough time passed since last show
+    if (state.lastShown && (now - state.lastShown) < config.intervalMs) return false;
+    
+    // Don't show if user was recently active
+    if ((now - state.lastActivity) < config.activityThresholdMs) return false;
+    
+    return true;
+  }, [state, config, isPageExcluded]);
+
+  // Update user activity
+  const updateActivity = useCallback(() => {
+    const now = Date.now();
+    setState(prev => {
+      const newState = { ...prev, lastActivity: now };
+      saveState(newState);
+      return newState;
+    });
+
+    // Reset activity timeout
+    if (activityTimeoutRef.current) {
+      clearTimeout(activityTimeoutRef.current);
+    }
+    
+    activityTimeoutRef.current = setTimeout(() => {
+      // User has been inactive, check if we should show notification
+      if (shouldShowNotification()) {
+        showNotification();
+      }
+    }, config.activityThresholdMs);
+  }, [config.activityThresholdMs, shouldShowNotification, saveState]);
+
+  // Show notification
+  const showNotification = useCallback(() => {
+    if (!shouldShowNotification()) return;
+
+    const now = Date.now();
+    setState(prev => {
+      const newState = {
+        ...prev,
+        isVisible: true,
+        lastShown: now,
+        showCount: prev.showCount + 1,
+      };
+      saveState(newState);
+      return newState;
+    });
+  }, [shouldShowNotification, saveState]);
+
