@@ -206,3 +206,55 @@ describe('WhatsAppIntegration', () => {
 
   describe('getMessageTemplates', () => {
     it('should return predefined message templates', () => {
+      const templates = WhatsAppIntegration.getMessageTemplates();
+      
+      expect(templates.support).toBeDefined();
+      expect(templates.question).toBeDefined();
+      expect(templates.feedback).toBeDefined();
+      expect(templates.custom).toBeDefined();
+      expect(templates.order).toBeDefined();
+      expect(templates.technical).toBeDefined();
+    });
+  });
+
+  describe('createPersonalizedMessage', () => {
+    it('should create personalized message with user name', () => {
+      const message = WhatsAppIntegration.createPersonalizedMessage(
+        'I need help.',
+        { userName: 'John' }
+      );
+      
+      expect(message).toBe('Hi, I\'m John. I need help.');
+    });
+
+    it('should add project name', () => {
+      const message = WhatsAppIntegration.createPersonalizedMessage(
+        'I need help.',
+        { projectName: 'My Project' }
+      );
+      
+      expect(message).toBe('I need help. I\'m working on "My Project".');
+    });
+
+    it('should add page URL', () => {
+      const message = WhatsAppIntegration.createPersonalizedMessage(
+        'I need help.',
+        { pageUrl: 'https://example.com/page' }
+      );
+      
+      expect(message).toContain('Page: https://example.com/page');
+    });
+
+    it('should add timestamp', () => {
+      const timestamp = Date.now();
+      const message = WhatsAppIntegration.createPersonalizedMessage(
+        'I need help.',
+        { timestamp }
+      );
+      
+      expect(message).toContain('Time:');
+    });
+
+    it('should combine all context', () => {
+      const message = WhatsAppIntegration.createPersonalizedMessage(
+        'I need help.',
