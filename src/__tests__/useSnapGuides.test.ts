@@ -113,3 +113,61 @@ describe('useSnapGuides', () => {
       g => g.elementId === 'element-4'
     );
 
+    expect(element1Guides.length).toBeGreaterThan(0);
+    expect(element2Guides.length).toBeGreaterThan(0);
+    expect(element3Guides.length).toBe(0); // Invisible
+    expect(element4Guides.length).toBe(0); // Locked
+  });
+
+  it('should generate grid guides when enabled', () => {
+    const { result } = renderHook(() => 
+      useSnapGuides({ enableGridSnap: true, gridSize: 50 })
+    );
+
+    act(() => {
+      result.current.generateGuides([], mockCanvasSize);
+    });
+
+    const gridGuides = result.current.snapGuides.filter(g => g.type === 'grid');
+    expect(gridGuides.length).toBeGreaterThan(0);
+
+    // Should have grid guides at 50px intervals
+    const gridXGuides = gridGuides.filter(g => g.axis === 'x');
+    const gridYGuides = gridGuides.filter(g => g.axis === 'y');
+
+    expect(gridXGuides.some(g => g.position === 50)).toBe(true);
+    expect(gridXGuides.some(g => g.position === 100)).toBe(true);
+    expect(gridYGuides.some(g => g.position === 50)).toBe(true);
+    expect(gridYGuides.some(g => g.position === 100)).toBe(true);
+  });
+
+  it('should snap to nearest guide within threshold', () => {
+    const { result } = renderHook(() => useSnapGuides({ snapThreshold: 15 }));
+
+    act(() => {
+      result.current.generateGuides(mockElements, mockCanvasSize);
+    });
+
+    const position: Point = { x: 405, y: 295 }; // Close to canvas center (400, 300)
+    const snapResult = result.current.snapToGuides(position);
+
+    expect(snapResult.snapped).toBe(true);
+    expect(snapResult.position.x).toBe(400);
+    expect(snapResult.position.y).toBe(300);
+    expect(snapResult.guides.length).toBeGreaterThan(0);
+  });
+
+  it('should not snap when distance exceeds threshold', () => {
+    const { result } = renderHook(() => useSnapGuides({ snapThreshold: 5 }));
+
+    act(() => {
+      result.current.generateGuides(mockElements, mockCanvasSize);
+    });
+
+    const position: Point = { x: 410, y: 310 }; // Too far from canvas center
+    const snapResult = result.current.snapToGuides(position);
+
+    expect(snapResult.snapped).toBe(false);
+    expect(snapResult.position).toEqual(position);
+  });
+
