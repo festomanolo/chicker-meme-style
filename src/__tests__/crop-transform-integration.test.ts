@@ -176,3 +176,62 @@ describe('CropTransformIntegration', () => {
       expect(result.width).toBeGreaterThanOrEqual(10);
       expect(result.height).toBeGreaterThanOrEqual(10);
     });
+
+    it('should adjust position if crop extends beyond bounds', () => {
+      const outOfBoundsCrop: CropData = {
+        ...mockCropData,
+        x: 350,
+        y: 350,
+        width: 100,
+        height: 100,
+      };
+
+      const result = CropTransformIntegration.validateCropWithTransform(outOfBoundsCrop, mockTransformData);
+
+      expect(result.x + result.width).toBeLessThanOrEqual(mockCropData.originalWidth);
+      expect(result.y + result.height).toBeLessThanOrEqual(mockCropData.originalHeight);
+    });
+  });
+
+  describe('applyCropToElement', () => {
+    it('should apply crop to image element', () => {
+      const result = CropTransformIntegration.applyCropToElement(mockImageElement, mockCropData);
+
+      expect(result.cropData).toEqual(mockCropData);
+      expect(result.updatedAt).toBeGreaterThan(mockImageElement.updatedAt);
+    });
+
+    it('should not modify non-image elements', () => {
+      const textElement: LayerElement = {
+        ...mockImageElement,
+        type: 'text',
+        content: 'Test text',
+      };
+
+      const result = CropTransformIntegration.applyCropToElement(textElement, mockCropData);
+
+      expect(result).toEqual(textElement);
+      expect(result.cropData).toBeUndefined();
+    });
+
+    it('should update element dimensions based on crop', () => {
+      const result = CropTransformIntegration.applyCropToElement(mockImageElement, mockCropData);
+
+      expect(result.width).toBe(mockCropData.width);
+      expect(result.height).toBe(mockCropData.height);
+    });
+  });
+
+  describe('resetCrop', () => {
+    it('should reset crop to original dimensions', () => {
+      const elementWithCrop: LayerElement = {
+        ...mockImageElement,
+        cropData: mockCropData,
+      };
+
+      const result = CropTransformIntegration.resetCrop(elementWithCrop);
+
+      expect(result.cropData?.x).toBe(0);
+      expect(result.cropData?.y).toBe(0);
+      expect(result.cropData?.width).toBe(mockCropData.originalWidth);
+      expect(result.cropData?.height).toBe(mockCropData.originalHeight);
