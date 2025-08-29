@@ -52,3 +52,56 @@ class LayerKeyManager {
 
   /**
    * Get existing key for a layer context or generate new one
+   */
+  getKey(context: LayerRenderContext, layerId: string, groupId?: string): string {
+    const lookupKey = `${context}-${layerId}-${groupId || ''}`;
+    const existingKey = this.keyMap.get(lookupKey);
+    
+    if (existingKey) {
+      return existingKey;
+    }
+    
+    return this.generateKey(context, layerId, groupId);
+  }
+
+  /**
+   * Clear all keys (useful for testing or component unmounting)
+   */
+  clearKeys(): void {
+    this.keyMap.clear();
+    this.usedKeys.clear();
+  }
+
+  /**
+   * Clear keys for a specific context
+   */
+  clearContextKeys(context: LayerRenderContext): void {
+    const keysToRemove: string[] = [];
+    
+    this.keyMap.forEach((value, key) => {
+      if (key.startsWith(`${context}-`)) {
+        keysToRemove.push(key);
+        this.usedKeys.delete(value);
+      }
+    });
+    
+    keysToRemove.forEach(key => this.keyMap.delete(key));
+  }
+
+  /**
+   * Validate that no duplicate keys exist
+   */
+  validateUniqueKeys(): boolean {
+    const allKeys = Array.from(this.keyMap.values());
+    const uniqueKeys = new Set(allKeys);
+    
+    if (allKeys.length !== uniqueKeys.size) {
+      console.error('Duplicate keys detected in LayerKeyManager');
+      return false;
+    }
+    
+    return true;
+  }
+
+  /**
+   * Get debug information about current keys
