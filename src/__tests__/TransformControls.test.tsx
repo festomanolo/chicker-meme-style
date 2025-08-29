@@ -384,3 +384,59 @@ describe('TransformControls', () => {
       <TransformControls
         element={mockElement}
         isSelected={true}
+        onTransform={mockOnTransform}
+        onTransformEnd={mockOnTransformEnd}
+        canvasRect={mockCanvasRect}
+        zoom={1}
+        showNumericReadout={false}
+      />
+    );
+
+    const handle = screen.getByLabelText('Resize handle se');
+    
+    fireEvent.mouseDown(handle, { clientX: 300, clientY: 250 });
+    fireEvent.mouseMove(document, { clientX: 320, clientY: 270 });
+
+    await waitFor(() => {
+      expect(mockOnTransform).toHaveBeenCalled();
+    });
+
+    expect(screen.queryByText(/W:/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/H:/)).not.toBeInTheDocument();
+  });
+
+  it('should apply grid snapping when enabled', async () => {
+    render(
+      <TransformControls
+        element={mockElement}
+        isSelected={true}
+        onTransform={mockOnTransform}
+        onTransformEnd={mockOnTransformEnd}
+        canvasRect={mockCanvasRect}
+        zoom={1}
+        snapToGrid={true}
+        gridSize={20}
+      />
+    );
+
+    const handle = screen.getByLabelText('Resize handle se');
+    
+    fireEvent.mouseDown(handle, { clientX: 300, clientY: 250 });
+    fireEvent.mouseMove(document, { clientX: 315, clientY: 265 }); // Should snap to grid
+
+    await waitFor(() => {
+      expect(mockOnTransform).toHaveBeenCalled();
+    });
+
+    const lastCall = mockOnTransform.mock.calls[mockOnTransform.mock.calls.length - 1][0];
+    expect(lastCall.width % 20).toBe(0); // Should be snapped to 20px grid
+    expect(lastCall.height % 20).toBe(0);
+  });
+
+  it('should show modifier key hint during corner resize', async () => {
+    render(
+      <TransformControls
+        element={mockElement}
+        isSelected={true}
+        onTransform={mockOnTransform}
+        onTransformEnd={mockOnTransformEnd}
