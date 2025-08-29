@@ -156,3 +156,56 @@ describe('MobileEditingPanel', () => {
   it('should handle window resize', () => {
     render(<MobileEditingPanel {...mockProps} />);
     
+    // Change window size
+    mockWindowDimensions(768, 1024);
+    fireEvent(window, new Event('resize'));
+    
+    // Panel should update its dimensions
+    const panel = document.querySelector('[style*="width"]');
+    expect(panel).toBeInTheDocument();
+  });
+
+  it('should show drag indicator when swipe gestures enabled', () => {
+    const { container } = render(
+      <MobileEditingPanel {...mockProps} enableSwipeGestures={true} />
+    );
+    
+    const dragIndicator = container.querySelector('.absolute.top-1\\/2');
+    expect(dragIndicator).toBeInTheDocument();
+  });
+
+  it('should hide drag indicator when swipe gestures disabled', () => {
+    const { container } = render(
+      <MobileEditingPanel {...mockProps} enableSwipeGestures={false} />
+    );
+    
+    const dragIndicator = container.querySelector('.absolute.top-1\\/2');
+    expect(dragIndicator).not.toBeInTheDocument();
+  });
+
+  it('should handle touch events for swipe gestures', () => {
+    const { container } = render(
+      <MobileEditingPanel {...mockProps} enableSwipeGestures={true} />
+    );
+    
+    const panel = container.querySelector('.fixed.top-0');
+    
+    if (panel) {
+      // Simulate touch start
+      fireEvent.touchStart(panel, {
+        touches: [{ clientX: 100, clientY: 100 }],
+      });
+      
+      // Simulate touch move
+      fireEvent.touchMove(panel, {
+        touches: [{ clientX: 150, clientY: 100 }],
+      });
+      
+      // Simulate touch end
+      fireEvent.touchEnd(panel);
+    }
+  });
+
+  it('should show resize handle on tablets', () => {
+    mockWindowDimensions(768, 1024); // Tablet
+    const { container } = render(<MobileEditingPanel {...mockProps} />);
