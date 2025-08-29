@@ -75,3 +75,42 @@ All mockup images should be designed to support color tinting:
 - Progressive loading supported for better user experience
 - Lazy loading implemented for non-visible mockups
 - Multiple resolution variants for optimal bandwidth usage
+
+## Asset Generation Guidelines
+
+When creating new mockup assets:
+
+1. **Photography Setup**:
+   - Use professional lighting setup
+   - Maintain consistent perspective and angle
+   - Ensure high contrast between t-shirt and background
+   - Use neutral background for easy removal
+
+2. **Post-Processing**:
+   - Remove background completely
+   - Enhance fabric texture and details
+   - Normalize lighting and shadows
+   - Create precise alpha masks for design areas
+
+3. **Quality Assurance**:
+   - Test color tinting across different hues
+   - Verify mask alignment with design area
+   - Check loading performance across resolutions
+   - Validate visual quality on various devices
+
+## Fallback Strategy
+
+If high-resolution assets fail to load:
+1. Attempt next lower resolution (3x → 2x → 1x)
+2. Show loading placeholder with progress indicator
+3. Display error state with retry option
+4. Log errors for monitoring and debugging
+
+## Future Expansion
+
+Additional mockup categories to consider:
+- Hoodies (front/back)
+- Tank tops (front/back)
+- V-neck t-shirts (front/back)
+- Polo shirts (front/back)
+- Different fit styles (slim, regular, oversized)
