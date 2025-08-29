@@ -117,3 +117,62 @@ const LayerItem: React.FC<{
   onUpdate,
   onDelete,
   onDuplicate,
+  onVisibilityToggle,
+  onLockToggle,
+  onStartEdit,
+  onEndEdit,
+  onDragStart,
+  onDragOver,
+  onDrop,
+}) => {
+  const [editName, setEditName] = useState(layer.name);
+
+  const handleNameSubmit = useCallback(() => {
+    if (editName.trim() && editName !== layer.name) {
+      onUpdate(layer.id, { name: editName.trim() });
+    }
+    onEndEdit();
+  }, [editName, layer.name, layer.id, onUpdate, onEndEdit]);
+
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleNameSubmit();
+    } else if (e.key === 'Escape') {
+      setEditName(layer.name);
+      onEndEdit();
+    }
+  }, [handleNameSubmit, layer.name, onEndEdit]);
+
+  const handleClick = useCallback((e: React.MouseEvent) => {
+    onSelect(layer.id, e.ctrlKey || e.metaKey);
+  }, [layer.id, onSelect]);
+
+  const handleDoubleClick = useCallback(() => {
+    if (!layer.locked) {
+      onStartEdit(layer.id);
+    }
+  }, [layer.id, layer.locked, onStartEdit]);
+
+  return (
+    <div
+      className={cn(
+        "group flex items-center gap-2 p-2 rounded-md border transition-all duration-150",
+        "hover:bg-gray-50 dark:hover:bg-gray-800",
+        isSelected && "bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800",
+        layer.locked && "opacity-60",
+        !layer.visible && "opacity-40"
+      )}
+      onClick={handleClick}
+      onDoubleClick={handleDoubleClick}
+      draggable={onDragStart && !layer.locked}
+      onDragStart={onDragStart ? (e) => onDragStart(e, layer.id) : undefined}
+      onDragOver={onDragOver}
+      onDrop={onDrop ? (e) => onDrop(e, layer.id) : undefined}
+      role="button"
+      tabIndex={0}
+      aria-label={`Layer: ${layer.name}`}
+      aria-selected={isSelected}
+      data-testid={`layer-item-${layer.id}`}
+    >
+      {/* Drag handle */}
+      {onDragStart && (
