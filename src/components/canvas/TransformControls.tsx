@@ -497,3 +497,58 @@ export const TransformControls: React.FC<TransformControlsProps> = ({
           onMouseDown={(e) => handleMouseDown(e, rotationHandle)}
           onTouchStart={(e) => handleTouchStart(e, rotationHandle)}
           role="button"
+          tabIndex={0}
+          aria-label="Rotation handle"
+        >
+          <RotateCw className="w-3 h-3 text-green-600" />
+        </div>
+      )}
+
+      {/* Rotation line */}
+      {rotationHandle && (
+        <div
+          className="absolute border-l border-green-400 border-dashed pointer-events-none"
+          style={{
+            left: currentTransform.x + currentTransform.width / 2,
+            top: currentTransform.y,
+            height: 30 / zoom,
+            transform: 'translateX(-0.5px)',
+            zIndex: 999,
+          }}
+        />
+      )}
+
+      {/* Numeric readout */}
+      {showNumericReadout && dragState.isDragging && (
+        <div
+          className="absolute bg-gray-900 text-white text-xs px-2 py-1 rounded shadow-lg pointer-events-none z-50"
+          style={{
+            left: currentTransform.x + currentTransform.width + 10,
+            top: currentTransform.y,
+          }}
+        >
+          <div>W: {Math.round(currentTransform.width)}px</div>
+          <div>H: {Math.round(currentTransform.height)}px</div>
+          {dragState.handlePosition === 'rotate' && (
+            <div>R: {Math.round(currentTransform.rotation || 0)}°</div>
+          )}
+        </div>
+      )}
+
+      {/* Modifier key hint */}
+      {dragState.isDragging && ['nw', 'ne', 'se', 'sw'].includes(dragState.handlePosition!) && (
+        <div
+          className="absolute bg-blue-900 text-white text-xs px-2 py-1 rounded shadow-lg pointer-events-none z-50"
+          style={{
+            left: currentTransform.x,
+            top: currentTransform.y - 30,
+          }}
+        >
+          {isShiftPressed ? 'Free transform' : 'Hold Shift for free transform'}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default TransformControls;
