@@ -202,3 +202,54 @@ export const useCanvasLayout = (options: UseCanvasLayoutOptions = {}) => {
     
     if (animated) {
       animateLayoutChange(layoutState, newState);
+    } else {
+      setLayoutState(newState);
+      onLayoutChange?.(newState);
+    }
+  }, [layoutState, animateLayoutChange, onLayoutChange]);
+
+  const fitToCanvas = useCallback((animated = true) => {
+    // Calculate zoom to fit content in available canvas space
+    const { canvasWidth, canvasHeight } = calculateCanvasDimensions();
+    const contentWidth = 800; // Default content width
+    const contentHeight = 600; // Default content height
+    
+    const scaleX = canvasWidth / contentWidth;
+    const scaleY = canvasHeight / contentHeight;
+    const optimalZoom = Math.min(scaleX, scaleY, 1); // Don't zoom in beyond 100%
+    
+    const centerX = (canvasWidth - contentWidth * optimalZoom) / 2;
+    const centerY = (canvasHeight - contentHeight * optimalZoom) / 2;
+    
+    const newState = {
+      ...layoutState,
+      zoom: optimalZoom,
+      panX: centerX,
+      panY: centerY,
+    };
+    
+    if (animated) {
+      animateLayoutChange(layoutState, newState);
+    } else {
+      setLayoutState(newState);
+      onLayoutChange?.(newState);
+    }
+  }, [calculateCanvasDimensions, layoutState, animateLayoutChange, onLayoutChange]);
+
+  const resetView = useCallback((animated = true) => {
+    const newState = {
+      ...layoutState,
+      zoom: 1,
+      panX: 0,
+      panY: 0,
+    };
+    
+    if (animated) {
+      animateLayoutChange(layoutState, newState);
+    } else {
+      setLayoutState(newState);
+      onLayoutChange?.(newState);
+    }
+  }, [layoutState, animateLayoutChange, onLayoutChange]);
+
+  // Get canvas transform styles
