@@ -105,3 +105,57 @@ class LayerKeyManager {
 
   /**
    * Get debug information about current keys
+   */
+  getDebugInfo(): { totalKeys: number; keysByContext: Record<string, number> } {
+    const keysByContext: Record<string, number> = {};
+    
+    this.keyMap.forEach((_, key) => {
+      const context = key.split('-')[0];
+      keysByContext[context] = (keysByContext[context] || 0) + 1;
+    });
+    
+    return {
+      totalKeys: this.keyMap.size,
+      keysByContext
+    };
+  }
+}
+
+// React hook for consistent key generation
+export const useLayerKeys = () => {
+  const keyManager = LayerKeyManager.getInstance();
+  
+  return {
+    getIndividualKey: (layerId: string) => 
+      keyManager.getKey('individual', layerId),
+    getGroupKey: (layerId: string, groupId: string) => 
+      keyManager.getKey('group', layerId, groupId),
+    getSearchKey: (layerId: string) => 
+      keyManager.getKey('search', layerId),
+    clearKeys: () => keyManager.clearKeys(),
+    clearContextKeys: (context: LayerRenderContext) => 
+      keyManager.clearContextKeys(context),
+    validateKeys: () => keyManager.validateUniqueKeys(),
+    getDebugInfo: () => keyManager.getDebugInfo()
+  };
+};
+
+// Development-time duplicate detection
+export const useDuplicateDetection = (elementId: string, renderType: string) => {
+  if (process.env.NODE_ENV === 'development') {
+    const keyManager = LayerKeyManager.getInstance();
+    
+    // Check if this element is being rendered multiple times
+    React.useEffect(() => {
+      const debugInfo = keyManager.getDebugInfo();
+      const isValid = keyManager.validateUniqueKeys();
+      
+      if (!isValid) {
+        console.warn(`Potential duplicate rendering detected for element ${elementId} as ${renderType}`);
+        console.log('Key manager debug info:', debugInfo);
+      }
+    }, [elementId, renderType, keyManager]);
+  }
+};
+
+export default LayerKeyManager;
