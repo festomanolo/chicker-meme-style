@@ -111,3 +111,60 @@ export const useSnapGuides = (options: UseSnapGuidesOptions = {}): UseSnapGuides
       if (element.visible && !element.locked) {
         const { x, y, width, height } = element;
         
+        // Element center guides
+        guides.push(
+          {
+            type: 'element',
+            position: x + width / 2,
+            axis: 'x',
+            temporary: false,
+            elementId: element.id,
+            priority: 2,
+          },
+          {
+            type: 'element',
+            position: y + height / 2,
+            axis: 'y',
+            temporary: false,
+            elementId: element.id,
+            priority: 2,
+          }
+        );
+
+        // Element edge guides
+        guides.push(
+          {
+            type: 'element',
+            position: x,
+            axis: 'x',
+            temporary: false,
+            elementId: element.id,
+            priority: 3,
+          },
+          {
+            type: 'element',
+            position: x + width,
+            axis: 'x',
+            temporary: false,
+            elementId: element.id,
+            priority: 3,
+          },
+          {
+            type: 'element',
+            position: y,
+            axis: 'y',
+            temporary: false,
+            elementId: element.id,
+            priority: 3,
+          },
+          {
+            type: 'element',
+            position: y + height,
+            axis: 'y',
+            temporary: false,
+            elementId: element.id,
+            priority: 3,
+          }
+        );
+      }
+    });
