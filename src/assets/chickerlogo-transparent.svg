@@ -24,3 +24,29 @@
   <polygon points="45,40 35,45 45,50" fill="#FF8C42"/>
   
   <!-- Eyes -->
+  <circle cx="52" cy="35" r="4" fill="white"/>
+  <circle cx="68" cy="35" r="4" fill="white"/>
+  <circle cx="52" cy="35" r="2" fill="black"/>
+  <circle cx="68" cy="35" r="2" fill="black"/>
+  
+  <!-- Comb -->
+  <path d="M50 20 Q55 15 60 20 Q65 15 70 20 Q65 25 60 22 Q55 25 50 20" fill="#FF4444"/>
+  
+  <!-- Wing -->
+  <ellipse cx="75" cy="70" rx="15" ry="20" fill="#FF8C42" opacity="0.8"/>
+  
+  <!-- Tail Feathers -->
+  <path d="M25 75 Q15 65 20 55 Q30 60 35 70" fill="#FF8C42" opacity="0.8"/>
+  <path d="M25 80 Q10 75 15 65 Q25 70 30 80" fill="#FFD23F" opacity="0.8"/>
+  
+  <!-- Legs -->
+  <rect x="50" y="100" width="4" height="15" fill="#FF8C42"/>
+  <rect x="66" y="100" width="4" height="15" fill="#FF8C42"/>
+  
+  <!-- Feet -->
+  <path d="M45 115 L50 115 L52 120 L48 120 L45 115" fill="#FF8C42"/>
+  <path d="M66 115 L71 115 L73 120 L69 120 L66 115" fill="#FF8C42"/>
+  
+  <!-- Meme Elements -->
+  <text x="60" y="95" text-anchor="middle" font-family="Arial Black" font-size="8" fill="white" stroke="black" stroke-width="0.5">MEME</text>
+</svg>
