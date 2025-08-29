@@ -430,3 +430,57 @@ const Orders = () => {
                               </p>
                             </div>
                           </div>
+
+                          {/* Order Actions */}
+                          <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-border">
+                            <Button
+                              variant="outline"
+                              onClick={() => reorder(order.id)}
+                              className="glass border-glass-border"
+                            >
+                              <RefreshCw className="h-4 w-4 mr-2" />
+                              Reorder
+                            </Button>
+                            <Button
+                              variant="outline"
+                              onClick={() => downloadInvoice(order.id)}
+                              className="glass border-glass-border"
+                            >
+                              <Download className="h-4 w-4 mr-2" />
+                              Download Invoice
+                            </Button>
+                            {order.status === "delivered" && (
+                              <Button variant="outline" className="glass border-glass-border">
+                                <Star className="h-4 w-4 mr-2" />
+                                Leave Review
+                              </Button>
+                            )}
+                          </div>
+                        </CardContent>
+                      )}
+                    </Card>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="text-center py-16">
+                <div className="w-24 h-24 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Package className="h-8 w-8 text-muted-foreground" />
+                </div>
+                <h3 className="text-lg font-semibold mb-2">No orders found</h3>
+                <p className="text-muted-foreground mb-4">
+                  {searchQuery ? "Try adjusting your search terms" : "You haven't placed any orders yet"}
+                </p>
+                <Button onClick={() => navigate("/")}>
+                  Start Shopping
+                </Button>
+              </div>
+            )}
+          </TabsContent>
+        </Tabs>
+      </div>
+    </div>
+  );
+};
+
+export default Orders;
