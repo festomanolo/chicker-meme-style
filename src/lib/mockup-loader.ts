@@ -155,3 +155,55 @@ class MockupAssetLoader {
     if (dpr >= 2) return '2x';
     return '1x';
   }
+
+  /**
+   * Preload multiple mockups
+   */
+  async preloadMockups(mockups: TshirtMockup[], options?: MockupLoadOptions): Promise<MockupAssetInfo[]> {
+    const loadPromises = mockups.map(mockup => 
+      this.loadMockupAsset(mockup, options).catch(error => ({
+        url: mockup.variants['1x'],
+        width: 0,
+        height: 0,
+        loaded: false,
+        error: error.message,
+      }))
+    );
+
+    return Promise.all(loadPromises);
+  }
+
+  /**
+   * Validate mockup data structure
+   */
+  validateMockup(mockup: TshirtMockup): MockupValidationResult {
+    const errors: string[] = [];
+    const warnings: string[] = [];
+
+    // Required fields validation
+    if (!mockup.id) errors.push('Mockup ID is required');
+    if (!mockup.name) errors.push('Mockup name is required');
+    if (!['front', 'back'].includes(mockup.type)) {
+      errors.push('Mockup type must be "front" or "back"');
+    }
+
+    // Variants validation
+    if (!mockup.variants) {
+      errors.push('Mockup variants are required');
+    } else {
+      ['1x', '2x', '3x'].forEach(resolution => {
+        if (!mockup.variants[resolution as keyof typeof mockup.variants]) {
+          errors.push(`Missing ${resolution} resolution variant`);
+        }
+      });
+    }
+
+    // Design area validation
+    if (!mockup.designArea) {
+      errors.push('Design area is required');
+    } else {
+      if (mockup.designArea.width <= 0 || mockup.designArea.height <= 0) {
+        errors.push('Design area dimensions must be positive');
+      }
+      if (!mockup.designArea.curvature || !mockup.designArea.curvature.points) {
+        warnings.push('Design area curvature not defined, using rectangular area');
