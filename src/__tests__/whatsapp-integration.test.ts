@@ -154,3 +154,55 @@ describe('WhatsAppIntegration', () => {
     });
 
     it('should validate phone numbers with country code', () => {
+      const result = WhatsAppIntegration.validatePhoneNumber('11234567890');
+      
+      expect(result.isValid).toBe(true);
+      expect(result.formatted).toBe('+1 (123) 456-7890');
+    });
+
+    it('should reject empty phone numbers', () => {
+      const result = WhatsAppIntegration.validatePhoneNumber('');
+      
+      expect(result.isValid).toBe(false);
+      expect(result.error).toBe('Phone number is required');
+    });
+
+    it('should reject short phone numbers', () => {
+      const result = WhatsAppIntegration.validatePhoneNumber('123');
+      
+      expect(result.isValid).toBe(false);
+      expect(result.error).toBe('Phone number too short');
+    });
+
+    it('should reject long phone numbers', () => {
+      const result = WhatsAppIntegration.validatePhoneNumber('1234567890123456');
+      
+      expect(result.isValid).toBe(false);
+      expect(result.error).toBe('Phone number too long');
+    });
+  });
+
+  describe('formatPhoneNumber', () => {
+    it('should format 10-digit US numbers', () => {
+      const formatted = WhatsAppIntegration.formatPhoneNumber('1234567890');
+      expect(formatted).toBe('(123) 456-7890');
+    });
+
+    it('should format 11-digit US numbers with country code', () => {
+      const formatted = WhatsAppIntegration.formatPhoneNumber('11234567890');
+      expect(formatted).toBe('+1 (123) 456-7890');
+    });
+
+    it('should format international numbers', () => {
+      const formatted = WhatsAppIntegration.formatPhoneNumber('441234567890');
+      expect(formatted).toBe('+44 1234567890');
+    });
+
+    it('should handle numbers with non-digits', () => {
+      const formatted = WhatsAppIntegration.formatPhoneNumber('+1 (234) 567-8900');
+      expect(formatted).toBe('+1 (234) 567-8900');
+    });
+  });
+
+  describe('getMessageTemplates', () => {
+    it('should return predefined message templates', () => {
