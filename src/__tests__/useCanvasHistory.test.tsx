@@ -50,3 +50,55 @@ const createMockLayer = (): LayerElement => ({
   width: 100,
   height: 100,
   rotation: 0,
+  scaleX: 1,
+  scaleY: 1,
+  imageUrl: '/test-image.jpg',
+  createdAt: Date.now(),
+  updatedAt: Date.now(),
+});
+
+describe('useCanvasHistory', () => {
+  let mockState: CanvasState;
+  let mockLayer: LayerElement;
+
+  beforeEach(() => {
+    mockState = createMockCanvasState();
+    mockLayer = createMockLayer();
+  });
+
+  it('should initialize with default values', () => {
+    const { result } = renderHook(() => useCanvasHistory());
+
+    expect(result.current.canUndo).toBe(false);
+    expect(result.current.canRedo).toBe(false);
+    expect(typeof result.current.undo).toBe('function');
+    expect(typeof result.current.redo).toBe('function');
+  });
+
+  it('should initialize with custom options', () => {
+    const options = {
+      maxEntries: 25,
+      debounceMs: 500,
+      enableCompression: false,
+    };
+
+    const { result } = renderHook(() => useCanvasHistory(options));
+
+    expect(result.current.getStats).toBeDefined();
+  });
+
+  it('should handle adding layers to history', () => {
+    const { result } = renderHook(() => useCanvasHistory());
+
+    act(() => {
+      result.current.addLayer(mockLayer, mockState);
+    });
+
+    expect(result.current.canUndo).toBe(true);
+    expect(result.current.canRedo).toBe(false);
+  });
+
+  it('should handle removing layers from history', () => {
+    const { result } = renderHook(() => useCanvasHistory());
+
+    act(() => {
