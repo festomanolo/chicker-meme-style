@@ -51,3 +51,55 @@ jest.mock('@/hooks/useCanvasHistory', () => ({
   useCanvasHistory: jest.fn(() => ({
     canUndo: false,
     canRedo: false,
+    undo: jest.fn(),
+    redo: jest.fn(),
+    addLayer: jest.fn(),
+    updateLayer: jest.fn(),
+    saveState: jest.fn(),
+    getStats: jest.fn(() => ({ totalEntries: 0, memoryUsage: 0 })),
+  })),
+}));
+
+jest.mock('@/hooks/useSnapGuides', () => ({
+  useSnapGuides: jest.fn(() => ({
+    guides: [],
+    addGuide: jest.fn(),
+    removeGuide: jest.fn(),
+  })),
+}));
+
+describe('PhotorealisticCustomize Integration', () => {
+  const mockProps = {
+    onSave: jest.fn(),
+    onExport: jest.fn(),
+  };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('should render main customize interface', async () => {
+    render(<PhotorealisticCustomize {...mockProps} />);
+    
+    expect(screen.getByText('T-Shirt Designer')).toBeInTheDocument();
+    expect(screen.getByTestId('photorealistic-mockup')).toBeInTheDocument();
+  });
+
+  it('should load default mockup when none provided', async () => {
+    render(<PhotorealisticCustomize {...mockProps} />);
+    
+    await waitFor(() => {
+      expect(screen.getByTestId('photorealistic-mockup')).toHaveTextContent('Classic T-Shirt');
+    });
+  });
+
+  it('should use initial mockup when provided', () => {
+    const initialMockup = {
+      id: 'test-mockup',
+      name: 'Test Mockup',
+      category: 'apparel' as const,
+      baseColor: '#ffffff',
+      assets: {
+        '1x': '/test-1x.jpg',
+        '2x': '/test-2x.jpg',
+        '3x': '/test-3x.jpg',
