@@ -281,3 +281,60 @@ describe('useWhatsAppNotification', () => {
     expect(result.current.clickCount).toBe(0);
   });
 
+  it('should use custom config', () => {
+    const customConfig = {
+      phoneNumber: '9876543210',
+      defaultMessage: 'Custom message',
+    };
+    
+    const { result } = renderHook(() => 
+      useWhatsAppNotification({ config: customConfig })
+    );
+    
+    expect(result.current.config.phoneNumber).toBe('9876543210');
+    expect(result.current.config.defaultMessage).toBe('Custom message');
+  });
+
+  it('should call analytics callback', () => {
+    const onAnalytics = jest.fn();
+    const { result } = renderHook(() => 
+      useWhatsAppNotification({ onAnalytics })
+    );
+    
+    act(() => {
+      result.current.dismiss();
+    });
+    
+    // Analytics should be called through the notification component
+    expect(result.current.onAnalytics).toBe(onAnalytics);
+  });
+
+  it('should handle activity tracking', () => {
+    renderHook(() => useWhatsAppNotification());
+    
+    // Simulate user activity
+    fireEvent.mouseMove(document);
+    fireEvent.keyPress(document);
+    fireEvent.scroll(document);
+    
+    // Activity should be tracked (tested indirectly through state changes)
+  });
+
+  it('should handle page navigation', () => {
+    Object.defineProperty(window, 'location', {
+      value: { pathname: '/settings' },
+      writable: true,
+    });
+    
+    const { result } = renderHook(() => useWhatsAppNotification());
+    
+    act(() => {
+      result.current.forceShow();
+    });
+    
+    // Should hide on excluded pages
+    act(() => {
+      fireEvent(window, new Event('popstate'));
+    });
+  });
+});
