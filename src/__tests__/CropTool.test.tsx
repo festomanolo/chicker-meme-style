@@ -56,3 +56,62 @@ describe('CropTool', () => {
   });
 
   it('should display crop dimensions in toolbar', async () => {
+    render(<CropTool {...mockProps} originalCrop={mockCropData} />);
+    
+    const image = screen.getByAltText('Crop preview');
+    fireEvent.load(image);
+
+    await waitFor(() => {
+      expect(screen.getByText('200 × 200')).toBeInTheDocument();
+    });
+  });
+
+  it('should show preset buttons when enabled', async () => {
+    const config: CropToolConfig = { enablePresets: true };
+    render(<CropTool {...mockProps} config={config} />);
+    
+    const image = screen.getByAltText('Crop preview');
+    fireEvent.load(image);
+
+    await waitFor(() => {
+      expect(screen.getByText('Free')).toBeInTheDocument();
+      expect(screen.getByText('1:1')).toBeInTheDocument();
+      expect(screen.getByText('3:4')).toBeInTheDocument();
+      expect(screen.getByText('4:3')).toBeInTheDocument();
+      expect(screen.getByText('16:9')).toBeInTheDocument();
+      expect(screen.getByText('9:16')).toBeInTheDocument();
+    });
+  });
+
+  it('should hide preset buttons when disabled', async () => {
+    const config: CropToolConfig = { enablePresets: false };
+    render(<CropTool {...mockProps} config={config} />);
+    
+    const image = screen.getByAltText('Crop preview');
+    fireEvent.load(image);
+
+    await waitFor(() => {
+      expect(screen.queryByText('Free')).not.toBeInTheDocument();
+      expect(screen.queryByText('1:1')).not.toBeInTheDocument();
+    });
+  });
+
+  it('should call onCropConfirm when confirm button clicked', async () => {
+    const user = userEvent.setup();
+    render(<CropTool {...mockProps} originalCrop={mockCropData} />);
+    
+    const image = screen.getByAltText('Crop preview');
+    fireEvent.load(image);
+
+    await waitFor(async () => {
+      const confirmButton = screen.getByText('Confirm');
+      await user.click(confirmButton);
+    });
+
+    expect(mockProps.onCropConfirm).toHaveBeenCalledWith(mockCropData);
+  });
+
+  it('should call onCropCancel when cancel button clicked', async () => {
+    const user = userEvent.setup();
+    render(<CropTool {...mockProps} />);
+    
