@@ -102,3 +102,55 @@ describe('useCanvasHistory', () => {
     const { result } = renderHook(() => useCanvasHistory());
 
     act(() => {
+      result.current.removeLayer('layer-1', mockState);
+    });
+
+    expect(result.current.canUndo).toBe(true);
+    expect(result.current.canRedo).toBe(false);
+  });
+
+  it('should handle updating layers in history', () => {
+    const { result } = renderHook(() => useCanvasHistory());
+
+    const updates = { name: 'Updated Layer', x: 200 };
+
+    act(() => {
+      result.current.updateLayer('layer-1', updates, mockState);
+    });
+
+    expect(result.current.canUndo).toBe(true);
+    expect(result.current.canRedo).toBe(false);
+  });
+
+  it('should handle transform operations', () => {
+    const { result } = renderHook(() => useCanvasHistory());
+
+    act(() => {
+      result.current.transformElement('layer-1', mockState);
+    });
+
+    expect(result.current.canUndo).toBe(true);
+  });
+
+  it('should handle crop operations', () => {
+    const { result } = renderHook(() => useCanvasHistory());
+
+    act(() => {
+      result.current.cropElement('layer-1', mockState);
+    });
+
+    expect(result.current.canUndo).toBe(true);
+  });
+
+  it('should handle color change operations', () => {
+    const { result } = renderHook(() => useCanvasHistory());
+
+    act(() => {
+      result.current.changeColor('layer-1', mockState);
+    });
+
+    expect(result.current.canUndo).toBe(true);
+  });
+
+  it('should handle bulk update operations', () => {
+    const { result } = renderHook(() => useCanvasHistory());
