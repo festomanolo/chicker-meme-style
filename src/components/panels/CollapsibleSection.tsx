@@ -68,3 +68,38 @@ export const CollapsibleSection: React.FC<CollapsibleSectionProps> = ({
           <div className="flex items-center gap-2">
             {IconComponent && (
               <IconComponent className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+            )}
+            <span className="font-medium text-sm text-gray-900 dark:text-gray-100">
+              {title}
+            </span>
+          </div>
+          
+          {showToggleIcon && (
+            <div className="flex-shrink-0 ml-2">
+              {isExpanded ? (
+                <ChevronDown className="h-4 w-4 text-gray-500 transition-transform" />
+              ) : (
+                <ChevronRight className="h-4 w-4 text-gray-500 transition-transform" />
+              )}
+            </div>
+          )}
+        </div>
+      </Button>
+
+      {/* Section content */}
+      <div
+        id={`section-${title.toLowerCase().replace(/\s+/g, '-')}`}
+        className={cn(
+          'overflow-hidden transition-all duration-200 ease-in-out',
+          isExpanded ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'
+        )}
+      >
+        <div className={cn('p-3 pt-0', contentClassName)}>
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default CollapsibleSection;
