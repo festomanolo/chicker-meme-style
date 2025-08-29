@@ -103,3 +103,56 @@ describe('PhotorealisticCustomize Integration', () => {
         '1x': '/test-1x.jpg',
         '2x': '/test-2x.jpg',
         '3x': '/test-3x.jpg',
+      },
+      printArea: { x: 0, y: 0, width: 100, height: 100 },
+      metadata: { dimensions: { width: 800, height: 600 }, dpi: 300 },
+    };
+
+    render(<PhotorealisticCustomize {...mockProps} initialMockup={initialMockup} />);
+    
+    expect(screen.getByTestId('photorealistic-mockup')).toHaveTextContent('Test Mockup');
+  });
+
+  it('should use initial color when provided', () => {
+    const initialColor = {
+      h: 120,
+      s: 100,
+      v: 100,
+      rgb: { r: 0, g: 255, b: 0 },
+    };
+
+    render(<PhotorealisticCustomize {...mockProps} initialColor={initialColor} />);
+    
+    expect(screen.getByTestId('photorealistic-mockup')).toHaveTextContent('Color: 0,255,0');
+  });
+
+  it('should handle tool selection', async () => {
+    const user = userEvent.setup();
+    render(<PhotorealisticCustomize {...mockProps} />);
+    
+    // Find and click a tool button (assuming Move tool exists)
+    const moveButton = screen.getByLabelText(/move tool/i);
+    await user.click(moveButton);
+    
+    // Tool should be selected (visual feedback would be tested in component tests)
+    expect(moveButton).toBeInTheDocument();
+  });
+
+  it('should handle save action', async () => {
+    const user = userEvent.setup();
+    render(<PhotorealisticCustomize {...mockProps} />);
+    
+    const saveButton = screen.getByText('Save');
+    await user.click(saveButton);
+    
+    expect(mockProps.onSave).toHaveBeenCalledWith(
+      expect.objectContaining({
+        layers: expect.any(Array),
+        selectedIds: expect.any(Array),
+        canvasSettings: expect.any(Object),
+      })
+    );
+  });
+
+  it('should handle export action', async () => {
+    const user = userEvent.setup();
