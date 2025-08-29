@@ -100,3 +100,54 @@ export const useCanvasLayout = (options: UseCanvasLayoutOptions = {}) => {
       // Easing function (ease-out)
       const easeOut = 1 - Math.pow(1 - progress, 3);
 
+      const interpolatedState: CanvasLayoutState = {
+        canvasWidth: fromState.canvasWidth + (toState.canvasWidth! - fromState.canvasWidth) * easeOut,
+        canvasHeight: fromState.canvasHeight + (toState.canvasHeight! - fromState.canvasHeight) * easeOut,
+        canvasX: fromState.canvasX + (toState.canvasX! - fromState.canvasX) * easeOut,
+        canvasY: fromState.canvasY + (toState.canvasY! - fromState.canvasY) * easeOut,
+        zoom: fromState.zoom + ((toState.zoom || fromState.zoom) - fromState.zoom) * easeOut,
+        panX: fromState.panX + ((toState.panX || fromState.panX) - fromState.panX) * easeOut,
+        panY: fromState.panY + ((toState.panY || fromState.panY) - fromState.panY) * easeOut,
+        isAnimating: progress < 1,
+      };
+
+      setLayoutState(interpolatedState);
+      onLayoutChange?.(interpolatedState);
+
+      if (progress < 1) {
+        animationRef.current = requestAnimationFrame(animate);
+      } else {
+        // Animation complete
+        const finalState = { ...interpolatedState, isAnimating: false };
+        setLayoutState(finalState);
+        onLayoutChange?.(finalState);
+      }
+    };
+
+    if (animationRef.current) {
+      cancelAnimationFrame(animationRef.current);
+    }
+    
+    setLayoutState(prev => ({ ...prev, isAnimating: true }));
+    animationRef.current = requestAnimationFrame(animate);
+  }, [defaultConfig, onLayoutChange]);
+
+  // Update canvas layout when panel state changes
+  const updateCanvasLayout = useCallback((animated = true) => {
+    const newDimensions = calculateCanvasDimensions();
+    const currentState = layoutState;
+
+    if (animated) {
+      animateLayoutChange(currentState, newDimensions);
+    } else {
+      const newState = { ...currentState, ...newDimensions, isAnimating: false };
+      setLayoutState(newState);
+      onLayoutChange?.(newState);
+    }
+  }, [calculateCanvasDimensions, layoutState, animateLayoutChange, onLayoutChange]);
+
+  // Handle viewport resize
+  useEffect(() => {
+    const handleResize = () => {
+      setViewportDimensions({
+        width: window.innerWidth,
