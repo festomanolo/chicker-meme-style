@@ -106,3 +106,57 @@ const mockOrders: Order[] = [
       city: "Nairobi",
       country: "Kenya"
     }
+  },
+  {
+    id: "ORD-2024-003",
+    date: "2024-01-22",
+    status: "printing",
+    total: 50000,
+    items: [
+      {
+        id: "4",
+        name: "Custom Design Tee",
+        image: "/api/placeholder/100/100",
+        quantity: 2,
+        price: 25000,
+        size: "L",
+        color: "Black"
+      }
+    ],
+    estimatedDelivery: "Jan 28, 2024",
+    shippingAddress: {
+      name: "Alex Johnson",
+      address: "789 Independence Ave",
+      city: "Kampala",
+      country: "Uganda"
+    }
+  }
+];
+
+const statusConfig = {
+  "awaiting-payment": {
+    label: "Awaiting Payment",
+    color: "bg-warning",
+    icon: Clock,
+    description: "Complete your payment to process this order"
+  },
+  "paid": {
+    label: "Payment Confirmed",
+    color: "bg-success", 
+    icon: CheckCircle,
+    description: "Payment received, preparing for printing"
+  },
+  "printing": {
+    label: "Printing",
+    color: "bg-primary",
+    icon: Package,
+    description: "Your design is being printed on premium fabric"
+  },
+  "shipped": {
+    label: "Shipped",
+    color: "bg-accent",
+    icon: Truck,
+    description: "Package is on its way to you"
+  },
+  "delivered": {
+    label: "Delivered",
