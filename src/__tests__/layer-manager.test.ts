@@ -396,3 +396,60 @@ describe('LayerManager', () => {
 
     it('should auto-generate group name if not provided', () => {
       const group = manager.createGroup([elements[0].id, elements[1].id]);
+
+      expect(group!.name).toBe('Group 1');
+    });
+
+    it('should not create group with less than 2 elements', () => {
+      const group = manager.createGroup([elements[0].id]);
+      expect(group).toBeNull();
+    });
+
+    it('should ungroup elements', () => {
+      const group = manager.createGroup([elements[0].id, elements[1].id]);
+      const ungrouped = manager.ungroup(group!.id);
+
+      expect(ungrouped).toBe(true);
+      
+      // Elements should no longer reference the group
+      expect(manager.getLayer(elements[0].id)!.groupId).toBeUndefined();
+      expect(manager.getLayer(elements[1].id)!.groupId).toBeUndefined();
+    });
+  });
+
+  describe('configuration and limits', () => {
+    it('should respect maximum element limit', () => {
+      const limitedManager = new LayerManager({ maxElements: 2 });
+      
+      limitedManager.addLayer(mockElement);
+      limitedManager.addLayer(mockElement);
+      
+      expect(() => {
+        limitedManager.addLayer(mockElement);
+      }).toThrow('Maximum number of elements (2) reached');
+    });
+
+    it('should disable auto-name generation when configured', () => {
+      const noAutoNameManager = new LayerManager({ autoGenerateNames: false });
+      const element = noAutoNameManager.addLayer({ ...mockElement, name: '' });
+
+      expect(element.name).toBe('text layer');
+    });
+
+    it('should disable grouping when configured', () => {
+      const noGroupManager = new LayerManager({ enableGrouping: false });
+      const element1 = noGroupManager.addLayer(mockElement);
+      const element2 = noGroupManager.addLayer(mockElement);
+      
+      const group = noGroupManager.createGroup([element1.id, element2.id]);
+      expect(group).toBeNull();
+    });
+  });
+
+  describe('event system', () => {
+    it('should emit events for layer operations', () => {
+      const layerAddedSpy = jest.fn();
+      const stateChangedSpy = jest.fn();
+
+      manager.on('layerAdded', layerAddedSpy);
+      manager.on('stateChanged', stateChangedSpy);
