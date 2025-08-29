@@ -171,3 +171,61 @@ describe('useSnapGuides', () => {
     expect(snapResult.position).toEqual(position);
   });
 
+  it('should exclude guides from specified element', () => {
+    const { result } = renderHook(() => useSnapGuides());
+
+    act(() => {
+      result.current.generateGuides(mockElements, mockCanvasSize);
+    });
+
+    // Position close to element-1 center (200, 175)
+    const position: Point = { x: 205, y: 180 };
+    const snapResult = result.current.snapToGuides(position, 'element-1');
+
+    // Should not snap to element-1's guides, but might snap to others
+    const element1Guides = snapResult.guides.filter(g => g.elementId === 'element-1');
+    expect(element1Guides.length).toBe(0);
+  });
+
+  it('should create temporary guides for visual feedback', () => {
+    const { result } = renderHook(() => useSnapGuides({ showTemporaryGuides: true }));
+
+    act(() => {
+      result.current.generateGuides(mockElements, mockCanvasSize);
+    });
+
+    const position: Point = { x: 405, y: 295 };
+    
+    act(() => {
+      result.current.snapToGuides(position);
+    });
+
+    expect(result.current.temporaryGuides.length).toBeGreaterThan(0);
+    expect(result.current.temporaryGuides.every(g => g.temporary)).toBe(true);
+  });
+
+  it('should not create temporary guides when disabled', () => {
+    const { result } = renderHook(() => useSnapGuides({ showTemporaryGuides: false }));
+
+    act(() => {
+      result.current.generateGuides(mockElements, mockCanvasSize);
+    });
+
+    const position: Point = { x: 405, y: 295 };
+    
+    act(() => {
+      result.current.snapToGuides(position);
+    });
+
+    expect(result.current.temporaryGuides.length).toBe(0);
+  });
+
+  it('should clear temporary guides', () => {
+    const { result } = renderHook(() => useSnapGuides({ showTemporaryGuides: true }));
+
+    act(() => {
+      result.current.generateGuides(mockElements, mockCanvasSize);
+    });
+
+    // Create temporary guides
+    act(() => {
