@@ -104,3 +104,57 @@ const mockMockup: TshirtMockup = {
     width: 200,
     height: 240,
     curvature: {
+      points: [
+        { x: 0, y: 0 },
+        { x: 200, y: 0 },
+        { x: 200, y: 240 },
+        { x: 0, y: 240 },
+      ],
+      closed: true,
+    },
+  },
+  metadata: {
+    originalWidth: 520,
+    originalHeight: 600,
+    designAreaRatio: 0.38,
+    shadowIntensity: 0.3,
+    fabricTexture: 'cotton-medium',
+  },
+};
+
+const mockTextureFilter: TextureFilter = {
+  id: 'light-wash',
+  name: 'Light Wash',
+  description: 'Subtle faded appearance',
+  category: 'wash',
+  cssFilter: 'brightness(1.1) contrast(0.9)',
+  canvasFilter: {
+    type: 'color-matrix',
+    matrix: [1.1, 0, 0, 0, 10, 0, 1.1, 0, 0, 10, 0, 0, 1.1, 0, 10, 0, 0, 0, 1, 0],
+  },
+  preview: '/test-preview.webp',
+  intensity: 30,
+  gpuAccelerated: true,
+};
+
+describe('ColorManager', () => {
+  let manager: ColorManager;
+
+  beforeEach(() => {
+    manager = new ColorManager();
+    jest.clearAllMocks();
+  });
+
+  describe('applyColorToFabric', () => {
+    it('should apply color to fabric successfully', async () => {
+      const result = await manager.applyColorToFabric(mockColor, mockMockup);
+
+      expect(result).toBeDefined();
+      expect(typeof result).toBe('string');
+    });
+
+    it('should apply color with texture filter', async () => {
+      const result = await manager.applyColorToFabric(mockColor, mockMockup, mockTextureFilter);
+
+      expect(result).toBeDefined();
+      expect(typeof result).toBe('string');
