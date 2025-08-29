@@ -253,3 +253,54 @@ export const useCanvasLayout = (options: UseCanvasLayoutOptions = {}) => {
   }, [layoutState, animateLayoutChange, onLayoutChange]);
 
   // Get canvas transform styles
+  const getCanvasStyles = useCallback(() => {
+    const { canvasX, canvasY, canvasWidth, canvasHeight, zoom, panX, panY } = layoutState;
+    
+    return {
+      position: 'absolute' as const,
+      left: canvasX,
+      top: canvasY,
+      width: canvasWidth,
+      height: canvasHeight,
+      transform: `translate(${panX}px, ${panY}px) scale(${zoom})`,
+      transformOrigin: '0 0',
+      transition: layoutState.isAnimating ? `transform ${defaultConfig.animationDuration}ms ease-out` : 'none',
+    };
+  }, [layoutState, defaultConfig.animationDuration]);
+
+  // Get panel overlay styles
+  const getPanelOverlayStyles = useCallback(() => {
+    const { panelWidth, panelPosition } = defaultConfig;
+    
+    return {
+      position: 'fixed' as const,
+      top: 0,
+      [panelPosition]: 0,
+      width: isPanelOpen ? panelWidth : 0,
+      height: '100vh',
+      transition: `width ${defaultConfig.animationDuration}ms ease-out`,
+      pointerEvents: isPanelOpen ? 'auto' as const : 'none' as const,
+    };
+  }, [isPanelOpen, defaultConfig]);
+
+  return {
+    // State
+    layoutState,
+    isPanelOpen,
+    viewportDimensions,
+    
+    // Actions
+    openPanel,
+    closePanel,
+    togglePanel,
+    setZoom,
+    setPan,
+    fitToCanvas,
+    resetView,
+    
+    // Utilities
+    getCanvasStyles,
+    getPanelOverlayStyles,
+    updateCanvasLayout,
+  };
+};
