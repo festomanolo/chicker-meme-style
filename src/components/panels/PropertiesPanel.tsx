@@ -227,3 +227,60 @@ const QuickActions: React.FC<{
       >
         Bring Forward
       </button>
+      <button
+        onClick={() => onAction('send-backward')}
+        disabled={!element}
+        className="px-3 py-2 text-xs bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded disabled:opacity-50"
+      >
+        Send Backward
+      </button>
+    </div>
+    
+    {element && (
+      <div className="grid grid-cols-2 gap-2">
+        <button
+          onClick={() => onAction('lock')}
+          className="px-3 py-2 text-xs bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded"
+        >
+          {element.locked ? 'Unlock' : 'Lock'}
+        </button>
+        <button
+          onClick={() => onAction('visibility')}
+          className="px-3 py-2 text-xs bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded"
+        >
+          {element.visible ? 'Hide' : 'Show'}
+        </button>
+      </div>
+    )}
+  </div>
+);
+
+export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
+  selectedTool,
+  selectedElement,
+  onElementUpdate,
+  className,
+}) => {
+  const handleElementUpdate = (updates: Partial<LayerElement>) => {
+    if (selectedElement && onElementUpdate) {
+      onElementUpdate(selectedElement.id, updates);
+    }
+  };
+
+  const handleQuickAction = (action: string) => {
+    if (!selectedElement) return;
+    
+    switch (action) {
+      case 'duplicate':
+        // Handle duplication
+        break;
+      case 'delete':
+        // Handle deletion
+        break;
+      case 'bring-forward':
+        handleElementUpdate({ zIndex: selectedElement.zIndex + 1 });
+        break;
+      case 'send-backward':
+        handleElementUpdate({ zIndex: Math.max(0, selectedElement.zIndex - 1) });
+        break;
+      case 'lock':
