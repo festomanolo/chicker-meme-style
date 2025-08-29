@@ -106,3 +106,58 @@ describe('ToolsRow', () => {
 
   it('should render in vertical orientation', () => {
     const { container } = render(
+      <ToolsRow {...mockProps} config={{ orientation: 'vertical' }} />
+    );
+    
+    const toolsContainer = container.firstChild;
+    expect(toolsContainer).toHaveClass('flex-col');
+  });
+
+  it('should render in horizontal orientation by default', () => {
+    const { container } = render(<ToolsRow {...mockProps} />);
+    
+    const toolsContainer = container.firstChild;
+    expect(toolsContainer).toHaveClass('flex-row');
+  });
+
+  it('should show labels when enabled', () => {
+    render(<ToolsRow {...mockProps} config={{ showLabels: true }} />);
+    
+    // Labels should be visible in the DOM
+    expect(screen.getByText('Move')).toBeInTheDocument();
+    expect(screen.getByText('Crop')).toBeInTheDocument();
+    expect(screen.getByText('Text')).toBeInTheDocument();
+  });
+
+  it('should apply different icon sizes', () => {
+    const { rerender } = render(
+      <ToolsRow {...mockProps} config={{ iconSize: 'sm' }} />
+    );
+    
+    let moveButton = screen.getByLabelText(/move tool/i);
+    let icon = moveButton.querySelector('svg');
+    expect(icon).toHaveClass('h-4', 'w-4');
+    
+    rerender(<ToolsRow {...mockProps} config={{ iconSize: 'lg' }} />);
+    
+    moveButton = screen.getByLabelText(/move tool/i);
+    icon = moveButton.querySelector('svg');
+    expect(icon).toHaveClass('h-6', 'w-6');
+  });
+
+  it('should maintain 44px minimum touch targets', () => {
+    render(<ToolsRow {...mockProps} />);
+    
+    const buttons = screen.getAllByRole('button');
+    buttons.forEach(button => {
+      expect(button).toHaveClass('min-h-[44px]', 'min-w-[44px]');
+    });
+  });
+
+  it('should show active indicator for selected tool', () => {
+    render(<ToolsRow {...mockProps} selectedTool="move" />);
+    
+    const moveButton = screen.getByLabelText(/move tool/i);
+    const indicator = moveButton.querySelector('.absolute.-bottom-1');
+    expect(indicator).toBeInTheDocument();
+  });
