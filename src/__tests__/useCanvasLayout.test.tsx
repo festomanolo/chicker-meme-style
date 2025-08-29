@@ -221,3 +221,59 @@ describe('useCanvasLayout', () => {
     mockWindowDimensions(300, 200); // Smaller than minimum
 
     const { result } = renderHook(() => useCanvasLayout({ config }));
+
+    expect(result.current.layoutState.canvasWidth).toBeGreaterThanOrEqual(500);
+    expect(result.current.layoutState.canvasHeight).toBeGreaterThanOrEqual(400);
+  });
+
+  it('should adjust canvas position for left panel', () => {
+    const config = {
+      panelPosition: 'left' as const,
+      panelWidth: 300,
+    };
+
+    const { result } = renderHook(() => useCanvasLayout({ config }));
+
+    act(() => {
+      result.current.openPanel();
+    });
+
+    expect(result.current.layoutState.canvasX).toBe(300);
+  });
+
+  it('should adjust canvas position for right panel', () => {
+    const config = {
+      panelPosition: 'right' as const,
+      panelWidth: 300,
+    };
+
+    const { result } = renderHook(() => useCanvasLayout({ config }));
+
+    act(() => {
+      result.current.openPanel();
+    });
+
+    expect(result.current.layoutState.canvasX).toBe(0);
+  });
+
+  it('should update layout when panel state changes', () => {
+    const { result } = renderHook(() => useCanvasLayout());
+
+    const initialWidth = result.current.layoutState.canvasWidth;
+
+    act(() => {
+      result.current.openPanel();
+    });
+
+    // Canvas width should change when panel opens
+    expect(result.current.layoutState.canvasWidth).not.toBe(initialWidth);
+  });
+
+  it('should cleanup animation on unmount', () => {
+    const { unmount } = renderHook(() => useCanvasLayout());
+
+    unmount();
+
+    expect(global.cancelAnimationFrame).toHaveBeenCalled();
+  });
+});
