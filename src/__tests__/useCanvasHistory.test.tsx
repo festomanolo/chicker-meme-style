@@ -154,3 +154,54 @@ describe('useCanvasHistory', () => {
 
   it('should handle bulk update operations', () => {
     const { result } = renderHook(() => useCanvasHistory());
+
+    act(() => {
+      result.current.bulkUpdate(['layer-1', 'layer-2'], mockState);
+    });
+
+    expect(result.current.canUndo).toBe(true);
+  });
+
+  it('should handle undo operations', () => {
+    const { result } = renderHook(() => useCanvasHistory());
+
+    // Add an entry first
+    act(() => {
+      result.current.addLayer(mockLayer, mockState);
+    });
+
+    expect(result.current.canUndo).toBe(true);
+
+    // Perform undo
+    let undoResult: any;
+    act(() => {
+      undoResult = result.current.undo();
+    });
+
+    expect(undoResult.success).toBe(true);
+    expect(undoResult.state).toBeDefined();
+    expect(result.current.canUndo).toBe(false);
+    expect(result.current.canRedo).toBe(true);
+  });
+
+  it('should handle redo operations', () => {
+    const { result } = renderHook(() => useCanvasHistory());
+
+    // Add entry and undo
+    act(() => {
+      result.current.addLayer(mockLayer, mockState);
+    });
+
+    act(() => {
+      result.current.undo();
+    });
+
+    expect(result.current.canRedo).toBe(true);
+
+    // Perform redo
+    let redoResult: any;
+    act(() => {
+      redoResult = result.current.redo();
+    });
+
+    expect(redoResult.success).toBe(true);
