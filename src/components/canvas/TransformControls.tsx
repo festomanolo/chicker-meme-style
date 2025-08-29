@@ -275,3 +275,58 @@ export const TransformControls: React.FC<TransformControlsProps> = ({
         break;
 
       case 'e':
+        newTransform.width = Math.max(10, element.width + deltaX);
+        break;
+
+      case 's':
+        newTransform.height = Math.max(10, element.height + deltaY);
+        break;
+
+      case 'w':
+        newTransform.width = Math.max(10, element.width - deltaX);
+        newTransform.x = element.x + (element.width - newTransform.width);
+        break;
+
+      case 'rotate':
+        const centerX = element.x + element.width / 2;
+        const centerY = element.y + element.height / 2;
+        
+        const startAngle = Math.atan2(startPos.y / zoom - centerY, startPos.x / zoom - centerX);
+        const currentAngle = Math.atan2(currentPos.y / zoom - centerY, currentPos.x / zoom - centerX);
+        
+        let rotation = (currentAngle - startAngle) * (180 / Math.PI) + (element.rotation || 0);
+        
+        // Snap to 15-degree increments when close
+        const snapAngle = Math.round(rotation / 15) * 15;
+        if (Math.abs(rotation - snapAngle) < 5) {
+          rotation = snapAngle;
+        }
+        
+        newTransform.rotation = rotation % 360;
+        break;
+    }
+
+    // Apply proportional scaling for corner handles when Shift is not pressed
+    if (['nw', 'ne', 'se', 'sw'].includes(handlePosition) && !isShiftPressed) {
+      const aspectRatio = element.width / element.height;
+      if (newTransform.width / newTransform.height !== aspectRatio) {
+        if (Math.abs(deltaX) > Math.abs(deltaY)) {
+          newTransform.height = newTransform.width / aspectRatio;
+        } else {
+          newTransform.width = newTransform.height * aspectRatio;
+        }
+        
+        // Adjust position for constrained resize
+        if (handlePosition === 'nw') {
+          newTransform.x = element.x + element.width - newTransform.width;
+          newTransform.y = element.y + element.height - newTransform.height;
+        } else if (handlePosition === 'ne') {
+          newTransform.y = element.y + element.height - newTransform.height;
+        } else if (handlePosition === 'sw') {
+          newTransform.x = element.x + element.width - newTransform.width;
+        }
+      }
+    }
+
+    // Apply grid snapping if enabled
+    if (snapToGrid && gridSize) {
