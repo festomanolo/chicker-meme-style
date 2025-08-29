@@ -81,3 +81,44 @@ class MobileStorage implements StorageInterface {
     try {
       await this.AsyncStorage.clear();
     } catch (error) {
+      console.error('Failed to clear AsyncStorage:', error);
+    }
+  }
+}
+
+// Platform detection
+const isWeb = typeof window !== 'undefined' && typeof window.localStorage !== 'undefined';
+const isMobile = typeof navigator !== 'undefined' && /react-native/i.test(navigator.userAgent);
+
+// Export the appropriate storage implementation
+export const storage: StorageInterface = isWeb ? new WebStorage() : new MobileStorage();
+
+// Utility functions for common operations
+export const storageUtils = {
+  async getJSON<T>(key: string): Promise<T | null> {
+    try {
+      const item = await storage.getItem(key);
+      return item ? JSON.parse(item) : null;
+    } catch {
+      return null;
+    }
+  },
+
+  async setJSON(key: string, value: any): Promise<void> {
+    try {
+      await storage.setItem(key, JSON.stringify(value));
+    } catch (error) {
+      console.error('Failed to save JSON to storage:', error);
+    }
+  },
+
+  async updateJSON<T>(key: string, updater: (current: T | null) => T): Promise<void> {
+    try {
+      const current = await this.getJSON<T>(key);
+      const updated = updater(current);
+      await this.setJSON(key, updated);
+    } catch (error) {
+      console.error('Failed to update JSON in storage:', error);
+    }
+  }
+};
