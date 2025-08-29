@@ -375,3 +375,57 @@ describe('utility functions', () => {
       
       expect(manager).toBeInstanceOf(TransformManager);
     });
+  });
+
+  describe('createDefaultConfig', () => {
+    it('should create default configuration', () => {
+      const config = createDefaultConfig(mockCanvasSize, mockViewportSize);
+      
+      expect(config.canvasSize).toEqual(mockCanvasSize);
+      expect(config.viewportSize).toEqual(mockViewportSize);
+      expect(config.devicePixelRatio).toBe(window.devicePixelRatio || 1);
+      expect(config.origin).toEqual({ x: 0, y: 0 });
+      expect(config.flipY).toBe(false);
+    });
+  });
+
+  describe('matrix operations', () => {
+    const matrixA: TransformMatrix = { a: 2, b: 0, c: 0, d: 2, e: 10, f: 20 };
+    const matrixB: TransformMatrix = { a: 1, b: 0, c: 0, d: 1, e: 5, f: 10 };
+
+    it('should multiply matrices correctly', () => {
+      const result = multiplyMatrices(matrixA, matrixB);
+      
+      expect(result.a).toBe(2); // 2 * 1 + 0 * 0
+      expect(result.d).toBe(2); // 0 * 0 + 2 * 1
+      expect(result.e).toBe(25); // 2 * 5 + 0 * 10 + 10
+      expect(result.f).toBe(40); // 0 * 5 + 2 * 10 + 20
+    });
+
+    it('should invert matrix correctly', () => {
+      const identity: TransformMatrix = { a: 1, b: 0, c: 0, d: 1, e: 0, f: 0 };
+      const inverted = invertMatrix(identity);
+      
+      expect(inverted).toEqual(identity);
+    });
+
+    it('should handle non-invertible matrix', () => {
+      const singular: TransformMatrix = { a: 0, b: 0, c: 0, d: 0, e: 0, f: 0 };
+      const inverted = invertMatrix(singular);
+      
+      // Should return identity matrix for non-invertible matrix
+      expect(inverted.a).toBe(1);
+      expect(inverted.d).toBe(1);
+    });
+
+    it('should transform point correctly', () => {
+      const point: Point = { x: 10, y: 20 };
+      const matrix: TransformMatrix = { a: 2, b: 0, c: 0, d: 2, e: 5, f: 10 };
+      
+      const transformed = transformPoint(point, matrix);
+      
+      expect(transformed.x).toBe(25); // 2 * 10 + 0 * 20 + 5
+      expect(transformed.y).toBe(50); // 0 * 10 + 2 * 20 + 10
+    });
+  });
+});
