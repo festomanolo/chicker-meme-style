@@ -90,3 +90,50 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
 
   // Add event listeners
   useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    canvas.addEventListener('wheel', handleWheel, { passive: false });
+    
+    return () => {
+      canvas.removeEventListener('wheel', handleWheel);
+    };
+  }, [handleWheel]);
+
+  const handleZoomIn = () => {
+    const newZoom = Math.min(5, layoutState.zoom * 1.2);
+    setZoom(newZoom);
+  };
+
+  const handleZoomOut = () => {
+    const newZoom = Math.max(0.1, layoutState.zoom / 1.2);
+    setZoom(newZoom);
+  };
+
+  const canvasStyles = getCanvasStyles();
+
+  return (
+    <div className={cn('relative w-full h-full overflow-hidden bg-gray-100 dark:bg-gray-800', className)}>
+      {/* Canvas area */}
+      <div
+        ref={canvasRef}
+        className="absolute inset-0 cursor-grab active:cursor-grabbing"
+        style={{
+          left: isPanelOpen && panelPosition === 'left' ? panelWidth : 0,
+          right: isPanelOpen && panelPosition === 'right' ? panelWidth : 0,
+          transition: layoutState.isAnimating ? 'left 300ms ease-out, right 300ms ease-out' : 'none',
+        }}
+        onMouseDown={handleMouseDown}
+      >
+        {/* Canvas content */}
+        <div
+          className="absolute top-0 left-0 origin-top-left"
+          style={canvasStyles}
+        >
+          {children}
+        </div>
+
+        {/* Grid background */}
+        <div 
+          className="absolute inset-0 opacity-20"
+          style={{
