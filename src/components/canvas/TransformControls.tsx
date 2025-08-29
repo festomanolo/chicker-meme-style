@@ -220,3 +220,58 @@ export const TransformControls: React.FC<TransformControlsProps> = ({
       elementId: element.id,
       handleType: handle.type,
       handlePosition: handle.position,
+    });
+
+    setLiveTransform({
+      x: element.x,
+      y: element.y,
+      width: element.width,
+      height: element.height,
+      rotation: element.rotation || 0,
+      scaleX: element.scaleX || 1,
+      scaleY: element.scaleY || 1,
+    });
+  }, [disabled, canvasRect, element]);
+
+  // Calculate new transform based on drag
+  const calculateTransform = useCallback((
+    currentPos: Point,
+    startPos: Point,
+    handlePosition: TransformHandle['position']
+  ): TransformData => {
+    const deltaX = (currentPos.x - startPos.x) / zoom;
+    const deltaY = (currentPos.y - startPos.y) / zoom;
+    
+    let newTransform = { ...liveTransform! };
+
+    switch (handlePosition) {
+      case 'nw':
+        newTransform.width = Math.max(10, element.width - deltaX);
+        newTransform.height = Math.max(10, element.height - deltaY);
+        newTransform.x = element.x + (element.width - newTransform.width);
+        newTransform.y = element.y + (element.height - newTransform.height);
+        break;
+
+      case 'ne':
+        newTransform.width = Math.max(10, element.width + deltaX);
+        newTransform.height = Math.max(10, element.height - deltaY);
+        newTransform.y = element.y + (element.height - newTransform.height);
+        break;
+
+      case 'se':
+        newTransform.width = Math.max(10, element.width + deltaX);
+        newTransform.height = Math.max(10, element.height + deltaY);
+        break;
+
+      case 'sw':
+        newTransform.width = Math.max(10, element.width - deltaX);
+        newTransform.height = Math.max(10, element.height + deltaY);
+        newTransform.x = element.x + (element.width - newTransform.width);
+        break;
+
+      case 'n':
+        newTransform.height = Math.max(10, element.height - deltaY);
+        newTransform.y = element.y + (element.height - newTransform.height);
+        break;
+
+      case 'e':
