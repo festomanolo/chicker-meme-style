@@ -495,3 +495,58 @@ describe('TransformControls', () => {
     
     fireEvent.mouseDown(northHandle, { clientX: 200, clientY: 100 });
     fireEvent.mouseMove(document, { clientX: 200, clientY: 80 }); // Move up
+
+    await waitFor(() => {
+      expect(mockOnTransform).toHaveBeenCalled();
+    });
+
+    const lastCall = mockOnTransform.mock.calls[mockOnTransform.mock.calls.length - 1][0];
+    expect(lastCall.height).toBeGreaterThan(mockElement.height); // Height should increase
+    expect(lastCall.y).toBeLessThan(mockElement.y); // Y should decrease
+    expect(lastCall.width).toBe(mockElement.width); // Width should stay the same
+  });
+
+  it('should apply custom className', () => {
+    const { container } = render(
+      <TransformControls
+        element={mockElement}
+        isSelected={true}
+        onTransform={mockOnTransform}
+        onTransformEnd={mockOnTransformEnd}
+        canvasRect={mockCanvasRect}
+        zoom={1}
+        className="custom-transform-controls"
+      />
+    );
+
+    expect(container.firstChild).toHaveClass('custom-transform-controls');
+  });
+
+  it('should prevent event propagation on handle interactions', () => {
+    const mockStopPropagation = jest.fn();
+    const mockPreventDefault = jest.fn();
+
+    render(
+      <TransformControls
+        element={mockElement}
+        isSelected={true}
+        onTransform={mockOnTransform}
+        onTransformEnd={mockOnTransformEnd}
+        canvasRect={mockCanvasRect}
+        zoom={1}
+      />
+    );
+
+    const handle = screen.getByLabelText('Resize handle se');
+    
+    fireEvent.mouseDown(handle, {
+      clientX: 300,
+      clientY: 250,
+      stopPropagation: mockStopPropagation,
+      preventDefault: mockPreventDefault,
+    });
+
+    expect(mockStopPropagation).toHaveBeenCalled();
+    expect(mockPreventDefault).toHaveBeenCalled();
+  });
+});
