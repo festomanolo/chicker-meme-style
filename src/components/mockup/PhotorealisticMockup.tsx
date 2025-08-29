@@ -138,3 +138,50 @@ export const PhotorealisticMockup: React.FC<PhotorealisticMockupProps> = ({
               {error || 'Unknown error occurred'}
             </p>
           </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Render mockup image
+  return (
+    <div 
+      className={cn("relative", className)}
+      style={style}
+    >
+      <img
+        ref={imgRef}
+        src={assetInfo.url}
+        alt={mockup.name}
+        className="w-full h-full object-contain"
+        onLoad={handleImageLoad}
+        onError={handleImageError}
+        style={{
+          maxWidth: '100%',
+          height: 'auto',
+          filter: 'drop-shadow(0 10px 25px rgba(0, 0, 0, 0.15))',
+        }}
+        loading="lazy"
+        decoding="async"
+      />
+      
+      {/* Design area overlay for development/debugging */}
+      {process.env.NODE_ENV === 'development' && (
+        <div
+          className="absolute border-2 border-dashed border-blue-400 opacity-30 pointer-events-none"
+          style={{
+            left: `${(mockup.designArea.x / mockup.metadata.originalWidth) * 100}%`,
+            top: `${(mockup.designArea.y / mockup.metadata.originalHeight) * 100}%`,
+            width: `${(mockup.designArea.width / mockup.metadata.originalWidth) * 100}%`,
+            height: `${(mockup.designArea.height / mockup.metadata.originalHeight) * 100}%`,
+          }}
+        />
+      )}
+    </div>
+  );
+};
+
+// Memoized version for performance
+export const MemoizedPhotorealisticMockup = React.memo(PhotorealisticMockup);
+
+export default PhotorealisticMockup;
