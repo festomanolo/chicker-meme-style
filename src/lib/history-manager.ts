@@ -235,3 +235,62 @@ export class HistoryManager {
     // Add checksum if enabled
     if (this.config.enableChecksums) {
       entry.state.metadata = {
+        ...entry.state.metadata,
+        checksum: this.calculateChecksum(entry.state),
+      };
+    }
+
+    // Add entry
+    this.entries.push(entry);
+    this.currentIndex++;
+
+    // Maintain max entries limit
+    if (this.entries.length > this.config.maxEntries) {
+      const removeCount = this.entries.length - this.config.maxEntries;
+      this.entries.splice(0, removeCount);
+      this.currentIndex -= removeCount;
+    }
+
+    // Compress old entries if needed
+    this.compressHistory();
+  }
+
+  private shouldDebounce(action: HistoryAction): boolean {
+    const debounceActions: HistoryActionType[] = [
+      'transform_update',
+      'color_change',
+      'canvas_update',
+    ];
+    
+    return debounceActions.includes(action.type);
+  }
+
+  private handleDebouncedEntry(entry: HistoryEntry): void {
+    this.pendingEntry = entry;
+    
+    if (this.debounceTimer) {
+      clearTimeout(this.debounceTimer);
+    }
+
+    this.debounceTimer = setTimeout(() => {
+      if (this.pendingEntry) {
+        this.commitEntry(this.pendingEntry);
+        this.pendingEntry = null;
+      }
+      this.debounceTimer = null;
+    }, this.config.debounceMs);
+  }
+
+  private clearDebounce(): void {
+    if (this.debounceTimer) {
+      clearTimeout(this.debounceTimer);
+      this.debounceTimer = null;
+    }
+    this.pendingEntry = null;
+  }
+
+  private generateId(): string {
+    return `history_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  }
+
+  private generateDescription(action: HistoryAction): string {
