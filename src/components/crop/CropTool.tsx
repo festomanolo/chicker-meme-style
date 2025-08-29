@@ -222,3 +222,59 @@ export const CropTool: React.FC<CropToolProps> = ({
   }, [constraints, imageDimensions]);
 
   // Calculate new crop based on handle drag
+  const calculateCropFromDrag = useCallback((
+    handleId: string,
+    deltaX: number,
+    deltaY: number,
+    originalCrop: CropData
+  ): CropData => {
+    let newCrop = { ...originalCrop };
+
+    switch (handleId) {
+      case 'nw':
+        newCrop.x += deltaX;
+        newCrop.y += deltaY;
+        newCrop.width -= deltaX;
+        newCrop.height -= deltaY;
+        break;
+      case 'ne':
+        newCrop.y += deltaY;
+        newCrop.width += deltaX;
+        newCrop.height -= deltaY;
+        break;
+      case 'se':
+        newCrop.width += deltaX;
+        newCrop.height += deltaY;
+        break;
+      case 'sw':
+        newCrop.x += deltaX;
+        newCrop.width -= deltaX;
+        newCrop.height += deltaY;
+        break;
+      case 'n':
+        newCrop.y += deltaY;
+        newCrop.height -= deltaY;
+        break;
+      case 'e':
+        newCrop.width += deltaX;
+        break;
+      case 's':
+        newCrop.height += deltaY;
+        break;
+      case 'w':
+        newCrop.x += deltaX;
+        newCrop.width -= deltaX;
+        break;
+    }
+
+    // Ensure minimum size
+    const minSize = 20;
+    if (newCrop.width < minSize) {
+      if (handleId.includes('w')) {
+        newCrop.x = originalCrop.x + originalCrop.width - minSize;
+      }
+      newCrop.width = minSize;
+    }
+    if (newCrop.height < minSize) {
+      if (handleId.includes('n')) {
+        newCrop.y = originalCrop.y + originalCrop.height - minSize;
