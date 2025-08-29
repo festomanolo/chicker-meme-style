@@ -143,3 +143,51 @@ describe('useLayerKeys Hook', () => {
     expect(key1).toBe(key2);
     expect(key1).toBe('individual-layer-1');
   });
+
+  it('should generate different keys for different contexts', () => {
+    const { result } = renderHook(() => useLayerKeys());
+    
+    const individualKey = result.current.getIndividualKey('layer-1');
+    const groupKey = result.current.getGroupKey('layer-1', 'group-1');
+    const searchKey = result.current.getSearchKey('layer-1');
+    
+    expect(individualKey).not.toBe(groupKey);
+    expect(groupKey).not.toBe(searchKey);
+    expect(individualKey).not.toBe(searchKey);
+  });
+
+  it('should validate keys correctly', () => {
+    const { result } = renderHook(() => useLayerKeys());
+    
+    result.current.getIndividualKey('layer-1');
+    result.current.getGroupKey('layer-2', 'group-1');
+    
+    expect(result.current.validateKeys()).toBe(true);
+  });
+
+  it('should clear keys', () => {
+    const { result } = renderHook(() => useLayerKeys());
+    
+    result.current.getIndividualKey('layer-1');
+    expect(result.current.getDebugInfo().totalKeys).toBe(1);
+    
+    result.current.clearKeys();
+    expect(result.current.getDebugInfo().totalKeys).toBe(0);
+  });
+
+  it('should clear context-specific keys', () => {
+    const { result } = renderHook(() => useLayerKeys());
+    
+    result.current.getIndividualKey('layer-1');
+    result.current.getGroupKey('layer-2', 'group-1');
+    
+    expect(result.current.getDebugInfo().totalKeys).toBe(2);
+    
+    result.current.clearContextKeys('individual');
+    
+    const debugInfo = result.current.getDebugInfo();
+    expect(debugInfo.totalKeys).toBe(1);
+    expect(debugInfo.keysByContext.individual).toBeUndefined();
+    expect(debugInfo.keysByContext.group).toBe(1);
+  });
+});
