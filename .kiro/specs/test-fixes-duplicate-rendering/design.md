@@ -33,3 +33,39 @@ graph TB
         UK --> GK[Group Keys]
         UK --> IK[Individual Keys]
         UK --> FK[Filter Keys]
+    end
+    
+    subgraph "Test Infrastructure"
+        TU[Test Utils] --> MI[Mock Isolation]
+        TU --> CR[Component Renderer]
+        TU --> AS[Assertion Helpers]
+    end
+    
+    RD --> KM
+    GR --> KM
+    IR --> KM
+    FR --> KM
+```
+
+## Components and Interfaces
+
+### Core Component Fixes
+
+#### 1. LayersPanel Component Redesign
+
+The main issue is in the rendering logic where layers appear both in groups and individually. The fix involves proper filtering and unique key generation.
+
+#### 2. LayerGroup Component Fix
+
+Groups need to properly manage their child layers and ensure no duplication with individual rendering.
+
+#### 3. Enhanced Key Management System
+
+A centralized key management system ensures unique keys across all rendering contexts.
+
+### Test Infrastructure Improvements
+
+#### 1. Enhanced Test Utilities
+
+Fixed test utilities that properly isolate component instances and provide consistent mock data.
+
