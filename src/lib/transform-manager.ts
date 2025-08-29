@@ -274,3 +274,58 @@ export class TransformManager {
         axis: 'x',
         temporary: false,
         priority: 1,
+      },
+      {
+        type: 'center',
+        position: this.config.canvasSize.height / 2,
+        axis: 'y',
+        temporary: false,
+        priority: 1,
+      }
+    );
+
+    // Mockup centerline guides
+    if (mockupBounds) {
+      guides.push(
+        {
+          type: 'mockup',
+          position: mockupBounds.x + mockupBounds.width / 2,
+          axis: 'x',
+          temporary: false,
+          priority: 2,
+        },
+        {
+          type: 'mockup',
+          position: mockupBounds.y + mockupBounds.height / 2,
+          axis: 'y',
+          temporary: false,
+          priority: 2,
+        }
+      );
+    }
+
+    // Element guides
+    elements.forEach(element => {
+      if (element.visible && !element.locked) {
+        const bounds = this.getBoundingBox(element);
+        
+        // Element edges
+        guides.push(
+          { type: 'element', position: bounds.minX, axis: 'x', temporary: false, elementId: element.id, priority: 3 },
+          { type: 'element', position: bounds.maxX, axis: 'x', temporary: false, elementId: element.id, priority: 3 },
+          { type: 'element', position: bounds.minY, axis: 'y', temporary: false, elementId: element.id, priority: 3 },
+          { type: 'element', position: bounds.maxY, axis: 'y', temporary: false, elementId: element.id, priority: 3 },
+          { type: 'element', position: bounds.centerX, axis: 'x', temporary: false, elementId: element.id, priority: 2 },
+          { type: 'element', position: bounds.centerY, axis: 'y', temporary: false, elementId: element.id, priority: 2 }
+        );
+      }
+    });
+
+    // Sort by priority
+    guides.sort((a, b) => a.priority - b.priority);
+
+    this.snapGuides = guides;
+    return guides;
+  }
+
+  /**
