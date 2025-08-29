@@ -195,3 +195,52 @@ export const useWhatsAppNotification = (options: UseWhatsAppNotificationOptions 
 
     return () => {
       events.forEach(event => {
+        document.removeEventListener(event, handleActivity);
+      });
+    };
+  }, [updateActivity]);
+
+  // Set up periodic check
+  useEffect(() => {
+    const checkInterval = Math.min(config.intervalMs / 4, 30000); // Check every 30s or quarter interval
+    
+    intervalRef.current = setInterval(() => {
+      if (shouldShowNotification()) {
+        showNotification();
+      }
+    }, checkInterval);
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [shouldShowNotification, showNotification, config.intervalMs]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+      if (activityTimeoutRef.current) {
+        clearTimeout(activityTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  // Handle page navigation
+  useEffect(() => {
+    const handlePageChange = () => {
+      if (isPageExcluded() && state.isVisible) {
+        setState(prev => ({ ...prev, isVisible: false }));
+      }
+    };
+
+    // Listen for navigation events
+    window.addEventListener('popstate', handlePageChange);
+    
+    // Check current page
+    handlePageChange();
+
+    return () => {
