@@ -336,3 +336,60 @@ interface CanvasState {
   selectedElementId: string | null;
   
   // Canvas Settings
+  canvasZoom: number;
+  canvasPan: Point;
+  showGrid: boolean;
+  snapToGrid: boolean;
+  gridSize: number;
+  
+  // UI State
+  selectedTool: EditingTool;
+  panelOpen: boolean;
+  panelWidth: number;
+  
+  // History
+  historyIndex: number;
+  maxHistorySize: number;
+}
+```
+
+### Notification State Model
+
+```typescript
+interface NotificationState {
+  visible: boolean;
+  lastShown: number;
+  dismissed: boolean;
+  dismissedUntil: number;
+  showCount: number;
+  clickCount: number;
+  dismissCount: number;
+}
+```
+
+## Error Handling
+
+### Error Categories and Handling Strategies
+
+#### 1. Asset Loading Errors
+
+```typescript
+interface AssetError extends Error {
+  type: 'asset_load_failed';
+  assetUrl: string;
+  retryCount: number;
+}
+
+// Strategy: Retry with exponential backoff, fallback to lower resolution
+const handleAssetError = async (error: AssetError): Promise<string> => {
+  if (error.retryCount < 3) {
+    await delay(Math.pow(2, error.retryCount) * 1000);
+    return retryAssetLoad(error.assetUrl, error.retryCount + 1);
+  }
+  return getFallbackAsset(error.assetUrl);
+};
+```
+
+#### 2. Canvas Operation Errors
+
+```typescript
