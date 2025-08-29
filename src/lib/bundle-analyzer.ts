@@ -95,3 +95,52 @@ export class BundleAnalyzer {
   } {
     return {
       codesplitting: [
+        'Use React.lazy() for route-based code splitting',
+        'Implement dynamic imports for heavy components',
+        'Split vendor libraries into separate chunks',
+        'Use loadable-components for better SSR support',
+      ],
+      treeshaking: [
+        'Import only needed functions from libraries',
+        'Use ES6 modules instead of CommonJS',
+        'Configure webpack to eliminate dead code',
+        'Use babel-plugin-import for selective imports',
+      ],
+      compression: [
+        'Enable gzip compression on server',
+        'Use Brotli compression for better ratios',
+        'Minify CSS and JavaScript',
+        'Optimize images with WebP format',
+      ],
+      caching: [
+        'Implement proper cache headers',
+        'Use content-based hashing for assets',
+        'Enable service worker for offline caching',
+        'Implement CDN for static assets',
+      ],
+    };
+  }
+
+  /**
+   * Check if bundle meets performance budgets
+   */
+  static checkPerformanceBudget(analysis: BundleAnalysis): {
+    passes: boolean;
+    results: Array<{
+      metric: string;
+      actual: number;
+      budget: number;
+      passes: boolean;
+    }>;
+  } {
+    const budgets = {
+      totalSize: 3 * 1024 * 1024, // 3MB
+      gzippedSize: 1024 * 1024, // 1MB
+      mainChunkSize: 1.5 * 1024 * 1024, // 1.5MB
+    };
+
+    const results = [
+      {
+        metric: 'Total Bundle Size',
+        actual: analysis.totalSize,
+        budget: budgets.totalSize,
