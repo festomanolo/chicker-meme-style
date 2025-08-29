@@ -227,3 +227,60 @@ describe('ColorValidator', () => {
       expect(result.errors).toContain('Green value must be between 0 and 255');
     });
 
+    it('should detect invalid HSV values', () => {
+      const color = {
+        r: 255, g: 128, b: 64,
+        h: 400, s: 150, v: -10,
+        hex: '#FF8040'
+      };
+      
+      const result = validateTshirtColor(color);
+      expect(result.isValid).toBe(false);
+      expect(result.errors).toContain('Hue value must be between 0 and 360');
+      expect(result.errors).toContain('Saturation value must be between 0 and 100');
+      expect(result.errors).toContain('Value/Brightness must be between 0 and 100');
+    });
+  });
+
+  describe('Hex validation', () => {
+    it('should validate correct hex colors', () => {
+      expect(ColorValidator.validateHexColor('#FF0000')).toBe(true);
+      expect(ColorValidator.validateHexColor('#00FF00')).toBe(true);
+      expect(ColorValidator.validateHexColor('#0000FF')).toBe(true);
+      expect(ColorValidator.validateHexColor('#FFF')).toBe(true);
+      expect(ColorValidator.validateHexColor('#000')).toBe(true);
+    });
+
+    it('should reject invalid hex colors', () => {
+      expect(ColorValidator.validateHexColor('#GGGGGG')).toBe(false);
+      expect(ColorValidator.validateHexColor('#FF')).toBe(false);
+      expect(ColorValidator.validateHexColor('FF0000')).toBe(false);
+      expect(ColorValidator.validateHexColor('#FFFFFFF')).toBe(false);
+      expect(ColorValidator.validateHexColor('invalid')).toBe(false);
+    });
+  });
+
+  describe('RGB validation', () => {
+    it('should validate correct RGB values', () => {
+      expect(ColorValidator.validateRgbValues(255, 128, 64)).toBe(true);
+      expect(ColorValidator.validateRgbValues(0, 0, 0)).toBe(true);
+      expect(ColorValidator.validateRgbValues(255, 255, 255)).toBe(true);
+    });
+
+    it('should reject invalid RGB values', () => {
+      expect(ColorValidator.validateRgbValues(-1, 128, 64)).toBe(false);
+      expect(ColorValidator.validateRgbValues(255, 256, 64)).toBe(false);
+      expect(ColorValidator.validateRgbValues(255, 128, -1)).toBe(false);
+    });
+  });
+
+  describe('HSV validation', () => {
+    it('should validate correct HSV values', () => {
+      expect(ColorValidator.validateHsvValues(180, 50, 75)).toBe(true);
+      expect(ColorValidator.validateHsvValues(0, 0, 0)).toBe(true);
+      expect(ColorValidator.validateHsvValues(360, 100, 100)).toBe(true);
+    });
+
+    it('should reject invalid HSV values', () => {
+      expect(ColorValidator.validateHsvValues(-1, 50, 75)).toBe(false);
+      expect(ColorValidator.validateHsvValues(361, 50, 75)).toBe(false);
