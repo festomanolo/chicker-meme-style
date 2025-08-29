@@ -55,3 +55,60 @@ const mockCartItems: CartItem[] = [
     color: "Gray",
     inStock: true
   },
+  {
+    id: "3",
+    name: "SpongeBob Deadline Panic Tee",
+    price: 28000,
+    image: "/api/placeholder/100/100",
+    quantity: 1,
+    size: "XL",
+    color: "Yellow",
+    inStock: false
+  }
+];
+
+const Cart = () => {
+  const { items, updateQuantity, removeItem, getTotal, isLoading } = useCartStore();
+  const { user } = useAuthStore();
+  const navigate = useNavigate();
+  const [promoCode, setPromoCode] = useState("");
+  const [appliedPromo, setAppliedPromo] = useState<string | null>(null);
+
+  const handleUpdateQuantity = async (id: string, newQuantity: number) => {
+    if (newQuantity === 0) {
+      await removeItem(id);
+      return;
+    }
+    await updateQuantity(id, Math.max(1, newQuantity));
+  };
+
+  const handleRemoveItem = async (id: string) => {
+    await removeItem(id);
+  };
+
+  const moveToWishlist = async (id: string) => {
+    const item = items.find(item => item.id === id);
+    if (item) {
+      console.log("Moving to wishlist:", item.name);
+      await removeItem(id);
+      // Here you would add to wishlist API call
+    }
+  };
+
+  const applyPromoCode = () => {
+    if (promoCode.toUpperCase() === "MEME20") {
+      setAppliedPromo("MEME20");
+      setPromoCode("");
+      console.log("Promo code applied:", promoCode);
+    } else {
+      alert("Invalid promo code");
+    }
+  };
+
+  const subtotal = getTotal();
+  const discount = appliedPromo === "MEME20" ? subtotal * 0.2 : 0;
+  const shipping = subtotal > 50000 ? 0 : 5000; // Free shipping over TZS 50,000
+  const total = subtotal - discount + shipping;
+
+  const proceedToCheckout = () => {
+    console.log("Proceeding to checkout with items:", items);
