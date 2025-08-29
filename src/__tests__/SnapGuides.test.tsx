@@ -298,3 +298,63 @@ describe('SnapGuides', () => {
 
   it('should apply custom className', () => {
     const { container } = render(
+      <SnapGuides
+        guides={mockGuides}
+        canvasSize={mockCanvasSize}
+        zoom={1}
+        className="custom-snap-guides"
+      />
+    );
+
+    expect(container.firstChild).toHaveClass('custom-snap-guides');
+  });
+
+  it('should handle empty guides array', () => {
+    const { container } = render(
+      <SnapGuides
+        guides={[]}
+        canvasSize={mockCanvasSize}
+        zoom={1}
+      />
+    );
+
+    const svg = container.querySelector('svg');
+    expect(svg).toBeInTheDocument();
+    
+    const lines = container.querySelectorAll('line');
+    expect(lines.length).toBe(0);
+  });
+
+  it('should apply correct opacity for temporary guides', () => {
+    const temporaryGuides: SnapGuide[] = [
+      {
+        type: 'element',
+        position: 150,
+        axis: 'x',
+        temporary: true,
+        priority: 3,
+      },
+    ];
+
+    const { container } = render(
+      <SnapGuides
+        guides={temporaryGuides}
+        canvasSize={mockCanvasSize}
+        zoom={1}
+      />
+    );
+
+    const line = container.querySelector('line');
+    expect(line).toHaveAttribute('opacity', '0.8');
+  });
+
+  it('should apply correct opacity for permanent guides', () => {
+    const permanentGuides: SnapGuide[] = [
+      {
+        type: 'center',
+        position: 400,
+        axis: 'x',
+        temporary: false,
+        priority: 1,
+      },
+    ];
