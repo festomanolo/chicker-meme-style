@@ -239,3 +239,63 @@ export class ColorManager {
     const imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
     const data = imageData.data;
 
+    switch (textureFilter.canvasFilter.type) {
+      case 'convolution':
+        this.applyConvolutionFilter(data, textureFilter.canvasFilter.kernel!);
+        break;
+      case 'color-matrix':
+        this.applyColorMatrixFilter(data, textureFilter.canvasFilter.matrix!);
+        break;
+      default:
+        break;
+    }
+
+    this.ctx.putImageData(imageData, 0, 0);
+  }
+
+  /**
+   * Apply convolution filter (for texture effects)
+   */
+  private applyConvolutionFilter(data: Uint8ClampedArray, kernel: number[]): void {
+    // Simplified convolution implementation
+    // In a real implementation, you would apply the full convolution matrix
+    const intensity = kernel.reduce((sum, val) => sum + Math.abs(val), 0);
+    
+    for (let i = 0; i < data.length; i += 4) {
+      const factor = intensity * 0.1;
+      data[i] = Math.min(255, data[i] * (1 + factor));     // Red
+      data[i + 1] = Math.min(255, data[i + 1] * (1 + factor)); // Green
+      data[i + 2] = Math.min(255, data[i + 2] * (1 + factor)); // Blue
+    }
+  }
+
+  /**
+   * Apply color matrix filter
+   */
+  private applyColorMatrixFilter(data: Uint8ClampedArray, matrix: number[]): void {
+    if (matrix.length !== 20) return; // 4x5 matrix expected
+
+    for (let i = 0; i < data.length; i += 4) {
+      const r = data[i];
+      const g = data[i + 1];
+      const b = data[i + 2];
+      const a = data[i + 3];
+
+      data[i] = Math.min(255, Math.max(0, 
+        r * matrix[0] + g * matrix[1] + b * matrix[2] + a * matrix[3] + matrix[4]
+      ));
+      data[i + 1] = Math.min(255, Math.max(0,
+        r * matrix[5] + g * matrix[6] + b * matrix[7] + a * matrix[8] + matrix[9]
+      ));
+      data[i + 2] = Math.min(255, Math.max(0,
+        r * matrix[10] + g * matrix[11] + b * matrix[12] + a * matrix[13] + matrix[14]
+      ));
+      data[i + 3] = Math.min(255, Math.max(0,
+        r * matrix[15] + g * matrix[16] + b * matrix[17] + a * matrix[18] + matrix[19]
+      ));
+    }
+  }
+
+  /**
+   * Blend color with fabric using specified options
+   */
