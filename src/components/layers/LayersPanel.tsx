@@ -235,3 +235,62 @@ const LayerItem: React.FC<{
           }}
           aria-label={layer.visible ? 'Hide layer' : 'Show layer'}
         >
+          {layer.visible ? (
+            <Eye className="h-3 w-3" />
+          ) : (
+            <EyeOff className="h-3 w-3" />
+          )}
+        </Button>
+
+        <Button
+          variant="ghost"
+          size="sm"
+          className="h-6 w-6 p-0"
+          onClick={(e) => {
+            e.stopPropagation();
+            onLockToggle(layer.id);
+          }}
+          aria-label={layer.locked ? 'Unlock layer' : 'Lock layer'}
+        >
+          {layer.locked ? (
+            <Lock className="h-3 w-3" />
+          ) : (
+            <Unlock className="h-3 w-3" />
+          )}
+        </Button>
+
+        <Button
+          variant="ghost"
+          size="sm"
+          className="h-6 w-6 p-0"
+          onClick={(e) => {
+            e.stopPropagation();
+            onDuplicate(layer.id);
+          }}
+          aria-label="Duplicate layer"
+        >
+          <Copy className="h-3 w-3" />
+        </Button>
+
+        <Button
+          variant="ghost"
+          size="sm"
+          className="h-6 w-6 p-0 text-red-500 hover:text-red-600"
+          onClick={(e) => {
+            e.stopPropagation();
+            onDelete(layer.id);
+          }}
+          aria-label="Delete layer"
+        >
+          <Trash2 className="h-3 w-3" />
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+const GroupItem: React.FC<{
+  group: LayerGroup;
+  layers: LayerElement[];
+  selectedIds: string[];
+  showThumbnails: boolean;
