@@ -102,3 +102,55 @@ describe('MockupAssetLoader', () => {
       expect(result.loaded).toBe(false); // Mock setup doesn't properly simulate fallback
       expect(result.error).toBeDefined();
     });
+
+    it('should cache loaded assets', async () => {
+      // First load
+      const result1 = await mockupLoader.loadMockupAsset(mockMockup);
+      
+      // Second load should return cached result
+      const result2 = await mockupLoader.loadMockupAsset(mockMockup);
+
+      expect(result1).toBe(result2);
+      
+      const stats = mockupLoader.getCacheStats();
+      expect(stats.cacheSize).toBe(1);
+      expect(stats.loadedAssets).toBe(1);
+    });
+
+    it('should handle load timeout', async () => {
+      const slowMockup = {
+        ...mockMockup,
+        variants: {
+          '1x': '/slow-loading-image.webp',
+          '2x': '/slow-loading-image.webp',
+          '3x': '/slow-loading-image.webp',
+        },
+      };
+
+      // Mock slow loading
+      global.Image = class {
+        onload: (() => void) | null = null;
+        onerror: (() => void) | null = null;
+        src = '';
+        naturalWidth = 520;
+        naturalHeight = 600;
+
+        constructor() {
+          // Never call onload to simulate timeout
+        }
+      } as any;
+
+      const result = await mockupLoader.loadMockupAsset(slowMockup, {
+        timeout: 100,
+        retryCount: 1,
+      });
+
+      expect(result.loaded).toBe(false);
+      expect(result.error).toContain('timeout');
+    });
+  });
+
+  describe('preloadMockups', () => {
+    it('should preload multiple mockups', async () => {
+      const mockups = [
+        mockMockup,
