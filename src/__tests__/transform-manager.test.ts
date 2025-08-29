@@ -267,3 +267,57 @@ describe('TransformManager', () => {
       
       const temporaryGuides = manager.getTemporaryGuides();
       
+      expect(temporaryGuides.length).toBeGreaterThan(0);
+      expect(temporaryGuides.every(g => g.temporary)).toBe(true);
+    });
+  });
+
+  describe('bounds validation', () => {
+    it('should validate element bounds within canvas', () => {
+      const canvasBounds: Rect = { x: 0, y: 0, width: 800, height: 600 };
+      const outOfBoundsTransform: TransformData = {
+        x: -50,
+        y: -30,
+        width: 100,
+        height: 100,
+        rotation: 0,
+        scaleX: 1,
+        scaleY: 1,
+      };
+
+      const validatedTransform = manager.validateBounds(outOfBoundsTransform, canvasBounds);
+
+      expect(validatedTransform.x).toBeGreaterThanOrEqual(0);
+      expect(validatedTransform.y).toBeGreaterThanOrEqual(0);
+    });
+
+    it('should adjust position when element exceeds right/bottom bounds', () => {
+      const canvasBounds: Rect = { x: 0, y: 0, width: 800, height: 600 };
+      const outOfBoundsTransform: TransformData = {
+        x: 750,
+        y: 550,
+        width: 100,
+        height: 100,
+        rotation: 0,
+        scaleX: 1,
+        scaleY: 1,
+      };
+
+      const validatedTransform = manager.validateBounds(outOfBoundsTransform, canvasBounds);
+
+      expect(validatedTransform.x + outOfBoundsTransform.width).toBeLessThanOrEqual(800);
+      expect(validatedTransform.y + outOfBoundsTransform.height).toBeLessThanOrEqual(600);
+    });
+  });
+
+  describe('pan and zoom operations', () => {
+    it('should set pan and zoom state', () => {
+      manager.setPanZoom({ scale: 2, translateX: 100, translateY: 50 });
+      
+      const panZoom = manager.getPanZoom();
+      
+      expect(panZoom.scale).toBe(2);
+      expect(panZoom.translateX).toBe(100);
+      expect(panZoom.translateY).toBe(50);
+    });
+
