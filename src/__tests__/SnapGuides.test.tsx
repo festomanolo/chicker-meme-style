@@ -238,3 +238,63 @@ describe('SnapGuides', () => {
         guides={guides}
         canvasSize={mockCanvasSize}
         zoom={2}
+      />
+    );
+
+    const line2 = container.querySelector('line');
+    const strokeWidth2 = parseFloat(line2!.getAttribute('stroke-width')!);
+
+    // Stroke width should be smaller at higher zoom
+    expect(strokeWidth2).toBeLessThan(strokeWidth1);
+  });
+
+  it('should render labels for temporary guides', () => {
+    const temporaryGuides: SnapGuide[] = [
+      {
+        type: 'element',
+        position: 150,
+        axis: 'x',
+        temporary: true,
+        priority: 3,
+        elementId: 'element-1',
+      },
+    ];
+
+    const { container } = render(
+      <SnapGuides
+        guides={temporaryGuides}
+        canvasSize={mockCanvasSize}
+        zoom={1}
+      />
+    );
+
+    const text = container.querySelector('text');
+    expect(text).toBeInTheDocument();
+    expect(text).toHaveTextContent('element 150px');
+  });
+
+  it('should not render labels for non-temporary guides', () => {
+    const permanentGuides: SnapGuide[] = [
+      {
+        type: 'center',
+        position: 400,
+        axis: 'x',
+        temporary: false,
+        priority: 1,
+      },
+    ];
+
+    const { container } = render(
+      <SnapGuides
+        guides={permanentGuides}
+        canvasSize={mockCanvasSize}
+        zoom={1}
+      />
+    );
+
+    const text = container.querySelector('text');
+    expect(text).not.toBeInTheDocument();
+  });
+
+  it('should apply custom className', () => {
+    const { container } = render(
