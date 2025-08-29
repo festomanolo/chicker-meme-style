@@ -94,3 +94,52 @@ describe('LayerKeyManager', () => {
       
       const debugInfo = keyManager.getDebugInfo();
       
+      expect(debugInfo.totalKeys).toBe(3);
+      expect(debugInfo.keysByContext.individual).toBe(2);
+      expect(debugInfo.keysByContext.group).toBe(1);
+    });
+  });
+
+  describe('Edge Cases', () => {
+    it('should handle missing groupId for group context', () => {
+      const key = keyManager.generateKey('group', 'layer-1');
+      expect(key).toBe('group-layer-layer-1');
+    });
+
+    it('should handle unknown context', () => {
+      const key = keyManager.generateKey('unknown' as LayerRenderContext, 'layer-1');
+      expect(key).toBe('unknown-layer-1');
+    });
+
+    it('should handle empty layer IDs', () => {
+      const key = keyManager.generateKey('individual', '');
+      expect(key).toBe('individual-');
+    });
+  });
+});
+
+describe('useLayerKeys Hook', () => {
+  beforeEach(() => {
+    const keyManager = LayerKeyManager.getInstance();
+    keyManager.clearKeys();
+  });
+
+  it('should provide key generation functions', () => {
+    const { result } = renderHook(() => useLayerKeys());
+    
+    expect(typeof result.current.getIndividualKey).toBe('function');
+    expect(typeof result.current.getGroupKey).toBe('function');
+    expect(typeof result.current.getSearchKey).toBe('function');
+    expect(typeof result.current.clearKeys).toBe('function');
+    expect(typeof result.current.validateKeys).toBe('function');
+  });
+
+  it('should generate consistent keys', () => {
+    const { result } = renderHook(() => useLayerKeys());
+    
+    const key1 = result.current.getIndividualKey('layer-1');
+    const key2 = result.current.getIndividualKey('layer-1');
+    
+    expect(key1).toBe(key2);
+    expect(key1).toBe('individual-layer-1');
+  });
