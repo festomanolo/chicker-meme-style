@@ -56,3 +56,61 @@ export const ColorRangeSelector: React.FC<ColorRangeSelectorProps> = ({
 
   // Update internal state when selectedColor changes
   useEffect(() => {
+    setHue(selectedColor.h);
+    setSaturation(selectedColor.s);
+    setValue(selectedColor.v);
+    setHexInput(selectedColor.hex);
+    setRgbInput({
+      r: selectedColor.r,
+      g: selectedColor.g,
+      b: selectedColor.b,
+    });
+  }, [selectedColor]);
+
+  // Create color from HSV values
+  const currentColor = useMemo(() => {
+    return createTshirtColorFromHsv(hue, saturation, value);
+  }, [hue, saturation, value]);
+
+  // Validate current color and notify parent
+  useEffect(() => {
+    const validation = ColorValidator.validateTshirtColor(currentColor);
+    onColorValidation?.(validation.isValid, validation.errors);
+  }, [currentColor, onColorValidation]);
+
+  // Handle HSV slider changes
+  const handleHueChange = useCallback((values: number[]) => {
+    const newHue = values[0];
+    setHue(newHue);
+    const newColor = createTshirtColorFromHsv(newHue, saturation, value);
+    onColorChange(newColor);
+  }, [saturation, value, onColorChange]);
+
+  const handleSaturationChange = useCallback((values: number[]) => {
+    const newSaturation = values[0];
+    setSaturation(newSaturation);
+    const newColor = createTshirtColorFromHsv(hue, newSaturation, value);
+    onColorChange(newColor);
+  }, [hue, value, onColorChange]);
+
+  const handleValueChange = useCallback((values: number[]) => {
+    const newValue = values[0];
+    setValue(newValue);
+    const newColor = createTshirtColorFromHsv(hue, saturation, newValue);
+    onColorChange(newColor);
+  }, [hue, saturation, onColorChange]);
+
+  // Handle hex input change
+  const handleHexInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const hex = e.target.value;
+    setHexInput(hex);
+
+    if (ColorValidator.validateHexColor(hex)) {
+      const color = ColorConverter.createTshirtColorFromHex(hex);
+      if (color) {
+        setHue(color.h);
+        setSaturation(color.s);
+        setValue(color.v);
+        setRgbInput({ r: color.r, g: color.g, b: color.b });
+        onColorChange(color);
+      }
