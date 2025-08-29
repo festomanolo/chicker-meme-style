@@ -178,3 +178,63 @@ describe('SnapGuides', () => {
     );
 
     const lines = container.querySelectorAll('line');
+    
+    // Should have grid lines
+    expect(lines.length).toBeGreaterThan(0);
+    
+    // Check for vertical grid lines
+    const verticalLines = Array.from(lines).filter(line => 
+      line.getAttribute('x1') === line.getAttribute('x2')
+    );
+    expect(verticalLines.length).toBeGreaterThan(0);
+    
+    // Check for horizontal grid lines
+    const horizontalLines = Array.from(lines).filter(line => 
+      line.getAttribute('y1') === line.getAttribute('y2')
+    );
+    expect(horizontalLines.length).toBeGreaterThan(0);
+  });
+
+  it('should not show grid when showGrid is false', () => {
+    const { container } = render(
+      <SnapGuides
+        guides={[]}
+        canvasSize={mockCanvasSize}
+        zoom={1}
+        showGrid={false}
+        gridSize={50}
+      />
+    );
+
+    // Should only have guide lines, no grid lines
+    const lines = container.querySelectorAll('line');
+    expect(lines.length).toBe(0);
+  });
+
+  it('should scale stroke width with zoom', () => {
+    const guides: SnapGuide[] = [
+      {
+        type: 'center',
+        position: 400,
+        axis: 'x',
+        temporary: true,
+        priority: 1,
+      },
+    ];
+
+    const { container, rerender } = render(
+      <SnapGuides
+        guides={guides}
+        canvasSize={mockCanvasSize}
+        zoom={1}
+      />
+    );
+
+    const line1 = container.querySelector('line');
+    const strokeWidth1 = parseFloat(line1!.getAttribute('stroke-width')!);
+
+    rerender(
+      <SnapGuides
+        guides={guides}
+        canvasSize={mockCanvasSize}
+        zoom={2}
