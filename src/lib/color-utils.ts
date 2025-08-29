@@ -214,3 +214,58 @@ export class ColorConverter {
    * Create a complete TshirtColor object from RGB values
    */
   static createTshirtColor(r: number, g: number, b: number, name?: string): TshirtColor {
+    const hsv = this.rgbToHsv(r, g, b);
+    const hex = this.rgbToHex(r, g, b);
+
+    return {
+      h: hsv.h,
+      s: hsv.s,
+      v: hsv.v,
+      r: Math.round(r),
+      g: Math.round(g),
+      b: Math.round(b),
+      hex,
+      name,
+    };
+  }
+
+  /**
+   * Create TshirtColor from HSV values
+   */
+  static createTshirtColorFromHsv(h: number, s: number, v: number, name?: string): TshirtColor {
+    const rgb = this.hsvToRgb(h, s, v);
+    return this.createTshirtColor(rgb.r, rgb.g, rgb.b, name);
+  }
+
+  /**
+   * Create TshirtColor from hex string
+   */
+  static createTshirtColorFromHex(hex: string, name?: string): TshirtColor | null {
+    const rgb = this.hexToRgb(hex);
+    if (!rgb) return null;
+    return this.createTshirtColor(rgb.r, rgb.g, rgb.b, name);
+  }
+
+  /**
+   * Convert between color spaces
+   */
+  static convertColorSpace(color: any, from: ColorSpace, to: ColorSpace): any {
+    if (from === to) return color;
+
+    // Convert to RGB first as intermediate format
+    let rgb: RGBColor;
+
+    switch (from) {
+      case 'rgb':
+        rgb = color as RGBColor;
+        break;
+      case 'hsv':
+        rgb = this.hsvToRgb(color.h, color.s, color.v);
+        break;
+      case 'hsl':
+        rgb = this.hslToRgb(color.h, color.s, color.l);
+        break;
+      case 'hex':
+        const hexRgb = this.hexToRgb(color);
+        if (!hexRgb) throw new Error('Invalid hex color');
+        rgb = hexRgb;
