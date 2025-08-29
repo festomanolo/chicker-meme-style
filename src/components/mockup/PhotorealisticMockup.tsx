@@ -45,3 +45,50 @@ export const PhotorealisticMockup: React.FC<PhotorealisticMockupProps> = ({
         });
 
         if (!isMounted) return;
+
+        if (asset.error) {
+          throw new Error(asset.error);
+        }
+
+        setAssetInfo(asset);
+        onLoad?.(asset);
+      } catch (err) {
+        if (!isMounted) return;
+        
+        const errorMessage = err instanceof Error ? err.message : 'Failed to load mockup';
+        setError(errorMessage);
+        onError?.(errorMessage);
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    loadAsset();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [mockup, onLoad, onError]);
+
+  // Handle image load events
+  const handleImageLoad = useCallback(() => {
+    setIsLoading(false);
+  }, []);
+
+  const handleImageError = useCallback(() => {
+    const errorMessage = `Failed to display mockup image: ${mockup.name}`;
+    setError(errorMessage);
+    setIsLoading(false);
+    onError?.(errorMessage);
+  }, [mockup.name, onError]);
+
+  // Get optimal resolution based on device pixel ratio
+  const getOptimalResolution = (): '1x' | '2x' | '3x' => {
+    const dpr = window.devicePixelRatio || 1;
+    if (dpr >= 3) return '3x';
+    if (dpr >= 2) return '2x';
+    return '1x';
+  };
+
