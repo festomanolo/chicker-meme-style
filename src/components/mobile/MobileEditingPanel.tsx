@@ -199,3 +199,53 @@ export const MobileEditingPanel: React.FC<MobileEditingPanelProps> = ({
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsCollapsed(!isCollapsed)}
+                className="h-8 w-8 p-0"
+              >
+                {isCollapsed ? (
+                  position === 'right' ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />
+                ) : (
+                  position === 'right' ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />
+                )}
+              </Button>
+            )}
+            
+            {!isCollapsed && (
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                {title}
+              </h2>
+            )}
+          </div>
+
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onClose}
+            className="h-8 w-8 p-0"
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        </div>
+
+        {/* Panel content */}
+        <div className="flex-1 overflow-hidden">
+          {!isCollapsed && (
+            <div className="h-full overflow-y-auto">
+              {children}
+            </div>
+          )}
+          
+          {isCollapsed && (
+            <div className="p-2 space-y-2">
+              {/* Collapsed state - show minimal icons */}
+              <div className="text-center text-xs text-gray-500">
+                Tools
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Drag indicator */}
+        {enableSwipeGestures && (
+          <div className={cn(
+            "absolute top-1/2 -translate-y-1/2 w-1 h-12 bg-gray-300 dark:bg-gray-600 rounded-full",
+            position === 'right' ? '-left-2' : '-right-2'
