@@ -453,3 +453,60 @@ describe('LayerManager', () => {
 
       manager.on('layerAdded', layerAddedSpy);
       manager.on('stateChanged', stateChangedSpy);
+
+      const element = manager.addLayer(mockElement);
+
+      expect(layerAddedSpy).toHaveBeenCalledWith(element);
+      expect(stateChangedSpy).toHaveBeenCalled();
+    });
+
+    it('should remove event listeners', () => {
+      const callback = jest.fn();
+      
+      manager.on('layerAdded', callback);
+      manager.addLayer(mockElement);
+      expect(callback).toHaveBeenCalledTimes(1);
+
+      manager.off('layerAdded', callback);
+      manager.addLayer(mockElement);
+      expect(callback).toHaveBeenCalledTimes(1); // Should not be called again
+    });
+  });
+
+  describe('utility methods', () => {
+    it('should clear all layers', () => {
+      manager.addLayer(mockElement);
+      manager.addLayer(mockElement);
+      
+      expect(manager.getLayerCount()).toBe(2);
+      
+      manager.clearAllLayers();
+      
+      expect(manager.getLayerCount()).toBe(0);
+      expect(manager.getAllLayers()).toEqual([]);
+    });
+
+    it('should get current state', () => {
+      const element = manager.addLayer(mockElement);
+      const state = manager.getState();
+
+      expect(state.elements).toHaveLength(1);
+      expect(state.elements[0].id).toBe(element.id);
+      expect(state.groups).toEqual([]);
+      expect(state.selectedIds).toEqual([]);
+    });
+  });
+});
+
+describe('layerManager singleton', () => {
+  it('should export singleton instance', () => {
+    expect(layerManager).toBeInstanceOf(LayerManager);
+  });
+
+  it('should export utility functions', () => {
+    expect(typeof layerManager.addLayer).toBe('function');
+    expect(typeof layerManager.removeLayer).toBe('function');
+    expect(typeof layerManager.reorderLayer).toBe('function');
+    expect(typeof layerManager.searchLayers).toBe('function');
+  });
+});
