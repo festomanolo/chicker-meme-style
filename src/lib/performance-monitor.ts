@@ -131,3 +131,47 @@ export class PerformanceMonitor {
   /**
    * Log performance metrics
    */
+  logMetrics(): void {
+    if (process.env.NODE_ENV === 'development') {
+      console.group('🚀 Performance Metrics');
+      console.log('Render Time:', `${this.metrics.renderTime.toFixed(2)}ms`);
+      console.log('FPS:', this.metrics.fps);
+      console.log('Memory Usage:', `${this.metrics.memoryUsage.toFixed(2)}MB`);
+      console.log('Load Time:', `${this.metrics.loadTime}ms`);
+      
+      const check = this.checkPerformance();
+      if (!check.isOptimal) {
+        console.warn('Performance Issues:', check.warnings);
+        console.info('Recommendations:', check.recommendations);
+      } else {
+        console.log('✅ Performance is optimal');
+      }
+      console.groupEnd();
+    }
+  }
+}
+
+/**
+ * React hook for performance monitoring
+ */
+export const usePerformanceMonitor = () => {
+  const monitor = PerformanceMonitor.getInstance();
+
+  React.useEffect(() => {
+    monitor.measureLoadTime();
+    
+    const interval = setInterval(() => {
+      monitor.updateFPS();
+    }, 16); // ~60fps
+
+    return () => clearInterval(interval);
+  }, [monitor]);
+
+  return {
+    startRender: monitor.startRender.bind(monitor),
+    endRender: monitor.endRender.bind(monitor),
+    getMetrics: monitor.getMetrics.bind(monitor),
+    checkPerformance: monitor.checkPerformance.bind(monitor),
+    logMetrics: monitor.logMetrics.bind(monitor),
+  };
+};
