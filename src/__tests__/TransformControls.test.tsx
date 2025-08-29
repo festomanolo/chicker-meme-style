@@ -274,3 +274,58 @@ describe('TransformControls', () => {
 
   it('should allow free transform when Shift is pressed', async () => {
     render(
+      <TransformControls
+        element={mockElement}
+        isSelected={true}
+        onTransform={mockOnTransform}
+        onTransformEnd={mockOnTransformEnd}
+        canvasRect={mockCanvasRect}
+        zoom={1}
+      />
+    );
+
+    const handle = screen.getByLabelText('Resize handle se');
+    
+    // Press Shift key
+    fireEvent.keyDown(window, { key: 'Shift' });
+    
+    fireEvent.mouseDown(handle, { clientX: 300, clientY: 250 });
+    fireEvent.mouseMove(document, { clientX: 340, clientY: 260 }); // Different aspect ratio
+
+    await waitFor(() => {
+      expect(mockOnTransform).toHaveBeenCalled();
+    });
+
+    // Release Shift key
+    fireEvent.keyUp(window, { key: 'Shift' });
+  });
+
+  it('should handle rotation correctly', async () => {
+    render(
+      <TransformControls
+        element={mockElement}
+        isSelected={true}
+        onTransform={mockOnTransform}
+        onTransformEnd={mockOnTransformEnd}
+        canvasRect={mockCanvasRect}
+        zoom={1}
+        showRotationHandle={true}
+      />
+    );
+
+    const rotationHandle = screen.getByLabelText('Rotation handle');
+    
+    fireEvent.mouseDown(rotationHandle, { clientX: 200, clientY: 70 });
+    fireEvent.mouseMove(document, { clientX: 250, clientY: 70 }); // Move to the right
+
+    await waitFor(() => {
+      expect(mockOnTransform).toHaveBeenCalled();
+    });
+
+    const lastCall = mockOnTransform.mock.calls[mockOnTransform.mock.calls.length - 1][0];
+    expect(lastCall.rotation).toBeDefined();
+    expect(typeof lastCall.rotation).toBe('number');
+  });
+
+  it('should snap rotation to 15-degree increments when close', async () => {
+    render(
