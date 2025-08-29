@@ -226,3 +226,59 @@ describe('LayerManager', () => {
 
     it('should return false for non-existent layer operations', () => {
       expect(manager.toggleLayerVisibility('non-existent')).toBe(false);
+      expect(manager.lockLayer('non-existent', true)).toBe(false);
+    });
+  });
+
+  describe('layer search', () => {
+    beforeEach(() => {
+      manager.addLayer({ ...mockElement, name: 'Text Layer 1', content: 'Hello World' });
+      manager.addLayer({ ...mockElement, name: 'Image Layer', type: 'image', content: undefined });
+      manager.addLayer({ ...mockElement, name: 'Text Layer 2', content: 'Goodbye World' });
+    });
+
+    it('should search layers by name', () => {
+      const results = manager.searchLayers('Text Layer');
+
+      expect(results.length).toBe(2);
+      expect(results[0].matchType).toBe('name');
+      expect(results[0].element.name).toContain('Text Layer');
+    });
+
+    it('should search layers by type', () => {
+      const results = manager.searchLayers('image');
+
+      expect(results.length).toBe(1);
+      expect(results[0].matchType).toBe('type');
+      expect(results[0].element.type).toBe('image');
+    });
+
+    it('should search layers by content', () => {
+      const results = manager.searchLayers('Hello');
+
+      expect(results.length).toBe(1);
+      expect(results[0].matchType).toBe('content');
+      expect(results[0].element.content).toContain('Hello');
+    });
+
+    it('should return empty array for empty query', () => {
+      const results = manager.searchLayers('');
+      expect(results.length).toBe(0);
+    });
+
+    it('should return results sorted by score', () => {
+      const results = manager.searchLayers('Layer');
+
+      expect(results.length).toBe(3);
+      // Results should be sorted by score (highest first)
+      for (let i = 1; i < results.length; i++) {
+        expect(results[i].score).toBeLessThanOrEqual(results[i - 1].score);
+      }
+    });
+  });
+
+  describe('layer filtering', () => {
+    beforeEach(() => {
+      manager.addLayer({ ...mockElement, name: 'Text 1', type: 'text', visible: true });
+      manager.addLayer({ ...mockElement, name: 'Image 1', type: 'image', visible: false });
+      manager.addLayer({ ...mockElement, name: 'Text 2', type: 'text', locked: true });
