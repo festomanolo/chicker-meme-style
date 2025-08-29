@@ -359,3 +359,64 @@ export class ColorManager {
 
     // Draw crosshatch pattern
     for (let i = 0; i < 100; i += 2) {
+      ctx.beginPath();
+      ctx.moveTo(i, 0);
+      ctx.lineTo(i, 100);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(0, i);
+      ctx.lineTo(100, i);
+      ctx.stroke();
+    }
+
+    ctx.globalCompositeOperation = 'source-over';
+  }
+
+  /**
+   * Draw wash texture pattern
+   */
+  private drawWashPattern(ctx: CanvasRenderingContext2D): void {
+    ctx.globalCompositeOperation = 'overlay';
+    
+    // Create random wash effect
+    for (let i = 0; i < 50; i++) {
+      const x = Math.random() * 100;
+      const y = Math.random() * 100;
+      const radius = Math.random() * 10 + 5;
+      
+      const gradient = ctx.createRadialGradient(x, y, 0, x, y, radius);
+      gradient.addColorStop(0, 'rgba(255, 255, 255, 0.1)');
+      gradient.addColorStop(1, 'rgba(0, 0, 0, 0.05)');
+      
+      ctx.fillStyle = gradient;
+      ctx.beginPath();
+      ctx.arc(x, y, radius, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    ctx.globalCompositeOperation = 'source-over';
+  }
+
+  /**
+   * Draw finish texture pattern
+   */
+  private drawFinishPattern(ctx: CanvasRenderingContext2D): void {
+    ctx.globalCompositeOperation = 'soft-light';
+    
+    // Create subtle finish effect
+    const gradient = ctx.createLinearGradient(0, 0, 100, 100);
+    gradient.addColorStop(0, 'rgba(255, 255, 255, 0.05)');
+    gradient.addColorStop(0.5, 'rgba(0, 0, 0, 0.02)');
+    gradient.addColorStop(1, 'rgba(255, 255, 255, 0.05)');
+    
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, 100, 100);
+
+    ctx.globalCompositeOperation = 'source-over';
+  }
+
+  /**
+   * Utility methods
+   */
+  private generateCacheKey(color: TshirtColor, mockup: TshirtMockup, textureFilter?: TextureFilter): string {
