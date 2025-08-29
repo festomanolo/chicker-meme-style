@@ -105,3 +105,56 @@ export class NotificationAnalyticsService {
   }
 
   /**
+   * Flush event queue to custom analytics endpoint
+   */
+  private async flushEventQueue(): void {
+    if (this.eventQueue.length === 0) return;
+
+    const events = [...this.eventQueue];
+    this.eventQueue = [];
+    this.flushTimer = null;
+
+    if (!this.config.apiEndpoint) return;
+
+    try {
+      await fetch(this.config.apiEndpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(this.config.apiKey && { 'Authorization': `Bearer ${this.config.apiKey}` }),
+        },
+        body: JSON.stringify({
+          events,
+          timestamp: Date.now(),
+        }),
+      });
+    } catch (error) {
+      console.warn('Failed to send analytics events:', error);
+      // Re-queue events for retry
+      this.eventQueue.unshift(...events);
+    }
+  }
+
+  /**
+   * Generate session ID
+   */
+  private generateSessionId(): string {
+    return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  }
+
+  /**
+   * Setup event listeners for page lifecycle
+   */
+  private setupEventListeners(): void {
+    // Flush events before page unload
+    window.addEventListener('beforeunload', () => {
+      if (this.eventQueue.length > 0) {
+        this.flushEventQueue();
+      }
+    });
+
+    // Flush events when page becomes hidden
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden' && this.eventQueue.length > 0) {
+        this.flushEventQueue();
+      }
