@@ -323,3 +323,57 @@ export class ColorValidator {
 
     if (errors.length > 0) {
       return { isValid: false, errors };
+    }
+
+    // Normalize and create complete color object
+    const normalized = ColorConverter.createTshirtColor(
+      Math.round(color.r!),
+      Math.round(color.g!),
+      Math.round(color.b!),
+      color.name
+    );
+
+    return {
+      isValid: true,
+      errors: [],
+      normalized,
+    };
+  }
+
+  /**
+   * Validate hex color string
+   */
+  static validateHexColor(hex: string): boolean {
+    return /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(hex);
+  }
+
+  /**
+   * Validate RGB values
+   */
+  static validateRgbValues(r: number, g: number, b: number): boolean {
+    return (
+      r >= 0 && r <= 255 &&
+      g >= 0 && g <= 255 &&
+      b >= 0 && b <= 255
+    );
+  }
+
+  /**
+   * Validate HSV values
+   */
+  static validateHsvValues(h: number, s: number, v: number): boolean {
+    return (
+      h >= 0 && h <= 360 &&
+      s >= 0 && s <= 100 &&
+      v >= 0 && v <= 100
+    );
+  }
+}
+
+/**
+ * Color manipulation utilities
+ */
+export class ColorManipulator {
+  /**
+   * Lighten a color by a percentage
+   */
