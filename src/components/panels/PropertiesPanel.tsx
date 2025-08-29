@@ -169,3 +169,61 @@ const ImageProperties: React.FC<{
         placeholder="https://example.com/image.jpg"
       />
     </div>
+    
+    <div>
+      <label className="text-xs font-medium text-gray-700 dark:text-gray-300">Fit Mode</label>
+      <select
+        value={element.objectFit || 'cover'}
+        onChange={(e) => onUpdate({ objectFit: e.target.value as any })}
+        className="w-full px-2 py-1 text-xs border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800"
+      >
+        <option value="cover">Cover</option>
+        <option value="contain">Contain</option>
+        <option value="fill">Fill</option>
+        <option value="none">None</option>
+      </select>
+    </div>
+    
+    {element.cropData && (
+      <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
+        <div className="text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">Crop Info</div>
+        <div className="text-xs text-gray-600 dark:text-gray-400 space-y-1">
+          <div>Position: {Math.round(element.cropData.x)}, {Math.round(element.cropData.y)}</div>
+          <div>Size: {Math.round(element.cropData.width)} × {Math.round(element.cropData.height)}</div>
+        </div>
+      </div>
+    )}
+  </div>
+);
+
+// Quick actions component
+const QuickActions: React.FC<{
+  element: LayerElement | null;
+  onAction: (action: string) => void;
+}> = ({ element, onAction }) => (
+  <div className="space-y-2">
+    <div className="grid grid-cols-2 gap-2">
+      <button
+        onClick={() => onAction('duplicate')}
+        disabled={!element}
+        className="px-3 py-2 text-xs bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded disabled:opacity-50"
+      >
+        Duplicate
+      </button>
+      <button
+        onClick={() => onAction('delete')}
+        disabled={!element}
+        className="px-3 py-2 text-xs bg-red-100 dark:bg-red-900/20 hover:bg-red-200 dark:hover:bg-red-900/40 text-red-700 dark:text-red-400 rounded disabled:opacity-50"
+      >
+        Delete
+      </button>
+    </div>
+    
+    <div className="grid grid-cols-2 gap-2">
+      <button
+        onClick={() => onAction('bring-forward')}
+        disabled={!element}
+        className="px-3 py-2 text-xs bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded disabled:opacity-50"
+      >
+        Bring Forward
+      </button>
