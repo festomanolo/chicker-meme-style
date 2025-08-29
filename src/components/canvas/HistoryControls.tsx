@@ -73,3 +73,40 @@ export const HistoryControls: React.FC<HistoryControlsProps> = ({
             </Button>
           </TooltipTrigger>
           <TooltipContent>
+            <p>Redo (Ctrl+Y)</p>
+          </TooltipContent>
+        </Tooltip>
+
+        {/* Stats display */}
+        {showStats && stats && (
+          <div className="flex items-center gap-2 text-xs text-gray-500">
+            <Badge variant="secondary" className="text-xs">
+              <History className="h-3 w-3 mr-1" />
+              {stats.totalEntries}
+            </Badge>
+            <span>{formatMemoryUsage(stats.memoryUsage)}</span>
+          </div>
+        )}
+
+        {/* Clear history button */}
+        {showClear && onClear && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={onClear}
+                className="h-8 px-2 text-red-600 hover:text-red-700"
+              >
+                <RotateCcw className="h-4 w-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Clear History</p>
+            </TooltipContent>
+          </Tooltip>
+        )}
+      </div>
+    </TooltipProvider>
+  );
+};
