@@ -16,3 +16,21 @@ export interface NotificationConfig {
   maxShowsPerSession: number;
   excludedPages: string[];
   phoneNumber: string;
+  defaultMessage: string;
+  enableAnalytics: boolean;
+}
+
+export interface NotificationAnalytics {
+  event: 'show' | 'click' | 'dismiss' | 'link_opened';
+  timestamp: number;
+  sessionId: string;
+  pageUrl: string;
+  showCount: number;
+  metadata?: Record<string, any>;
+}
+
+export interface WhatsAppLinkConfig {
+  phoneNumber: string;
+  message: string;
+  source?: string;
+}
