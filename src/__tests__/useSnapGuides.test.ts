@@ -229,3 +229,60 @@ describe('useSnapGuides', () => {
 
     // Create temporary guides
     act(() => {
+      result.current.snapToGuides({ x: 405, y: 295 });
+    });
+
+    expect(result.current.temporaryGuides.length).toBeGreaterThan(0);
+
+    // Clear temporary guides
+    act(() => {
+      result.current.clearTemporaryGuides();
+    });
+
+    expect(result.current.temporaryGuides.length).toBe(0);
+  });
+
+  it('should toggle grid visibility', () => {
+    const { result } = renderHook(() => useSnapGuides());
+
+    expect(result.current.showGrid).toBe(false);
+
+    act(() => {
+      result.current.setShowGrid(true);
+    });
+
+    expect(result.current.showGrid).toBe(true);
+
+    act(() => {
+      result.current.setShowGrid(false);
+    });
+
+    expect(result.current.showGrid).toBe(false);
+  });
+
+  it('should sort guides by priority', () => {
+    const { result } = renderHook(() => useSnapGuides());
+
+    act(() => {
+      result.current.generateGuides(mockElements, mockCanvasSize, mockMockupBounds);
+    });
+
+    const guides = result.current.snapGuides;
+    
+    // Check that guides are sorted by priority
+    for (let i = 1; i < guides.length; i++) {
+      expect(guides[i].priority).toBeGreaterThanOrEqual(guides[i - 1].priority);
+    }
+  });
+
+  it('should handle snapping to both X and Y axes simultaneously', () => {
+    const { result } = renderHook(() => useSnapGuides({ snapThreshold: 15 }));
+
+    act(() => {
+      result.current.generateGuides(mockElements, mockCanvasSize);
+    });
+
+    const position: Point = { x: 405, y: 295 }; // Close to canvas center on both axes
+    const snapResult = result.current.snapToGuides(position);
+
+    expect(snapResult.snapped).toBe(true);
