@@ -51,3 +51,56 @@ const AuthPage = () => {
     }
 
     if (!formData.password) {
+      newErrors.push('Password is required');
+    }
+
+    if (!isLogin) {
+      if (!formData.name.trim()) {
+        newErrors.push('Name is required');
+      }
+
+      const passwordValidation = PasswordUtils.validatePassword(formData.password);
+      if (!passwordValidation.isValid) {
+        newErrors.push(...passwordValidation.errors);
+      }
+
+      if (formData.password !== formData.confirmPassword) {
+        newErrors.push('Passwords do not match');
+      }
+    }
+
+    setErrors(newErrors);
+    return newErrors.length === 0;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!validateForm()) return;
+
+    setIsSubmitting(true);
+    try {
+      let success = false;
+      
+      if (isLogin) {
+        success = await login(formData.email, formData.password);
+        if (!success) {
+          setErrors(['Invalid email or password']);
+        }
+      } else {
+        success = await register(formData.name, formData.email, formData.password);
+        if (!success) {
+          setErrors(['Registration failed. Email might already be in use.']);
+        }
+      }
+    } catch (error) {
+      setErrors(['An unexpected error occurred. Please try again.']);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const toggleMode = () => {
+    setIsLogin(!isLogin);
+    setFormData({ name: '', email: '', password: '', confirmPassword: '' });
+    setErrors([]);
