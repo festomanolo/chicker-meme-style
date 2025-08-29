@@ -330,3 +330,59 @@ export const TransformControls: React.FC<TransformControlsProps> = ({
 
     // Apply grid snapping if enabled
     if (snapToGrid && gridSize) {
+      newTransform.x = Math.round(newTransform.x / gridSize) * gridSize;
+      newTransform.y = Math.round(newTransform.y / gridSize) * gridSize;
+      newTransform.width = Math.round(newTransform.width / gridSize) * gridSize;
+      newTransform.height = Math.round(newTransform.height / gridSize) * gridSize;
+    }
+
+    return newTransform;
+  }, [element, liveTransform, zoom, isShiftPressed, snapToGrid, gridSize]);
+
+  // Handle mouse move
+  useEffect(() => {
+    if (!dragState.isDragging) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = canvasRect;
+      const currentPosition = {
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top,
+      };
+
+      setDragState(prev => ({ ...prev, currentPosition }));
+
+      if (dragState.handlePosition) {
+        const newTransform = calculateTransform(
+          currentPosition,
+          dragState.startPosition,
+          dragState.handlePosition
+        );
+        
+        setLiveTransform(newTransform);
+        onTransform(newTransform);
+      }
+    };
+
+    const handleMouseUp = () => {
+      setDragState({
+        isDragging: false,
+        startPosition: { x: 0, y: 0 },
+        currentPosition: { x: 0, y: 0 },
+        offset: { x: 0, y: 0 },
+        elementId: null,
+      });
+      setLiveTransform(null);
+      onTransformEnd();
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [dragState, canvasRect, calculateTransform, onTransform, onTransformEnd]);
+
+  // Handle touch move for mobile
