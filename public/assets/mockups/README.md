@@ -37,3 +37,41 @@ mockups/
   - Realistic shadows and lighting
   - Proper fabric texture representation
   - Professional photography appearance
+
+### Mask Files
+- **Format**: PNG with alpha channel
+- **Dimensions**: Same as 1x mockup images (520x600px)
+- **Purpose**: Define the editable design area on the t-shirt
+- **Requirements**:
+  - White areas (255,255,255,255) = design area
+  - Transparent areas (0,0,0,0) = non-design area
+  - Smooth edges with anti-aliasing
+  - Follow natural chest curvature for front views
+  - Rectangular area for back views
+
+## Design Area Specifications
+
+### Regular T-Shirt
+- **Front Design Area**: 200x240px centered on chest
+- **Back Design Area**: 200x260px centered on back
+- **Curvature**: Follows natural chest contour with subtle curve
+
+### Long Sleeve T-Shirt
+- **Front Design Area**: 200x240px centered on chest
+- **Back Design Area**: 200x260px centered on back
+- **Curvature**: Similar to regular with slightly more pronounced chest curve
+
+## Color Tinting Support
+
+All mockup images should be designed to support color tinting:
+- Use neutral base colors (light gray or white)
+- Maintain shadow and highlight details
+- Preserve fabric texture information
+- Allow for CSS filter-based color manipulation
+
+## Performance Considerations
+
+- WebP format provides 25-35% better compression than JPEG
+- Progressive loading supported for better user experience
+- Lazy loading implemented for non-visible mockups
+- Multiple resolution variants for optimal bandwidth usage
