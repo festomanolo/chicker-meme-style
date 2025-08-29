@@ -108,3 +108,59 @@ describe('TransformControls', () => {
     expect(rotationHandle).not.toBeInTheDocument();
   });
 
+  it('should not render when disabled', () => {
+    const { container } = render(
+      <TransformControls
+        element={mockElement}
+        isSelected={true}
+        onTransform={mockOnTransform}
+        onTransformEnd={mockOnTransformEnd}
+        canvasRect={mockCanvasRect}
+        zoom={1}
+        disabled={true}
+      />
+    );
+
+    expect(container.firstChild).toBeNull();
+  });
+
+  it('should scale handle size with zoom level', () => {
+    const { rerender } = render(
+      <TransformControls
+        element={mockElement}
+        isSelected={true}
+        onTransform={mockOnTransform}
+        onTransformEnd={mockOnTransformEnd}
+        canvasRect={mockCanvasRect}
+        zoom={1}
+      />
+    );
+
+    const handle1 = document.querySelector('[aria-label="Resize handle nw"]') as HTMLElement;
+    const originalSize = handle1?.style.width;
+
+    rerender(
+      <TransformControls
+        element={mockElement}
+        isSelected={true}
+        onTransform={mockOnTransform}
+        onTransformEnd={mockOnTransformEnd}
+        canvasRect={mockCanvasRect}
+        zoom={2}
+      />
+    );
+
+    const handle2 = document.querySelector('[aria-label="Resize handle nw"]') as HTMLElement;
+    const scaledSize = handle2?.style.width;
+
+    // Handle should be smaller at higher zoom
+    expect(parseFloat(scaledSize)).toBeLessThan(parseFloat(originalSize));
+  });
+
+  it('should start drag operation on mouse down', async () => {
+    const user = userEvent.setup();
+    
+    render(
+      <TransformControls
+        element={mockElement}
+        isSelected={true}
