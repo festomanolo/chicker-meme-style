@@ -531,3 +531,63 @@ export const LayersPanel: React.FC<LayersPanelProps> = ({
               placeholder="Search layers..."
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
+              className="pl-9"
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Layer list */}
+      <div className="flex-1 overflow-y-auto p-3">
+        {searchQuery.trim() ? (
+          /* Search results - show all matching layers */
+          <div className="space-y-1">
+            {searchResults.length === 0 ? (
+              <div className="text-center py-8 text-gray-500">
+                <div className="mb-2">No layers found</div>
+                <div className="text-sm">
+                  Try adjusting your search term
+                </div>
+              </div>
+            ) : (
+              searchResults.map(layer => (
+                <LayerItem
+                  key={keyManager.getSearchKey(layer.id)}
+                  layer={layer}
+                  isSelected={selectedIds.includes(layer.id)}
+                  isEditing={enableInlineEdit && editingLayerId === layer.id}
+                  showThumbnail={showThumbnails}
+                  onSelect={onLayerSelect}
+                  onUpdate={onLayerUpdate}
+                  onDelete={onLayerDelete}
+                  onDuplicate={onLayerDuplicate}
+                  onVisibilityToggle={onLayerVisibilityToggle}
+                  onLockToggle={onLayerLockToggle}
+                  onStartEdit={setEditingLayerId}
+                  onEndEdit={() => setEditingLayerId(null)}
+                  onDragStart={enableDragReorder ? handleDragStart : undefined}
+                  onDragOver={enableDragReorder ? handleDragOver : undefined}
+                  onDrop={enableDragReorder ? handleDrop : undefined}
+                />
+              ))
+            )}
+          </div>
+        ) : (
+          /* Normal view - groups and individual layers */
+          <>
+            {/* Groups */}
+            {groups.map(group => (
+              <GroupItem
+                key={keyManager.getIndividualKey(`group-${group.id}`)}
+                group={group}
+                layers={layers}
+                selectedIds={selectedIds}
+                showThumbnails={showThumbnails}
+                enableInlineEdit={enableInlineEdit}
+                editingLayerId={editingLayerId}
+                onToggle={onGroupToggle || (() => {})}
+                onLayerSelect={onLayerSelect}
+                onLayerUpdate={onLayerUpdate}
+                onLayerDelete={onLayerDelete}
+                onLayerDuplicate={onLayerDuplicate}
+                onLayerVisibilityToggle={onLayerVisibilityToggle}
