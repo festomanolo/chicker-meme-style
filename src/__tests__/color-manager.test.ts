@@ -371,3 +371,56 @@ describe('ColorManager', () => {
       expect(() => {
         manager['applyColorMatrixFilter'](data, invalidMatrix);
       }).not.toThrow();
+    });
+  });
+
+  describe('image loading', () => {
+    it('should load image successfully', async () => {
+      const image = await manager['loadImage']('/test-image.jpg');
+      
+      expect(image).toBeDefined();
+      expect(image.src).toBe('/test-image.jpg');
+    });
+
+    it('should handle image load error', async () => {
+      await expect(manager['loadImage']('/error-image.jpg')).rejects.toThrow();
+    });
+  });
+
+  describe('performance optimization', () => {
+    it('should select optimal blending method', async () => {
+      const result = await manager['selectOptimalBlendingMethod'](mockColor, mockMockup, mockTextureFilter);
+      
+      expect(result).toBeDefined();
+      expect(result.performanceMetrics).toBeDefined();
+      expect(result.performanceMetrics.method).toMatch(/css|canvas|webgl/);
+    });
+
+    it('should fallback gracefully when WebGL fails', async () => {
+      // Mock WebGL failure
+      const originalSupportsWebGL = manager['supportsWebGL'];
+      manager['supportsWebGL'] = jest.fn(() => true);
+      manager['applyWebGLBlending'] = jest.fn().mockRejectedValue(new Error('WebGL failed'));
+
+      const result = await manager['selectOptimalBlendingMethod'](mockColor, mockMockup, mockTextureFilter);
+      
+      expect(result).toBeDefined();
+      expect(result.performanceMetrics.method).not.toBe('webgl');
+
+      // Restore
+      manager['supportsWebGL'] = originalSupportsWebGL;
+    });
+  });
+});
+
+describe('colorManager singleton', () => {
+  it('should export singleton instance', () => {
+    expect(colorManager).toBeInstanceOf(ColorManager);
+  });
+
+  it('should export utility functions', () => {
+    expect(typeof colorManager.applyColorToFabric).toBe('function');
+    expect(typeof colorManager.generateColorPreview).toBe('function');
+    expect(typeof colorManager.blendColorWithFabric).toBe('function');
+  });
+});
