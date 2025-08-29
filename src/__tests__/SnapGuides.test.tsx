@@ -58,3 +58,63 @@ describe('SnapGuides', () => {
   it('should render guide lines for each guide', () => {
     const { container } = render(
       <SnapGuides
+        guides={mockGuides}
+        canvasSize={mockCanvasSize}
+        zoom={1}
+      />
+    );
+
+    const lines = container.querySelectorAll('line');
+    // Should have lines for visible guides (center, mockup, and temporary element guide)
+    expect(lines.length).toBeGreaterThan(0);
+  });
+
+  it('should render vertical lines for x-axis guides', () => {
+    const xGuides: SnapGuide[] = [
+      {
+        type: 'center',
+        position: 400,
+        axis: 'x',
+        temporary: true,
+        priority: 1,
+      },
+    ];
+
+    const { container } = render(
+      <SnapGuides
+        guides={xGuides}
+        canvasSize={mockCanvasSize}
+        zoom={1}
+      />
+    );
+
+    const line = container.querySelector('line');
+    expect(line).toHaveAttribute('x1', '400');
+    expect(line).toHaveAttribute('x2', '400');
+    expect(line).toHaveAttribute('y1', '0');
+    expect(line).toHaveAttribute('y2', '600');
+  });
+
+  it('should render horizontal lines for y-axis guides', () => {
+    const yGuides: SnapGuide[] = [
+      {
+        type: 'center',
+        position: 300,
+        axis: 'y',
+        temporary: true,
+        priority: 1,
+      },
+    ];
+
+    const { container } = render(
+      <SnapGuides
+        guides={yGuides}
+        canvasSize={mockCanvasSize}
+        zoom={1}
+      />
+    );
+
+    const line = container.querySelector('line');
+    expect(line).toHaveAttribute('x1', '0');
+    expect(line).toHaveAttribute('x2', '800');
+    expect(line).toHaveAttribute('y1', '300');
