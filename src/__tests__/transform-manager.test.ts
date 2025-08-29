@@ -214,3 +214,56 @@ describe('TransformManager', () => {
     it('should generate snap guides for canvas and elements', () => {
       const guides = manager.generateSnapGuides(mockElements);
 
+      expect(guides.length).toBeGreaterThan(0);
+      
+      // Should include canvas center guides
+      const centerXGuide = guides.find(g => g.type === 'center' && g.axis === 'x');
+      const centerYGuide = guides.find(g => g.type === 'center' && g.axis === 'y');
+      
+      expect(centerXGuide).toBeDefined();
+      expect(centerYGuide).toBeDefined();
+      expect(centerXGuide!.position).toBe(400); // 800 / 2
+      expect(centerYGuide!.position).toBe(300); // 600 / 2
+    });
+
+    it('should generate mockup guides when mockup bounds provided', () => {
+      const mockupBounds: Rect = { x: 100, y: 100, width: 300, height: 400 };
+      const guides = manager.generateSnapGuides(mockElements, mockupBounds);
+
+      const mockupXGuide = guides.find(g => g.type === 'mockup' && g.axis === 'x');
+      const mockupYGuide = guides.find(g => g.type === 'mockup' && g.axis === 'y');
+
+      expect(mockupXGuide).toBeDefined();
+      expect(mockupYGuide).toBeDefined();
+      expect(mockupXGuide!.position).toBe(250); // 100 + 300/2
+      expect(mockupYGuide!.position).toBe(300); // 100 + 400/2
+    });
+
+    it('should snap position to nearest guide', () => {
+      manager.generateSnapGuides(mockElements);
+      
+      const position: Point = { x: 402, y: 298 }; // Close to canvas center (400, 300)
+      const snapResult = manager.snapToGuides(position, 10);
+
+      expect(snapResult.snapped).toBe(true);
+      expect(snapResult.position.x).toBe(400);
+      expect(snapResult.position.y).toBe(300);
+      expect(snapResult.guides.length).toBeGreaterThan(0);
+    });
+
+    it('should not snap when distance exceeds threshold', () => {
+      manager.generateSnapGuides(mockElements);
+      
+      const position: Point = { x: 420, y: 320 }; // Too far from canvas center
+      const snapResult = manager.snapToGuides(position, 10);
+
+      expect(snapResult.snapped).toBe(false);
+      expect(snapResult.position).toEqual(position);
+    });
+
+    it('should get temporary guides for visual feedback', () => {
+      manager.generateSnapGuides(mockElements);
+      manager.snapToGuides({ x: 402, y: 298 }, 10); // Trigger snapping
+      
+      const temporaryGuides = manager.getTemporaryGuides();
+      
