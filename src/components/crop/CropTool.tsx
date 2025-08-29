@@ -558,3 +558,59 @@ export const CropTool: React.FC<CropToolProps> = ({
 
                 {/* Crop rectangle border */}
                 <rect
+                  x={cropState.currentCrop.x}
+                  y={cropState.currentCrop.y}
+                  width={cropState.currentCrop.width}
+                  height={cropState.currentCrop.height}
+                  fill="none"
+                  stroke="white"
+                  strokeWidth="2"
+                  strokeDasharray="5,5"
+                />
+
+                {/* Grid lines */}
+                {gridLines}
+              </svg>
+
+              {/* Crop handles */}
+              <div className="absolute inset-0 pointer-events-auto">
+                {cropHandles.map((handle) => (
+                  <div
+                    key={handle.id}
+                    className={cn(
+                      "absolute bg-white border-2 border-blue-500 rounded-sm",
+                      "hover:bg-blue-50 transition-colors",
+                      cropState.isDragging && cropState.dragHandle === handle.id && "bg-blue-100"
+                    )}
+                    style={{
+                      left: handle.bounds.x,
+                      top: handle.bounds.y,
+                      width: handle.bounds.width,
+                      height: handle.bounds.height,
+                      cursor: handle.cursor,
+                    }}
+                    onMouseDown={(e) => handleMouseDown(e, handle.id)}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Status bar */}
+      <div className="p-2 border-t border-gray-200 dark:border-gray-700 text-xs text-gray-500">
+        <div className="flex items-center justify-between">
+          <span>
+            Crop: {Math.round(cropState.currentCrop.width)} × {Math.round(cropState.currentCrop.height)}
+          </span>
+          <span>
+            Position: {Math.round(cropState.currentCrop.x)}, {Math.round(cropState.currentCrop.y)}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default CropTool;
