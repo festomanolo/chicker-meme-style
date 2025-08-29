@@ -224,3 +224,60 @@ export const useSnapGuides = (options: UseSnapGuidesOptions = {}): UseSnapGuides
         minDistanceX = distance;
         snappedX = true;
         
+        // Add to active guides for visual feedback
+        if (showTemporaryGuides) {
+          activeGuides.push({ ...guide, temporary: true });
+        }
+      }
+    }
+
+    // Check Y-axis guides
+    for (const guide of relevantGuides.filter(g => g.axis === 'y')) {
+      const distance = Math.abs(position.y - guide.position);
+      if (distance < minDistanceY) {
+        snappedPosition.y = guide.position;
+        minDistanceY = distance;
+        snappedY = true;
+        
+        // Add to active guides for visual feedback
+        if (showTemporaryGuides) {
+          activeGuides.push({ ...guide, temporary: true });
+        }
+      }
+    }
+
+    // Update temporary guides for visual feedback
+    if (showTemporaryGuides) {
+      setTemporaryGuides(activeGuides);
+    }
+
+    return {
+      snapped: snappedX || snappedY,
+      position: snappedPosition,
+      guides: activeGuides,
+      snapDistance: Math.min(minDistanceX, minDistanceY),
+    };
+  }, [snapGuides, snapThreshold, showTemporaryGuides]);
+
+  // Clear temporary guides
+  const clearTemporaryGuides = useCallback(() => {
+    setTemporaryGuides([]);
+  }, []);
+
+  // Combined guides for rendering
+  const allGuides = useMemo(() => {
+    return [...snapGuides, ...temporaryGuides];
+  }, [snapGuides, temporaryGuides]);
+
+  return {
+    snapGuides: allGuides,
+    temporaryGuides,
+    generateGuides,
+    snapToGuides,
+    clearTemporaryGuides,
+    showGrid,
+    setShowGrid,
+  };
+};
+
+export default useSnapGuides;
