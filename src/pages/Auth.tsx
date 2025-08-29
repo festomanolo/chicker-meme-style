@@ -104,3 +104,57 @@ const AuthPage = () => {
     setIsLogin(!isLogin);
     setFormData({ name: '', email: '', password: '', confirmPassword: '' });
     setErrors([]);
+    setShowPassword(false);
+    setShowConfirmPassword(false);
+  };
+
+  const fillDemoCredentials = () => {
+    setFormData(prev => ({
+      ...prev,
+      email: 'demo@chicker.com',
+      password: 'password123'
+    }));
+    setErrors([]);
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background flex items-center justify-center p-4">
+      <AuthRedirect />
+      <div className="w-full max-w-md space-y-6">
+        {/* Logo */}
+        <div className="text-center">
+          <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <span className="text-primary-foreground font-bold text-2xl">C</span>
+          </div>
+          <h1 className="text-2xl font-bold text-foreground">
+            {isLogin ? 'Welcome Back!' : 'Join Chicker'}
+          </h1>
+          <p className="text-muted-foreground">
+            {isLogin ? 'Sign in to your account' : 'Create your account to get started'}
+          </p>
+        </div>
+
+        {/* Auth Form */}
+        <Card className="glass-card">
+          <CardHeader className="space-y-1">
+            <CardTitle className="text-xl">
+              {isLogin ? 'Sign In' : 'Create Account'}
+            </CardTitle>
+            <CardDescription>
+              {isLogin 
+                ? 'Enter your credentials to access your account'
+                : 'Fill in your details to create a new account'
+              }
+            </CardDescription>
+          </CardHeader>
+          
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Error Messages */}
+              {errors.length > 0 && (
+                <Alert variant="destructive">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription>
+                    <ul className="list-disc list-inside space-y-1">
+                      {errors.map((error, index) => (
+                        <li key={index}>{error}</li>
