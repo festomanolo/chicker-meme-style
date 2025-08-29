@@ -112,3 +112,60 @@ const TextProperties: React.FC<{
         className="w-full px-2 py-1 text-xs border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 resize-none"
         rows={3}
       />
+    </div>
+    
+    <div>
+      <label className="text-xs font-medium text-gray-700 dark:text-gray-300">Font Size</label>
+      <input
+        type="number"
+        value={element.fontSize || 16}
+        onChange={(e) => onUpdate({ fontSize: parseFloat(e.target.value) || 16 })}
+        className="w-full px-2 py-1 text-xs border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800"
+        min="8"
+        max="200"
+      />
+    </div>
+    
+    <div>
+      <label className="text-xs font-medium text-gray-700 dark:text-gray-300">Font Family</label>
+      <select
+        value={element.fontFamily || 'Arial'}
+        onChange={(e) => onUpdate({ fontFamily: e.target.value })}
+        className="w-full px-2 py-1 text-xs border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800"
+      >
+        <option value="Arial">Arial</option>
+        <option value="Helvetica">Helvetica</option>
+        <option value="Times New Roman">Times New Roman</option>
+        <option value="Georgia">Georgia</option>
+        <option value="Verdana">Verdana</option>
+      </select>
+    </div>
+    
+    <div>
+      <label className="text-xs font-medium text-gray-700 dark:text-gray-300">Text Color</label>
+      <input
+        type="color"
+        value={element.color || '#000000'}
+        onChange={(e) => onUpdate({ color: e.target.value })}
+        className="w-full h-8 border border-gray-300 dark:border-gray-600 rounded"
+      />
+    </div>
+  </div>
+);
+
+// Image properties component
+const ImageProperties: React.FC<{
+  element: LayerElement;
+  onUpdate: (updates: Partial<LayerElement>) => void;
+}> = ({ element, onUpdate }) => (
+  <div className="space-y-3">
+    <div>
+      <label className="text-xs font-medium text-gray-700 dark:text-gray-300">Image URL</label>
+      <input
+        type="url"
+        value={element.imageUrl || ''}
+        onChange={(e) => onUpdate({ imageUrl: e.target.value })}
+        className="w-full px-2 py-1 text-xs border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800"
+        placeholder="https://example.com/image.jpg"
+      />
+    </div>
