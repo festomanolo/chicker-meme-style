@@ -269,3 +269,57 @@ export class ColorConverter {
         const hexRgb = this.hexToRgb(color);
         if (!hexRgb) throw new Error('Invalid hex color');
         rgb = hexRgb;
+        break;
+      default:
+        throw new Error(`Unsupported source color space: ${from}`);
+    }
+
+    // Convert from RGB to target format
+    switch (to) {
+      case 'rgb':
+        return rgb;
+      case 'hsv':
+        return this.rgbToHsv(rgb.r, rgb.g, rgb.b);
+      case 'hsl':
+        return this.rgbToHsl(rgb.r, rgb.g, rgb.b);
+      case 'lab':
+        return this.rgbToLab(rgb.r, rgb.g, rgb.b);
+      case 'hex':
+        return this.rgbToHex(rgb.r, rgb.g, rgb.b);
+      default:
+        throw new Error(`Unsupported target color space: ${to}`);
+    }
+  }
+}/**
+ * C
+olor validation and normalization utilities
+ */
+export class ColorValidator {
+  /**
+   * Validate and normalize a TshirtColor object
+   */
+  static validateTshirtColor(color: Partial<TshirtColor>): ColorValidationResult {
+    const errors: string[] = [];
+
+    // Check required properties
+    if (typeof color.r !== 'number' || color.r < 0 || color.r > 255) {
+      errors.push('Red value must be between 0 and 255');
+    }
+    if (typeof color.g !== 'number' || color.g < 0 || color.g > 255) {
+      errors.push('Green value must be between 0 and 255');
+    }
+    if (typeof color.b !== 'number' || color.b < 0 || color.b > 255) {
+      errors.push('Blue value must be between 0 and 255');
+    }
+    if (typeof color.h !== 'number' || color.h < 0 || color.h > 360) {
+      errors.push('Hue value must be between 0 and 360');
+    }
+    if (typeof color.s !== 'number' || color.s < 0 || color.s > 100) {
+      errors.push('Saturation value must be between 0 and 100');
+    }
+    if (typeof color.v !== 'number' || color.v < 0 || color.v > 100) {
+      errors.push('Value/Brightness must be between 0 and 100');
+    }
+
+    if (errors.length > 0) {
+      return { isValid: false, errors };
