@@ -169,3 +169,60 @@ const Cart = () => {
                         <div className="flex-1 space-y-2">
                           <div className="flex items-start justify-between">
                             <div>
+                              <h3 className="font-semibold text-lg leading-tight">
+                                {item.name}
+                              </h3>
+                              <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1">
+                                <span>Size: {item.size}</span>
+                                <span>Color: {item.color}</span>
+                              </div>
+                              {!item.inStock && (
+                                <Badge variant="destructive" className="mt-2">
+                                  Out of Stock
+                                </Badge>
+                              )}
+                            </div>
+
+                            <div className="text-right">
+                              <div className="flex items-center gap-2">
+                                <span className="font-bold text-lg">
+                                  TZS {item.price.toLocaleString()}
+                                </span>
+                                {item.originalPrice && (
+                                  <span className="text-sm text-muted-foreground line-through">
+                                    TZS {item.originalPrice.toLocaleString()}
+                                  </span>
+                                )}
+                              </div>
+                              <p className="text-sm text-muted-foreground">
+                                TZS {(item.price * item.quantity).toLocaleString()} total
+                              </p>
+                            </div>
+                          </div>
+
+                          {/* Quantity Controls and Actions */}
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className="flex items-center border border-border rounded-lg">
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-8 w-8"
+                                  onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}
+                                >
+                                  <Minus className="h-4 w-4" />
+                                </Button>
+                                <span className="px-3 py-1 text-sm font-medium min-w-[3rem] text-center">
+                                  {item.quantity}
+                                </span>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-8 w-8"
+                                  onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}
+                                >
+                                  <Plus className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </div>
+
