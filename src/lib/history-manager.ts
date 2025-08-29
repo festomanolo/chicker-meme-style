@@ -116,3 +116,63 @@ export class HistoryManager {
     
     return {
       totalEntries: this.entries.length,
+      compressedEntries: compressedCount,
+      memoryUsage,
+      oldestEntry: this.entries.length > 0 ? this.entries[0].timestamp : undefined,
+      newestEntry: this.entries.length > 0 ? this.entries[this.entries.length - 1].timestamp : undefined,
+    };
+  }
+
+  /**
+   * Clear all history
+   */
+  clear(): void {
+    this.entries = [];
+    this.currentIndex = -1;
+    this.clearDebounce();
+  }
+
+  /**
+   * Get history snapshot for serialization
+   */
+  getSnapshot(): HistorySnapshot {
+    return {
+      entries: this.entries.map(entry => ({ ...entry })),
+      currentIndex: this.currentIndex,
+      stats: this.getStats(),
+      config: { ...this.config },
+    };
+  }
+
+  /**
+   * Restore from history snapshot
+   */
+  restoreSnapshot(snapshot: HistorySnapshot): void {
+    this.entries = snapshot.entries.map(entry => ({ ...entry }));
+    this.currentIndex = snapshot.currentIndex;
+    this.config = { ...snapshot.config };
+  }
+
+  /**
+   * Get recent history entries for display
+   */
+  getRecentEntries(count: number = 10): HistoryEntry[] {
+    const startIndex = Math.max(0, this.currentIndex - count + 1);
+    return this.entries.slice(startIndex, this.currentIndex + 1);
+  }
+
+  /**
+   * Compress old history entries to save memory
+   */
+  compressHistory(): void {
+    if (!this.config.enableCompression) return;
+
+    const threshold = this.config.compressionThreshold;
+    if (this.entries.length <= threshold) return;
+
+    const compressCount = Math.floor(this.entries.length * this.config.compressionRatio);
+    
+    for (let i = 0; i < compressCount; i++) {
+      if (!this.entries[i].compressed) {
+        this.entries[i] = this.compressEntry(this.entries[i]);
+      }
