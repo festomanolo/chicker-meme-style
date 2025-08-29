@@ -257,3 +257,55 @@ describe('MockupAssetLoader', () => {
       const mockupWithoutMetadata = {
         ...mockMockup,
         metadata: undefined as any,
+        designArea: {
+          ...mockMockup.designArea,
+          curvature: undefined as any,
+        },
+      };
+
+      const result = validateMockup(mockupWithoutMetadata);
+
+      expect(result.isValid).toBe(true); // Still valid, just warnings
+      expect(result.warnings).toContain('Mockup metadata missing, using defaults');
+      expect(result.warnings).toContain('Design area curvature not defined, using rectangular area');
+    });
+  });
+
+  describe('cache management', () => {
+    it('should clear cache correctly', async () => {
+      await mockupLoader.loadMockupAsset(mockMockup);
+      
+      let stats = mockupLoader.getCacheStats();
+      expect(stats.cacheSize).toBe(1);
+
+      mockupLoader.clearCache();
+      
+      stats = mockupLoader.getCacheStats();
+      expect(stats.cacheSize).toBe(0);
+    }, 15000);
+
+    it('should provide accurate cache statistics', async () => {
+      const mockups = [
+        mockMockup,
+        {
+          ...mockMockup,
+          id: 'error-mockup',
+          variants: {
+            '1x': '/error-1x.webp',
+            '2x': '/error-2x.webp',
+            '3x': '/error-3x.webp',
+          },
+        },
+      ];
+
+      await Promise.all(mockups.map(m => 
+        mockupLoader.loadMockupAsset(m).catch(() => {})
+      ));
+
+      const stats = mockupLoader.getCacheStats();
+      expect(stats.cacheSize).toBe(2);
+      expect(stats.loadedAssets).toBe(1);
+      expect(stats.failedAssets).toBe(1);
+    }, 15000);
+  });
+});
