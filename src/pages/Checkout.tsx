@@ -226,3 +226,60 @@ const Checkout = () => {
                       value="mpesa"
                       checked={paymentMethod === "mpesa"}
                       onChange={(e) => setPaymentMethod(e.target.value)}
+                      className="w-4 h-4"
+                    />
+                    <Label htmlFor="mpesa" className="flex items-center gap-2">
+                      M-Pesa
+                      <Badge variant="secondary">Recommended</Badge>
+                    </Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="radio"
+                      id="card"
+                      name="payment"
+                      value="card"
+                      checked={paymentMethod === "card"}
+                      onChange={(e) => setPaymentMethod(e.target.value)}
+                      className="w-4 h-4"
+                    />
+                    <Label htmlFor="card">Credit/Debit Card</Label>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Shield className="h-4 w-4" />
+                  <span>Your payment information is secure and encrypted</span>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Order Summary */}
+          <div>
+            <div className="sticky top-24">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Order Summary</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {/* Order Items */}
+                  <div className="space-y-3">
+                    {items.map((item) => (
+                      <div key={item.id} className="flex items-center gap-3">
+                        <div className="w-12 h-12 bg-muted rounded-lg flex items-center justify-center">
+                          <span className="text-xs font-medium">{item.quantity}</span>
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="font-medium text-sm">{item.name}</h4>
+                          <p className="text-xs text-muted-foreground">
+                            Size: {item.size} | Color: {item.color}
+                          </p>
+                        </div>
+                        <span className="font-medium">
+                          TZS {(item.price * item.quantity).toLocaleString()}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+
