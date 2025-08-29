@@ -111,3 +111,60 @@ describe('WhatsAppNotification', () => {
     await user.click(whatsappButton);
     
     expect(mockProps.onAnalytics).toHaveBeenCalledWith(
+      expect.objectContaining({ event: 'click' })
+    );
+
+    // Should track link_opened after delay
+    await waitFor(() => {
+      expect(mockProps.onAnalytics).toHaveBeenCalledWith(
+        expect.objectContaining({ event: 'link_opened' })
+      );
+    }, { timeout: 200 });
+  });
+
+  it('should not track analytics when disabled', () => {
+    const configWithoutAnalytics = { ...mockConfig, enableAnalytics: false };
+    render(
+      <WhatsAppNotification 
+        {...mockProps} 
+        config={configWithoutAnalytics}
+      />
+    );
+    
+    expect(mockProps.onAnalytics).not.toHaveBeenCalled();
+  });
+
+  it('should have proper accessibility attributes', () => {
+    render(<WhatsAppNotification {...mockProps} />);
+    
+    const dialog = screen.getByRole('dialog');
+    expect(dialog).toHaveAttribute('aria-labelledby', 'whatsapp-notification-title');
+    expect(dialog).toHaveAttribute('aria-describedby', 'whatsapp-notification-description');
+    
+    expect(screen.getByLabelText('Dismiss notification')).toBeInTheDocument();
+  });
+
+  it('should apply custom className', () => {
+    const { container } = render(
+      <WhatsAppNotification {...mockProps} className="custom-notification" />
+    );
+    
+    expect(container.firstChild).toHaveClass('custom-notification');
+  });
+
+  it('should show online status indicator', () => {
+    render(<WhatsAppNotification {...mockProps} />);
+    
+    expect(screen.getByText('Online')).toBeInTheDocument();
+    expect(screen.getByText('Usually replies instantly')).toBeInTheDocument();
+  });
+});
+
+describe('useWhatsAppNotification', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockLocalStorage.getItem.mockReturnValue(null);
+    
+    // Mock current time
+    jest.spyOn(Date, 'now').mockReturnValue(1000000);
+  });
