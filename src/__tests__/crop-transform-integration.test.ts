@@ -57,3 +57,63 @@ describe('CropTransformIntegration', () => {
     it('should handle crop with different aspect ratio', () => {
       const cropData: CropData = {
         x: 0,
+        y: 0,
+        width: 400,
+        height: 200,
+        originalWidth: 400,
+        originalHeight: 400,
+      };
+
+      const result = CropTransformIntegration.cropToTransform(cropData, mockTransformData);
+
+      expect(result.width).toBe(400);
+      expect(result.height).toBe(200);
+      expect(result.scaleX).toBe(1);
+      expect(result.scaleY).toBe(0.5);
+    });
+
+    it('should preserve rotation and other transform properties', () => {
+      const transformWithRotation: TransformData = {
+        ...mockTransformData,
+        rotation: 45,
+      };
+
+      const result = CropTransformIntegration.cropToTransform(mockCropData, transformWithRotation);
+
+      expect(result.rotation).toBe(45);
+    });
+  });
+
+  describe('transformToCrop', () => {
+    it('should convert transform coordinates to crop coordinates', () => {
+      const originalDimensions = { width: 400, height: 400 };
+      const result = CropTransformIntegration.transformToCrop(mockTransformData, originalDimensions);
+
+      expect(result.originalWidth).toBe(400);
+      expect(result.originalHeight).toBe(400);
+      expect(result.width).toBe(200);
+      expect(result.height).toBe(200);
+    });
+
+    it('should handle scaled transforms', () => {
+      const scaledTransform: TransformData = {
+        ...mockTransformData,
+        scaleX: 2,
+        scaleY: 2,
+      };
+
+      const originalDimensions = { width: 400, height: 400 };
+      const result = CropTransformIntegration.transformToCrop(scaledTransform, originalDimensions);
+
+      expect(result.width).toBe(100); // 200 / 2
+      expect(result.height).toBe(100); // 200 / 2
+    });
+
+    it('should clamp crop to image bounds', () => {
+      const largeTransform: TransformData = {
+        ...mockTransformData,
+        x: -100,
+        y: -100,
+        width: 600,
+        height: 600,
+      };
