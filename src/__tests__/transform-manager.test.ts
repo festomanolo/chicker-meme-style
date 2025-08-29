@@ -160,3 +160,57 @@ describe('TransformManager', () => {
       expect(boundingBox.maxY).toBe(250);
       expect(boundingBox.width).toBe(200);
       expect(boundingBox.height).toBe(150);
+      expect(boundingBox.centerX).toBe(200);
+      expect(boundingBox.centerY).toBe(175);
+    });
+
+    it('should calculate bounding box for rotated element', () => {
+      const rotatedTransform: TransformData = {
+        x: 0,
+        y: 0,
+        width: 100,
+        height: 100,
+        rotation: 45,
+        scaleX: 1,
+        scaleY: 1,
+      };
+
+      const boundingBox = manager.getBoundingBox(rotatedTransform);
+
+      // For a 100x100 square rotated 45 degrees, the bounding box should be larger
+      expect(boundingBox.width).toBeGreaterThan(100);
+      expect(boundingBox.height).toBeGreaterThan(100);
+    });
+  });
+
+  describe('snapping system', () => {
+    const mockElements = [
+      {
+        id: 'element-1',
+        x: 50,
+        y: 50,
+        width: 100,
+        height: 100,
+        rotation: 0,
+        scaleX: 1,
+        scaleY: 1,
+        visible: true,
+        locked: false,
+      },
+      {
+        id: 'element-2',
+        x: 200,
+        y: 200,
+        width: 150,
+        height: 100,
+        rotation: 0,
+        scaleX: 1,
+        scaleY: 1,
+        visible: true,
+        locked: false,
+      },
+    ];
+
+    it('should generate snap guides for canvas and elements', () => {
+      const guides = manager.generateSnapGuides(mockElements);
+
