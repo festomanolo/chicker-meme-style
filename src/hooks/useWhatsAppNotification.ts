@@ -47,3 +47,52 @@ export const useWhatsAppNotification = (options: UseWhatsAppNotificationOptions 
     return {
       isVisible: false,
       lastShown: 0,
+      dismissedAt: null,
+      clickCount: 0,
+      showCount: 0,
+      lastActivity: Date.now(),
+      cooldownUntil: 0,
+    };
+  });
+
+  const intervalRef = useRef<NodeJS.Timeout>();
+  const activityTimeoutRef = useRef<NodeJS.Timeout>();
+
+  // Save state to localStorage
+  const saveState = useCallback((newState: NotificationState) => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        lastShown: newState.lastShown,
+        dismissedAt: newState.dismissedAt,
+        clickCount: newState.clickCount,
+        showCount: newState.showCount,
+        cooldownUntil: newState.cooldownUntil,
+      }));
+    } catch (error) {
+      console.warn('Failed to save notification state:', error);
+    }
+  }, []);
+
+  // Check if current page is excluded
+  const isPageExcluded = useCallback(() => {
+    const currentPath = window.location.pathname;
+    return config.excludedPages.some(page => currentPath.includes(page));
+  }, [config.excludedPages]);
+
+  // Check if notification should be shown
+  const shouldShowNotification = useCallback(() => {
+    const now = Date.now();
+    
+    // Don't show if page is excluded
+    if (isPageExcluded()) return false;
+    
+    // Don't show if already visible
+    if (state.isVisible) return false;
+    
+    // Don't show if in cooldown period
+    if (now < state.cooldownUntil) return false;
+    
+    // Don't show if max shows reached
+    if (state.showCount >= config.maxShowsPerSession) return false;
+    
+    // Don't show if recently dismissed
