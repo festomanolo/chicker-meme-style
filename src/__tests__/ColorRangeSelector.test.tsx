@@ -315,3 +315,56 @@ describe('ColorRangeSelector', () => {
       />
     );
 
+    expect(screen.getByText(mockColor.hex)).toBeInTheDocument();
+
+    // Change the selected color prop
+    const newColor = createTshirtColor(0, 255, 0, 'Green');
+    rerender(
+      <ColorRangeSelector
+        selectedColor={newColor}
+        onColorChange={mockOnColorChange}
+        showPreview={true}
+      />
+    );
+
+    expect(screen.getByText(newColor.hex)).toBeInTheDocument();
+  });
+
+  it('should apply custom className', () => {
+    const { container } = render(
+      <ColorRangeSelector
+        selectedColor={mockColor}
+        onColorChange={mockOnColorChange}
+        className="custom-class"
+      />
+    );
+
+    expect(container.firstChild).toHaveClass('custom-class');
+  });
+
+  it('should show color name when available', () => {
+    render(
+      <ColorRangeSelector
+        selectedColor={mockColor}
+        onColorChange={mockOnColorChange}
+        showPreview={true}
+      />
+    );
+
+    expect(screen.getByText(mockColor.name!)).toBeInTheDocument();
+  });
+
+  it('should show "Custom Color" when no name is provided', () => {
+    const colorWithoutName = { ...mockColor, name: undefined };
+    
+    render(
+      <ColorRangeSelector
+        selectedColor={colorWithoutName}
+        onColorChange={mockOnColorChange}
+        showPreview={true}
+      />
+    );
+
+    expect(screen.getByText('Custom Color')).toBeInTheDocument();
+  });
+});
