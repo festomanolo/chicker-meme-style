@@ -91,3 +91,49 @@ This feature specification outlines the complete rewrite and enhancement of the 
 **User Story:** As a business owner, I want to periodically prompt users to contact us via WhatsApp, so that I can provide personalized assistance and increase customer engagement.
 
 #### Acceptance Criteria
+
+1. WHEN users are active on any page THEN the notification SHALL appear as a dropdown from the top every 2 minutes
+2. WHEN the notification appears THEN it SHALL use macOS-style horizontal rounded capsule design with semi-translucent backdrop
+3. WHEN displaying notification content THEN it SHALL show static text: "Share to us what vibe you want to express and we will respond as quick as possible on WhatsApp"
+4. WHEN notification is shown THEN it SHALL include a primary CTA button labeled "Message us on WhatsApp" and a close icon
+5. WHEN CTA is clicked THEN it SHALL open WhatsApp using canonical wa.me format in new tab
+6. WHEN notification is dismissed THEN it SHALL not show again for current session until configurable cooldown (default 20 minutes)
+7. WHEN on Settings or More pages THEN the notification SHALL NOT be displayed
+8. WHEN in full screen editing mode THEN notification SHALL show only as subtle toast unless side panels are open
+
+### Requirement 8: Performance and Accessibility
+
+**User Story:** As a user with accessibility needs or on lower-end devices, I want the interface to be performant and accessible, so that I can use all features regardless of my capabilities or device limitations.
+
+#### Acceptance Criteria
+
+1. WHEN using interactive controls THEN all elements SHALL have aria-label and appropriate roles
+2. WHEN navigating with keyboard THEN the system SHALL provide logical tab order and focus indicators
+3. WHEN performing canvas operations THEN the system SHALL maintain under 60ms repaint per interaction for target devices
+4. WHEN loading images THEN the system SHALL provide lazy loading and hiDPI support
+5. WHEN using transforms and blending THEN operations SHALL be GPU-accelerated where possible
+6. WHEN uploading images THEN the system SHALL accept PNG, JPG, WebP, HEIC formats and convert to optimized WebP for canvas rendering
+
+### Requirement 9: Analytics and State Management
+
+**User Story:** As a product manager, I want comprehensive analytics on user interactions, so that I can understand usage patterns and optimize the user experience.
+
+#### Acceptance Criteria
+
+1. WHEN notification events occur THEN the system SHALL fire analytics events for show, click CTA, dismissed, and link opened
+2. WHEN canvas interactions happen THEN the system SHALL track onElementChanged, onTshirtColorChanged, onNotificationAction, and onWhatsAppClick events
+3. WHEN managing application state THEN the system SHALL maintain selectedTshirtMockup, selectedTshirtColor, designElements, selectedElementId, canvasZoom, and notificationState
+4. WHEN state changes occur THEN the system SHALL provide APIs for external integration and monitoring
+5. WHEN errors occur THEN the system SHALL log appropriate error information for debugging and improvement
+
+### Requirement 10: Testing and Quality Assurance
+
+**User Story:** As a developer, I want comprehensive test coverage, so that I can ensure the feature works reliably across different devices and scenarios.
+
+#### Acceptance Criteria
+
+1. WHEN implementing features THEN the system SHALL provide unit tests for transform accuracy and cropping persistence
+2. WHEN testing notifications THEN the system SHALL verify notification timings and WhatsApp link accuracy
+3. WHEN testing mobile interface THEN the system SHALL validate panel UX flows across different screen sizes
+4. WHEN testing interactions THEN the system SHALL verify canvas coordinate accuracy and element positioning
+5. WHEN performing integration testing THEN the system SHALL validate end-to-end workflows from design creation to export
