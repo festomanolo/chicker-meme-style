@@ -112,3 +112,61 @@ describe('HistoryManager', () => {
         historyManager.addEntry(createMockAction(), mockState, `Action ${i}`);
       }
       
+      // Undo twice
+      historyManager.undo();
+      historyManager.undo();
+      
+      expect(historyManager.canRedo()).toBe(true);
+      
+      // Add new entry
+      historyManager.addEntry(createMockAction(), mockState, 'New action');
+      
+      expect(historyManager.canRedo()).toBe(false);
+    });
+  });
+
+  describe('undo', () => {
+    it('should undo the last action', () => {
+      historyManager.addEntry(createMockAction(), mockState, 'Test action');
+      
+      const result = historyManager.undo();
+      
+      expect(result.success).toBe(true);
+      expect(result.state).toBeDefined();
+      expect(result.description).toContain('Undo');
+      expect(historyManager.canUndo()).toBe(false);
+      expect(historyManager.canRedo()).toBe(true);
+    });
+
+    it('should fail when nothing to undo', () => {
+      const result = historyManager.undo();
+      
+      expect(result.success).toBe(false);
+      expect(result.error).toBe('Nothing to undo');
+      expect(result.state).toBeUndefined();
+    });
+
+    it('should handle multiple undos', () => {
+      // Add 3 entries
+      for (let i = 0; i < 3; i++) {
+        historyManager.addEntry(createMockAction(), mockState, `Action ${i}`);
+      }
+      
+      // Undo all
+      let result = historyManager.undo();
+      expect(result.success).toBe(true);
+      
+      result = historyManager.undo();
+      expect(result.success).toBe(true);
+      
+      result = historyManager.undo();
+      expect(result.success).toBe(false); // Should fail on the third undo
+    });
+  });
+
+  describe('redo', () => {
+    it('should redo the next action', () => {
+      historyManager.addEntry(createMockAction(), mockState, 'Test action');
+      historyManager.undo();
+      
+      const result = historyManager.redo();
