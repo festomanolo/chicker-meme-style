@@ -163,3 +163,58 @@ export class TransformManager {
     ];
     
     return transforms.join(' ');
+  }
+
+  /**
+   * Calculate bounding box for transformed element
+   */
+  getBoundingBox(transform: TransformData): BoundingBox {
+    const { x, y, width, height, rotation } = transform;
+    
+    // Get corner points
+    const corners = [
+      { x: 0, y: 0 },
+      { x: width, y: 0 },
+      { x: width, y: height },
+      { x: 0, y: height },
+    ];
+    
+    // Apply rotation around center
+    const centerX = width / 2;
+    const centerY = height / 2;
+    const rad = rotation * Math.PI / 180;
+    const cos = Math.cos(rad);
+    const sin = Math.sin(rad);
+    
+    const transformedCorners = corners.map(corner => {
+      const relX = corner.x - centerX;
+      const relY = corner.y - centerY;
+      
+      return {
+        x: x + centerX + (relX * cos - relY * sin),
+        y: y + centerY + (relX * sin + relY * cos),
+      };
+    });
+    
+    // Find min/max bounds
+    const xs = transformedCorners.map(p => p.x);
+    const ys = transformedCorners.map(p => p.y);
+    
+    const minX = Math.min(...xs);
+    const minY = Math.min(...ys);
+    const maxX = Math.max(...xs);
+    const maxY = Math.max(...ys);
+    
+    return {
+      minX,
+      minY,
+      maxX,
+      maxY,
+      width: maxX - minX,
+      height: maxY - minY,
+      centerX: (minX + maxX) / 2,
+      centerY: (minY + maxY) / 2,
+    };
+  }
+
+  /**
