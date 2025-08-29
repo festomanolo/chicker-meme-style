@@ -390,3 +390,59 @@ export const CropTool: React.FC<CropToolProps> = ({
       y: 0,
       width: imageDimensions.width,
       height: imageDimensions.height,
+      originalWidth: imageDimensions.width,
+      originalHeight: imageDimensions.height,
+    };
+
+    setCropState(prev => ({
+      ...prev,
+      currentCrop: resetCrop,
+      originalCrop: resetCrop,
+    }));
+
+    onCropChange?.(resetCrop);
+  }, [originalCrop, imageDimensions, onCropChange]);
+
+  // Generate grid lines
+  const gridLines = useMemo(() => {
+    if (!showGrid || !imageLoaded) return null;
+
+    const { currentCrop } = cropState;
+    const lines = [];
+
+    // Rule of thirds lines
+    const thirdWidth = currentCrop.width / 3;
+    const thirdHeight = currentCrop.height / 3;
+
+    // Vertical lines
+    for (let i = 1; i < 3; i++) {
+      lines.push(
+        <line
+          key={`v${i}`}
+          x1={currentCrop.x + thirdWidth * i}
+          y1={currentCrop.y}
+          x2={currentCrop.x + thirdWidth * i}
+          y2={currentCrop.y + currentCrop.height}
+          stroke="white"
+          strokeWidth="1"
+          opacity={gridOpacity}
+        />
+      );
+    }
+
+    // Horizontal lines
+    for (let i = 1; i < 3; i++) {
+      lines.push(
+        <line
+          key={`h${i}`}
+          x1={currentCrop.x}
+          y1={currentCrop.y + thirdHeight * i}
+          x2={currentCrop.x + currentCrop.width}
+          y2={currentCrop.y + thirdHeight * i}
+          stroke="white"
+          strokeWidth="1"
+          opacity={gridOpacity}
+        />
+      );
+    }
+
