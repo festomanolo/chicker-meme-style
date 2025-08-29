@@ -218,3 +218,59 @@ export class TransformManager {
   }
 
   /**
+   * Snap position to guides
+   */
+  snapToGuides(position: Point, threshold: number = 10): SnapResult {
+    const activeGuides: SnapGuide[] = [];
+    let snappedPosition = { ...position };
+    let minDistance = threshold;
+    let snapped = false;
+
+    // Check all snap guides
+    for (const guide of this.snapGuides) {
+      let distance: number;
+      
+      if (guide.axis === 'x') {
+        distance = Math.abs(position.x - guide.position);
+        if (distance < minDistance) {
+          snappedPosition.x = guide.position;
+          minDistance = distance;
+          snapped = true;
+          activeGuides.push(guide);
+        }
+      } else {
+        distance = Math.abs(position.y - guide.position);
+        if (distance < minDistance) {
+          snappedPosition.y = guide.position;
+          minDistance = distance;
+          snapped = true;
+          activeGuides.push(guide);
+        }
+      }
+    }
+
+    // Update active snap guides for visual feedback
+    this.activeSnapGuides = activeGuides;
+
+    return {
+      snapped,
+      position: snappedPosition,
+      guides: activeGuides,
+      snapDistance: minDistance,
+    };
+  }
+
+  /**
+   * Generate snap guides for canvas
+   */
+  generateSnapGuides(elements: any[], mockupBounds?: Rect): SnapGuide[] {
+    const guides: SnapGuide[] = [];
+
+    // Canvas center guides
+    guides.push(
+      {
+        type: 'center',
+        position: this.config.canvasSize.width / 2,
+        axis: 'x',
+        temporary: false,
+        priority: 1,
