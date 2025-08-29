@@ -46,3 +46,52 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
     analyticsService.track(event);
 
     // Track WhatsApp integration events
+    if (event.event === 'click') {
+      WhatsAppIntegration.trackInteraction('link_clicked', {
+        sessionId: event.sessionId,
+        pageUrl: event.pageUrl,
+        showCount: event.showCount,
+      });
+    }
+
+    if (event.event === 'link_opened') {
+      WhatsAppIntegration.trackInteraction('chat_opened', {
+        sessionId: event.sessionId,
+        pageUrl: event.pageUrl,
+        phoneNumber: config.phoneNumber,
+      });
+    }
+  };
+
+  // Initialize notification hook
+  const notification = useWhatsAppNotification({
+    config,
+    onAnalytics: handleAnalytics,
+  });
+
+  // Enhanced link click handler with analytics
+  const handleLinkClick = () => {
+    const linkConfig = {
+      phoneNumber: notification.config.phoneNumber,
+      message: notification.config.defaultMessage,
+      source: 'notification_popup',
+    };
+
+    // Track link generation
+    WhatsAppIntegration.trackInteraction('link_generated', {
+      phoneNumber: notification.config.phoneNumber,
+      source: 'notification_popup',
+    });
+
+    // Open WhatsApp
+    WhatsAppIntegration.openWhatsApp(linkConfig);
+
+    // Call original handler
+    notification.handleLinkClick();
+  };
+
+  // Context value
+  const contextValue: NotificationContextValue = {
+    isVisible: notification.isVisible,
+    showCount: notification.showCount,
+    clickCount: notification.clickCount,
