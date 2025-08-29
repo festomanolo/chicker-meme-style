@@ -113,3 +113,61 @@ export const CropTransformController: React.FC<CropTransformControllerProps> = (
 
     await transitionPromise;
     setIsTransitioning(false);
+  }, [mode, element, onModeChange, isTransitioning]);
+
+  // Handle crop changes
+  const handleCropChange = useCallback((crop: CropData) => {
+    // Calculate preview transform based on crop
+    const previewTransform = CropTransformIntegration.calculatePreviewTransform(
+      state.originalTransform,
+      crop
+    );
+
+    setState(prev => ({
+      ...prev,
+      previewCrop: crop,
+      previewTransform: previewTransform,
+    }));
+  }, [state.originalTransform]);
+
+  // Handle transform changes
+  const handleTransformChange = useCallback((transform: TransformData) => {
+    setState(prev => ({
+      ...prev,
+      previewTransform: transform,
+    }));
+  }, []);
+
+  // Handle crop confirm
+  const handleCropConfirm = useCallback((crop: CropData) => {
+    const updatedElement = CropTransformIntegration.applyCropToElement(element, crop);
+    onElementUpdate(updatedElement);
+    
+    // Clear preview state
+    setState(prev => ({
+      ...prev,
+      previewCrop: null,
+      previewTransform: null,
+      originalCrop: crop,
+    }));
+  }, [element, onElementUpdate]);
+
+  // Handle transform confirm
+  const handleTransformConfirm = useCallback((transform: TransformData) => {
+    const updatedElement: LayerElement = {
+      ...element,
+      x: transform.x,
+      y: transform.y,
+      width: transform.width,
+      height: transform.height,
+      rotation: transform.rotation,
+      scaleX: transform.scaleX,
+      scaleY: transform.scaleY,
+      updatedAt: Date.now(),
+    };
+    
+    onElementUpdate(updatedElement);
+    
+    // Clear preview state
+    setState(prev => ({
+      ...prev,
