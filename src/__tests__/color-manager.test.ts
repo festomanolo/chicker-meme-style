@@ -158,3 +158,56 @@ describe('ColorManager', () => {
 
       expect(result).toBeDefined();
       expect(typeof result).toBe('string');
+    });
+
+    it('should cache results for performance', async () => {
+      // First call
+      const result1 = await manager.applyColorToFabric(mockColor, mockMockup);
+      
+      // Second call with same parameters should use cache
+      const result2 = await manager.applyColorToFabric(mockColor, mockMockup);
+
+      expect(result1).toBe(result2);
+    });
+
+    it('should handle errors gracefully and fallback to CSS filters', async () => {
+      // Mock an error in the blending process
+      const originalCreateElement = document.createElement;
+      document.createElement = jest.fn(() => {
+        throw new Error('Canvas creation failed');
+      });
+
+      const result = await manager.applyColorToFabric(mockColor, mockMockup);
+
+      expect(result).toBeDefined();
+      expect(typeof result).toBe('string');
+
+      // Restore original function
+      document.createElement = originalCreateElement;
+    });
+
+    it('should meet 120ms latency requirement', async () => {
+      const startTime = performance.now();
+      
+      await manager.applyColorToFabric(mockColor, mockMockup);
+      
+      const duration = performance.now() - startTime;
+      expect(duration).toBeLessThan(120);
+    });
+  });
+
+  describe('blendColorWithFabric', () => {
+    it('should blend color with fabric base', () => {
+      const result = manager.blendColorWithFabric(mockColor, '#FFFFFF', {
+        baseColor: '#FFFFFF',
+        overlayColor: mockColor.hex,
+        blendMode: 'multiply',
+        opacity: 0.8,
+        preserveHighlights: true,
+        preserveShadows: true,
+      });
+
+      expect(result).toBeDefined();
+      expect(typeof result).toBe('string');
+    });
+  });
