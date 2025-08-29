@@ -211,3 +211,56 @@ describe('ColorManager', () => {
       expect(typeof result).toBe('string');
     });
   });
+
+  describe('generateColorPreview', () => {
+    it('should generate color preview without texture', () => {
+      const result = manager.generateColorPreview(mockColor);
+
+      expect(result).toBeDefined();
+      expect(result).toMatch(/^data:image/);
+    });
+
+    it('should generate color preview with texture', () => {
+      const result = manager.generateColorPreview(mockColor, mockTextureFilter);
+
+      expect(result).toBeDefined();
+      expect(result).toMatch(/^data:image/);
+    });
+
+    it('should create 100x100 preview canvas', () => {
+      manager.generateColorPreview(mockColor);
+
+      expect(document.createElement).toHaveBeenCalledWith('canvas');
+      expect(mockCanvas.width).toBe(100);
+      expect(mockCanvas.height).toBe(100);
+    });
+  });
+
+  describe('cache management', () => {
+    it('should clear cache correctly', async () => {
+      // Add something to cache
+      await manager.applyColorToFabric(mockColor, mockMockup);
+      
+      let stats = manager.getCacheStats();
+      expect(stats.cacheSize).toBeGreaterThan(0);
+
+      manager.clearCache();
+      
+      stats = manager.getCacheStats();
+      expect(stats.cacheSize).toBe(0);
+    });
+
+    it('should provide accurate cache statistics', async () => {
+      const stats1 = manager.getCacheStats();
+      expect(stats1.cacheSize).toBe(0);
+
+      await manager.applyColorToFabric(mockColor, mockMockup);
+      
+      const stats2 = manager.getCacheStats();
+      expect(stats2.cacheSize).toBe(1);
+      expect(stats2.memoryUsage).toBeGreaterThan(0);
+    });
+  });
+
+  describe('browser capability detection', () => {
+    it('should detect WebGL support', () => {
