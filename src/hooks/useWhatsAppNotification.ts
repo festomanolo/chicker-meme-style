@@ -146,3 +146,52 @@ export const useWhatsAppNotification = (options: UseWhatsAppNotificationOptions 
     });
   }, [shouldShowNotification, saveState]);
 
+  // Dismiss notification
+  const dismissNotification = useCallback(() => {
+    const now = Date.now();
+    setState(prev => {
+      const newState = {
+        ...prev,
+        isVisible: false,
+        dismissedAt: now,
+        cooldownUntil: now + config.cooldownMs,
+      };
+      saveState(newState);
+      return newState;
+    });
+  }, [config.cooldownMs, saveState]);
+
+  // Handle WhatsApp link click
+  const handleLinkClick = useCallback(() => {
+    const now = Date.now();
+    setState(prev => {
+      const newState = {
+        ...prev,
+        isVisible: false,
+        clickCount: prev.clickCount + 1,
+        cooldownUntil: now + config.cooldownMs,
+      };
+      saveState(newState);
+      return newState;
+    });
+
+    // Open WhatsApp link
+    const link = `https://wa.me/${config.phoneNumber}?text=${encodeURIComponent(config.defaultMessage)}`;
+    window.open(link, '_blank', 'noopener,noreferrer');
+  }, [config.phoneNumber, config.defaultMessage, config.cooldownMs, saveState]);
+
+  // Set up activity tracking
+  useEffect(() => {
+    const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'];
+    
+    const handleActivity = () => updateActivity();
+    
+    events.forEach(event => {
+      document.addEventListener(event, handleActivity, { passive: true });
+    });
+
+    // Initial activity update
+    updateActivity();
+
+    return () => {
+      events.forEach(event => {
