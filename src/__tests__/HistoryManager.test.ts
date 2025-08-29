@@ -55,3 +55,60 @@ describe('HistoryManager', () => {
       
       expect(stats.totalEntries).toBe(0);
       expect(manager.canUndo()).toBe(false);
+      expect(manager.canRedo()).toBe(false);
+    });
+
+    it('should initialize with custom config', () => {
+      const config: Partial<HistoryManagerConfig> = {
+        maxEntries: 25,
+        enableCompression: false,
+      };
+      
+      const manager = new HistoryManager(config);
+      const snapshot = manager.getSnapshot();
+      
+      expect(snapshot.config.maxEntries).toBe(25);
+      expect(snapshot.config.enableCompression).toBe(false);
+    });
+  });
+
+  describe('addEntry', () => {
+    it('should add a new history entry', () => {
+      const action = createMockAction();
+      historyManager.addEntry(action, mockState, 'Test action');
+      
+      const stats = historyManager.getStats();
+      expect(stats.totalEntries).toBe(1);
+      expect(historyManager.canUndo()).toBe(true);
+      expect(historyManager.canRedo()).toBe(false);
+    });
+
+    it('should generate description when not provided', () => {
+      const action = createMockAction('layer_add');
+      historyManager.addEntry(action, mockState);
+      
+      const entries = historyManager.getRecentEntries(1);
+      expect(entries[0].description).toContain('Add layer');
+    });
+
+    it('should maintain max entries limit', () => {
+      const config: Partial<HistoryManagerConfig> = { maxEntries: 3 };
+      const manager = new HistoryManager(config);
+      
+      // Add 5 entries
+      for (let i = 0; i < 5; i++) {
+        const action = createMockAction();
+        const state = createMockCanvasState(i + 1);
+        manager.addEntry(action, state, `Action ${i}`);
+      }
+      
+      const stats = manager.getStats();
+      expect(stats.totalEntries).toBe(3);
+    });
+
+    it('should clear redo history when adding after undo', () => {
+      // Add 3 entries
+      for (let i = 0; i < 3; i++) {
+        historyManager.addEntry(createMockAction(), mockState, `Action ${i}`);
+      }
+      
