@@ -421,3 +421,64 @@ export class LayerManager {
 
     return true;
   }
+
+  /**
+   * Get layer by ID
+   */
+  getLayer(elementId: string): LayerElement | null {
+    return this.state.elements.find(el => el.id === elementId) || null;
+  }
+
+  /**
+   * Get all layers
+   */
+  getAllLayers(): LayerElement[] {
+    return [...this.state.elements];
+  }
+
+  /**
+   * Get layer count
+   */
+  getLayerCount(): number {
+    return this.state.elements.length;
+  }
+
+  /**
+   * Clear all layers
+   */
+  clearAllLayers(): void {
+    const removedElements = [...this.state.elements];
+    this.state.elements = [];
+    this.state.groups = [];
+    this.state.selectedIds = [];
+
+    this.emit('allLayersCleared', removedElements);
+    this.emit('stateChanged', this.state);
+  }
+
+  /**
+   * Get current state
+   */
+  getState(): LayerManagerState {
+    return { ...this.state };
+  }
+
+  /**
+   * Event listener management
+   */
+  on(event: string, callback: Function): void {
+    if (!this.listeners.has(event)) {
+      this.listeners.set(event, []);
+    }
+    this.listeners.get(event)!.push(callback);
+  }
+
+  off(event: string, callback: Function): void {
+    const callbacks = this.listeners.get(event);
+    if (callbacks) {
+      const index = callbacks.indexOf(callback);
+      if (index > -1) {
+        callbacks.splice(index, 1);
+      }
+    }
+  }
