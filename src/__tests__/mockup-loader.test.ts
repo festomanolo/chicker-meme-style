@@ -205,3 +205,55 @@ describe('MockupAssetLoader', () => {
       const result = validateMockup(invalidMockup);
 
       expect(result.isValid).toBe(false);
+      expect(result.errors).toContain('Mockup ID is required');
+      expect(result.errors).toContain('Mockup name is required');
+    });
+
+    it('should detect invalid mockup type', () => {
+      const invalidMockup = {
+        ...mockMockup,
+        type: 'invalid' as any,
+      };
+
+      const result = validateMockup(invalidMockup);
+
+      expect(result.isValid).toBe(false);
+      expect(result.errors).toContain('Mockup type must be "front" or "back"');
+    });
+
+    it('should detect missing variants', () => {
+      const invalidMockup = {
+        ...mockMockup,
+        variants: {
+          '1x': '/test-1x.webp',
+          // Missing 2x and 3x
+        } as any,
+      };
+
+      const result = validateMockup(invalidMockup);
+
+      expect(result.isValid).toBe(false);
+      expect(result.errors).toContain('Missing 2x resolution variant');
+      expect(result.errors).toContain('Missing 3x resolution variant');
+    });
+
+    it('should detect invalid design area dimensions', () => {
+      const invalidMockup = {
+        ...mockMockup,
+        designArea: {
+          ...mockMockup.designArea,
+          width: 0,
+          height: -10,
+        },
+      };
+
+      const result = validateMockup(invalidMockup);
+
+      expect(result.isValid).toBe(false);
+      expect(result.errors).toContain('Design area dimensions must be positive');
+    });
+
+    it('should generate warnings for missing optional fields', () => {
+      const mockupWithoutMetadata = {
+        ...mockMockup,
+        metadata: undefined as any,
