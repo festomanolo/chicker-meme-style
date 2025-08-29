@@ -183,3 +183,49 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
           </Button>
           
           <div className="px-2 text-sm font-mono min-w-[60px] text-center">
+            {Math.round(layoutState.zoom * 100)}%
+          </div>
+          
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleZoomIn}
+            className="h-8 w-8 p-0"
+            disabled={layoutState.zoom >= 5}
+          >
+            <ZoomIn className="h-4 w-4" />
+          </Button>
+          
+          <div className="w-px h-6 bg-gray-300 dark:bg-gray-600 mx-1" />
+          
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => fitToCanvas()}
+            className="h-8 w-8 p-0"
+          >
+            <Maximize className="h-4 w-4" />
+          </Button>
+          
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => resetView()}
+            className="h-8 w-8 p-0"
+          >
+            <RotateCcw className="h-4 w-4" />
+          </Button>
+        </div>
+      )}
+
+      {/* Zoom level indicator */}
+      {layoutState.isAnimating && (
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-black/75 text-white px-3 py-2 rounded-lg text-sm font-mono">
+          {Math.round(layoutState.zoom * 100)}%
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default CanvasContainer;
