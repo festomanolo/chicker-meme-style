@@ -342,3 +342,60 @@ describe('ColorManipulator', () => {
       const adjusted = ColorManipulator.adjustHue(testColor, 90);
       expect(adjusted.h).toBe((testColor.h + 90) % 360);
       expect(adjusted.s).toBe(testColor.s);
+      expect(adjusted.v).toBe(testColor.v);
+    });
+
+    it('should handle negative hue adjustment', () => {
+      const adjusted = ColorManipulator.adjustHue(testColor, -90);
+      expect(adjusted.h).toBe((testColor.h - 90 + 360) % 360);
+    });
+
+    it('should get complementary color', () => {
+      const complementary = ColorManipulator.getComplementary(testColor);
+      expect(complementary.h).toBe((testColor.h + 180) % 360);
+    });
+  });
+
+  describe('Color relationships', () => {
+    it('should get triadic colors', () => {
+      const [triadic1, triadic2] = ColorManipulator.getTriadic(testColor);
+      expect(triadic1.h).toBe((testColor.h + 120) % 360);
+      expect(triadic2.h).toBe((testColor.h + 240) % 360);
+    });
+
+    it('should get analogous colors', () => {
+      const [analogous1, analogous2] = ColorManipulator.getAnalogous(testColor);
+      expect(analogous1.h).toBe((testColor.h + 30) % 360);
+      expect(analogous2.h).toBe((testColor.h - 30 + 360) % 360);
+    });
+  });
+
+  describe('Contrast and readability', () => {
+    it('should calculate contrast ratio', () => {
+      const white = createTshirtColor(255, 255, 255, 'White');
+      const black = createTshirtColor(0, 0, 0, 'Black');
+      
+      const contrast = ColorManipulator.getContrastRatio(white, black);
+      expect(contrast).toBeCloseTo(21, 0); // Maximum contrast ratio
+    });
+
+    it('should identify light colors', () => {
+      const white = createTshirtColor(255, 255, 255, 'White');
+      const black = createTshirtColor(0, 0, 0, 'Black');
+      
+      expect(ColorManipulator.isLight(white)).toBe(true);
+      expect(ColorManipulator.isLight(black)).toBe(false);
+    });
+
+    it('should get readable text color', () => {
+      const white = createTshirtColor(255, 255, 255, 'White');
+      const black = createTshirtColor(0, 0, 0, 'Black');
+      
+      const textForWhite = ColorManipulator.getReadableTextColor(white);
+      const textForBlack = ColorManipulator.getReadableTextColor(black);
+      
+      expect(textForWhite.r).toBe(0); // Should be black text on white
+      expect(textForBlack.r).toBe(255); // Should be white text on black
+    });
+  });
+});
