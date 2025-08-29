@@ -399,3 +399,60 @@ describe('HistoryManager', () => {
     });
 
     afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it('should debounce rapid transform updates', () => {
+      const config: Partial<HistoryManagerConfig> = { debounceMs: 300 };
+      const manager = new HistoryManager(config);
+      
+      // Add multiple transform actions rapidly
+      for (let i = 0; i < 5; i++) {
+        manager.transformAction('layer-1', mockState);
+      }
+      
+      // Should not have committed entries yet
+      let stats = manager.getStats();
+      expect(stats.totalEntries).toBe(0);
+      
+      // Fast forward past debounce time
+      jest.advanceTimersByTime(300);
+      
+      // Should now have one entry
+      stats = manager.getStats();
+      expect(stats.totalEntries).toBe(1);
+    });
+
+    it('should not debounce non-debounced actions', () => {
+      const config: Partial<HistoryManagerConfig> = { debounceMs: 300 };
+      const manager = new HistoryManager(config);
+      
+      manager.addLayerAction(mockState.layers[0], mockState);
+      
+      const stats = manager.getStats();
+      expect(stats.totalEntries).toBe(1);
+    });
+  });
+
+  describe('error handling', () => {
+    it('should handle state cloning errors gracefully', () => {
+      const circularState = { ...mockState } as any;
+      circularState.circular = circularState; // Create circular reference
+      
+      expect(() => {
+        historyManager.addEntry(createMockAction(), circularState);
+      }).toThrow('Failed to clone state');
+    });
+
+    it('should handle checksum calculation errors', () => {
+      const config: Partial<HistoryManagerConfig> = { enableChecksums: true };
+      const manager = new HistoryManager(config);
+      
+      const invalidState = { ...mockState } as any;
+      invalidState.circular = invalidState;
+      
+      const checksum = manager.calculateChecksum(invalidState);
+      expect(checksum).toBe('');
+    });
+  });
+});
