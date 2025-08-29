@@ -354,3 +354,62 @@ export class HistoryManager {
           type: layer.type,
           visible: layer.visible,
           locked: layer.locked,
+          x: layer.x,
+          y: layer.y,
+          width: layer.width,
+          height: layer.height,
+          zIndex: layer.zIndex,
+          // Remove heavy data like imageUrl, content, etc.
+        } as LayerElement)),
+      },
+    };
+
+    return compressed;
+  }
+
+  private calculateMemoryUsage(): number {
+    try {
+      const serialized = JSON.stringify(this.entries, this.getSerializationReplacer());
+      return new Blob([serialized]).size;
+    } catch (error) {
+      return 0;
+    }
+  }
+
+  private simpleHash(str: string): string {
+    let hash = 0;
+    if (str.length === 0) return hash.toString();
+    
+    for (let i = 0; i < str.length; i++) {
+      const char = str.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash; // Convert to 32-bit integer
+    }
+    
+    return Math.abs(hash).toString(36);
+  }
+
+  /**
+   * Utility methods for specific actions
+   */
+
+  addLayerAction(layer: LayerElement, state: CanvasState): void {
+    this.addEntry(
+      {
+        type: 'layer_add',
+        elementId: layer.id,
+        data: layer,
+      },
+      state,
+      `Add ${layer.type} layer "${layer.name}"`
+    );
+  }
+
+  removeLayerAction(layerId: string, state: CanvasState): void {
+    this.addEntry(
+      {
+        type: 'layer_remove',
+        elementId: layerId,
+      },
+      state,
+      `Remove layer`
