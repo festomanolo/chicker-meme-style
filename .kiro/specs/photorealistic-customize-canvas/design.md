@@ -449,3 +449,59 @@ const handlePerformanceError = (error: PerformanceError): void => {
 - **LayerManager**: Layer operations, search functionality
 - **HistoryManager**: State persistence, undo/redo operations
 
+### Integration Testing
+
+#### Canvas Integration Tests
+```typescript
+describe('Canvas Integration', () => {
+  test('element selection updates transform controls', async () => {
+    const canvas = render(<PhotorealisticCanvas {...props} />);
+    const element = await canvas.findByTestId('design-element-1');
+    
+    fireEvent.click(element);
+    
+    expect(canvas.getByTestId('transform-controls')).toBeVisible();
+    expect(canvas.getByTestId('properties-panel')).toHaveTextContent('Element 1');
+  });
+  
+  test('color changes update fabric appearance', async () => {
+    const canvas = render(<PhotorealisticCanvas {...props} />);
+    const colorPicker = canvas.getByTestId('color-picker');
+    
+    fireEvent.change(colorPicker, { target: { value: '#ff0000' } });
+    
+    await waitFor(() => {
+      expect(canvas.getByTestId('tshirt-mockup')).toHaveStyle({
+        filter: expect.stringContaining('hue-rotate')
+      });
+    });
+  });
+});
+```
+
+#### Mobile Panel Tests
+```typescript
+describe('Mobile Panel Integration', () => {
+  test('panel expansion adjusts canvas size', () => {
+    const { container } = render(<CustomizeCanvas isMobile={true} />);
+    const panelToggle = container.querySelector('[data-testid="panel-toggle"]');
+    
+    fireEvent.click(panelToggle);
+    
+    expect(container.querySelector('[data-testid="canvas-area"]')).toHaveStyle({
+      width: 'calc(100% - 260px)'
+    });
+  });
+});
+```
+
+### Performance Testing
+
+#### Canvas Performance Tests
+```typescript
+describe('Canvas Performance', () => {
+  test('transform operations complete within 60ms', async () => {
+    const startTime = performance.now();
+    
+    await transformElement('element-1', { x: 100, y: 100, rotation: 45 });
+    
