@@ -102,3 +102,56 @@ class MockupAssetLoader {
           url,
           width: asset.naturalWidth,
           height: asset.naturalHeight,
+          loaded: true,
+        };
+      } catch (error) {
+        lastError = error as Error;
+        if (attempt < retryCount - 1) {
+          // Exponential backoff
+          await this.delay(Math.pow(2, attempt) * 1000);
+        }
+      }
+    }
+
+    return {
+      url,
+      width: 0,
+      height: 0,
+      loaded: false,
+      error: lastError!.message,
+    };
+  }
+
+  /**
+   * Load image with timeout
+   */
+  private loadImageWithTimeout(url: string, timeout: number): Promise<HTMLImageElement> {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      const timeoutId = setTimeout(() => {
+        reject(new Error(`Image load timeout: ${url}`));
+      }, timeout);
+
+      img.onload = () => {
+        clearTimeout(timeoutId);
+        resolve(img);
+      };
+
+      img.onerror = () => {
+        clearTimeout(timeoutId);
+        reject(new Error(`Failed to load image: ${url}`));
+      };
+
+      img.src = url;
+    });
+  }
+
+  /**
+   * Get optimal resolution based on device pixel ratio
+   */
+  private getOptimalResolution(): '1x' | '2x' | '3x' {
+    const dpr = window.devicePixelRatio || 1;
+    if (dpr >= 3) return '3x';
+    if (dpr >= 2) return '2x';
+    return '1x';
+  }
