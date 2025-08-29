@@ -212,3 +212,56 @@ export const getAnalyticsService = (config?: Partial<AnalyticsConfig>): Notifica
  * Track notification event (convenience function)
  */
 export const trackNotificationEvent = (event: NotificationAnalytics): void => {
+  const service = getAnalyticsService();
+  service.track(event);
+};
+
+/**
+ * Analytics event builders
+ */
+export const AnalyticsEventBuilders = {
+  show: (pageUrl: string, showCount: number, sessionId: string): NotificationAnalytics => ({
+    event: 'show',
+    timestamp: Date.now(),
+    sessionId,
+    pageUrl,
+    showCount,
+    metadata: {
+      trigger: 'automatic',
+    },
+  }),
+
+  click: (pageUrl: string, showCount: number, sessionId: string): NotificationAnalytics => ({
+    event: 'click',
+    timestamp: Date.now(),
+    sessionId,
+    pageUrl,
+    showCount,
+    metadata: {
+      action: 'whatsapp_button_click',
+    },
+  }),
+
+  dismiss: (pageUrl: string, showCount: number, sessionId: string, method: 'button' | 'timeout' = 'button'): NotificationAnalytics => ({
+    event: 'dismiss',
+    timestamp: Date.now(),
+    sessionId,
+    pageUrl,
+    showCount,
+    metadata: {
+      dismissMethod: method,
+    },
+  }),
+
+  linkOpened: (pageUrl: string, showCount: number, sessionId: string, phoneNumber: string): NotificationAnalytics => ({
+    event: 'link_opened',
+    timestamp: Date.now(),
+    sessionId,
+    pageUrl,
+    showCount,
+    metadata: {
+      phoneNumber: phoneNumber.replace(/\d/g, '*'), // Mask phone number for privacy
+      platform: /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ? 'mobile' : 'desktop',
+    },
+  }),
+};
