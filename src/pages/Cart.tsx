@@ -340,3 +340,60 @@ const Cart = () => {
 
                     <Button
                       onClick={proceedToCheckout}
+                      className="w-full bg-primary hover:bg-primary-hover"
+                      disabled={items.length === 0}
+                    >
+                      <CreditCard className="h-4 w-4 mr-2" />
+                      Proceed to Checkout
+                      <ArrowRight className="h-4 w-4 ml-2" />
+                    </Button>
+
+                    {shipping > 0 && (
+                      <p className="text-sm text-muted-foreground text-center">
+                        Add TZS {(50000 - subtotal).toLocaleString()} more for free shipping
+                      </p>
+                    )}
+                  </CardContent>
+                </Card>
+
+                {/* Security & Shipping Info */}
+                <Card className="glass-card">
+                  <CardContent className="p-4 space-y-3">
+                    <div className="flex items-center gap-2 text-sm">
+                      <Shield className="h-4 w-4 text-success" />
+                      <span>Secure checkout with 256-bit SSL</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm">
+                      <Truck className="h-4 w-4 text-primary" />
+                      <span>Free shipping on orders over TZS 50,000</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm">
+                      <CreditCard className="h-4 w-4 text-accent" />
+                      <span>M-Pesa & card payments accepted</span>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </div>
+        ) : (
+          // Empty Cart
+          <div className="text-center py-16">
+            <div className="w-24 h-24 bg-muted rounded-full flex items-center justify-center mx-auto mb-6">
+              <ShoppingCart className="h-8 w-8 text-muted-foreground" />
+            </div>
+            <h2 className="text-2xl font-bold mb-2">Your cart is empty</h2>
+            <p className="text-muted-foreground mb-6">
+              Looks like you haven't added any meme tees to your cart yet.
+            </p>
+            <Button onClick={() => navigate("/")} className="bg-primary hover:bg-primary-hover">
+              Start Shopping
+            </Button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default Cart;
