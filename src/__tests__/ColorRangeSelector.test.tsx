@@ -51,3 +51,56 @@ describe('ColorRangeSelector', () => {
   });
 
   it('should not display color preview when showPreview is false', () => {
+    render(
+      <ColorRangeSelector
+        selectedColor={mockColor}
+        onColorChange={mockOnColorChange}
+        showPreview={false}
+      />
+    );
+
+    expect(screen.queryByLabelText(`Selected color: ${mockColor.hex}`)).not.toBeInTheDocument();
+  });
+
+  it('should render custom preset colors', () => {
+    render(
+      <ColorRangeSelector
+        selectedColor={mockColor}
+        onColorChange={mockOnColorChange}
+        presetColors={mockPresets}
+      />
+    );
+
+    expect(screen.getByLabelText('Select Red color')).toBeInTheDocument();
+    expect(screen.getByLabelText('Select Green color')).toBeInTheDocument();
+    expect(screen.getByLabelText('Select Blue color')).toBeInTheDocument();
+  });
+
+  it('should call onColorChange when preset color is selected', async () => {
+    const user = userEvent.setup();
+    
+    render(
+      <ColorRangeSelector
+        selectedColor={mockColor}
+        onColorChange={mockOnColorChange}
+        presetColors={mockPresets}
+      />
+    );
+
+    const redButton = screen.getByLabelText('Select Red color');
+    await user.click(redButton);
+
+    expect(mockOnColorChange).toHaveBeenCalledWith(mockPresets[0].color);
+  });
+
+  it('should switch to advanced tab and show sliders', async () => {
+    const user = userEvent.setup();
+    
+    render(
+      <ColorRangeSelector
+        selectedColor={mockColor}
+        onColorChange={mockOnColorChange}
+      />
+    );
+
+    const advancedTab = screen.getByText('Advanced');
