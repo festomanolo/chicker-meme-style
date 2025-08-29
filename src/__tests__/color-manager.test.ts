@@ -51,3 +51,56 @@ const mockWebGLContext = {
   FRAGMENT_SHADER: 35632,
 };
 
+// Mock document.createElement
+Object.defineProperty(document, 'createElement', {
+  value: jest.fn((tagName: string) => {
+    if (tagName === 'canvas') {
+      return {
+        ...mockCanvas,
+        getContext: jest.fn((type: string) => {
+          if (type === '2d') return mockContext2D;
+          if (type === 'webgl' || type === 'experimental-webgl') return mockWebGLContext;
+          return null;
+        }),
+      };
+    }
+    return {};
+  }),
+});
+
+// Mock Image constructor
+global.Image = class {
+  onload: (() => void) | null = null;
+  onerror: (() => void) | null = null;
+  src = '';
+
+  constructor() {
+    setTimeout(() => {
+      if (this.src.includes('error')) {
+        this.onerror?.();
+      } else {
+        this.onload?.();
+      }
+    }, 10);
+  }
+} as any;
+
+const mockColor = createTshirtColor(255, 128, 64, 'Orange');
+
+const mockMockup: TshirtMockup = {
+  id: 'test-mockup',
+  name: 'Test Mockup',
+  type: 'front',
+  category: 'regular',
+  variants: {
+    '1x': '/test-1x.webp',
+    '2x': '/test-2x.webp',
+    '3x': '/test-3x.webp',
+  },
+  maskUrl: '/test-mask.png',
+  designArea: {
+    x: 160,
+    y: 120,
+    width: 200,
+    height: 240,
+    curvature: {
