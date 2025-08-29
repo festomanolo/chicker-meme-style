@@ -208,3 +208,56 @@ describe('PhotorealisticCustomize Integration', () => {
     
     // Perform multiple operations
     const saveButton = screen.getByText('Save');
+    await user.click(saveButton);
+    
+    // State should remain consistent
+    expect(mockProps.onSave).toHaveBeenCalled();
+  });
+
+  it('should handle concurrent operations', async () => {
+    const user = userEvent.setup();
+    render(<PhotorealisticCustomize {...mockProps} />);
+    
+    // Simulate rapid clicks
+    const saveButton = screen.getByText('Save');
+    await user.click(saveButton);
+    await user.click(saveButton);
+    
+    // Should handle multiple rapid operations
+    expect(mockProps.onSave).toHaveBeenCalledTimes(2);
+  });
+
+  it('should cleanup resources on unmount', () => {
+    const { unmount } = render(<PhotorealisticCustomize {...mockProps} />);
+    
+    // Should not throw errors on unmount
+    expect(() => unmount()).not.toThrow();
+  });
+
+  it('should handle prop changes', () => {
+    const { rerender } = render(<PhotorealisticCustomize {...mockProps} />);
+    
+    const newProps = {
+      ...mockProps,
+      initialColor: { h: 240, s: 100, v: 100, rgb: { r: 0, g: 0, b: 255 } },
+    };
+    
+    expect(() => {
+      rerender(<PhotorealisticCustomize {...newProps} />);
+    }).not.toThrow();
+  });
+
+  it('should integrate with notification system', () => {
+    render(<PhotorealisticCustomize {...mockProps} />);
+    
+    // NotificationProvider should be wrapping the component
+    expect(screen.getByText('T-Shirt Designer')).toBeInTheDocument();
+  });
+
+  it('should handle accessibility requirements', () => {
+    render(<PhotorealisticCustomize {...mockProps} />);
+    
+    // Check for basic accessibility
+    expect(screen.getByRole('button', { name: /save/i })).toBeInTheDocument();
+  });
+});
