@@ -41,3 +41,45 @@ export interface CanvasCoordinates {
   screen: Point;
   world: Point;
 }
+
+export interface TransformMatrix {
+  a: number; // scaleX
+  b: number; // skewY
+  c: number; // skewX
+  d: number; // scaleY
+  e: number; // translateX
+  f: number; // translateY
+}
+
+export interface BoundingBox {
+  minX: number;
+  minY: number;
+  maxX: number;
+  maxY: number;
+  width: number;
+  height: number;
+  centerX: number;
+  centerY: number;
+}
+
+export interface SnapGuide {
+  type: 'center' | 'edge' | 'element' | 'grid' | 'mockup';
+  position: number;
+  axis: 'x' | 'y';
+  temporary: boolean;
+  elementId?: string;
+  priority: number;
+}
+
+export interface SnapResult {
+  snapped: boolean;
+  position: Point;
+  guides: SnapGuide[];
+  snapDistance: number;
+}
+
+export interface TransformConstraints {
+  minWidth?: number;
+  maxWidth?: number;
+  minHeight?: number;
+  maxHeight?: number;
