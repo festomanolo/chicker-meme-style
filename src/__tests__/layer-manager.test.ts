@@ -169,3 +169,60 @@ describe('LayerManager', () => {
 
       expect(moved).toBe(true);
       
+      const allLayers = manager.getAllLayers();
+      expect(allLayers[2].name).toBe('Element 1');
+    });
+
+    it('should send layer to back', () => {
+      const moved = manager.sendToBack(elements[2].id);
+
+      expect(moved).toBe(true);
+      
+      const allLayers = manager.getAllLayers();
+      expect(allLayers[0].name).toBe('Element 3');
+    });
+
+    it('should not move layer forward if already at front', () => {
+      const moved = manager.bringForward(elements[2].id);
+      expect(moved).toBe(false);
+    });
+
+    it('should not move layer backward if already at back', () => {
+      const moved = manager.sendBackward(elements[0].id);
+      expect(moved).toBe(false);
+    });
+  });
+
+  describe('layer visibility and locking', () => {
+    let element: LayerElement;
+
+    beforeEach(() => {
+      element = manager.addLayer(mockElement);
+    });
+
+    it('should toggle layer visibility', () => {
+      expect(element.visible).toBe(true);
+
+      const toggled1 = manager.toggleLayerVisibility(element.id);
+      expect(toggled1).toBe(true);
+      expect(manager.getLayer(element.id)!.visible).toBe(false);
+
+      const toggled2 = manager.toggleLayerVisibility(element.id);
+      expect(toggled2).toBe(true);
+      expect(manager.getLayer(element.id)!.visible).toBe(true);
+    });
+
+    it('should lock and unlock layer', () => {
+      expect(element.locked).toBe(false);
+
+      const locked = manager.lockLayer(element.id, true);
+      expect(locked).toBe(true);
+      expect(manager.getLayer(element.id)!.locked).toBe(true);
+
+      const unlocked = manager.lockLayer(element.id, false);
+      expect(unlocked).toBe(true);
+      expect(manager.getLayer(element.id)!.locked).toBe(false);
+    });
+
+    it('should return false for non-existent layer operations', () => {
+      expect(manager.toggleLayerVisibility('non-existent')).toBe(false);
