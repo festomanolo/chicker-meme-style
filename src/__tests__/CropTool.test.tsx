@@ -115,3 +115,62 @@ describe('CropTool', () => {
     const user = userEvent.setup();
     render(<CropTool {...mockProps} />);
     
+    const image = screen.getByAltText('Crop preview');
+    fireEvent.load(image);
+
+    await waitFor(async () => {
+      const cancelButton = screen.getByText('Cancel');
+      await user.click(cancelButton);
+    });
+
+    expect(mockProps.onCropCancel).toHaveBeenCalled();
+  });
+
+  it('should reset crop when reset button clicked', async () => {
+    const user = userEvent.setup();
+    render(<CropTool {...mockProps} originalCrop={mockCropData} />);
+    
+    const image = screen.getByAltText('Crop preview');
+    fireEvent.load(image);
+
+    await waitFor(async () => {
+      const resetButton = screen.getByText('Reset');
+      await user.click(resetButton);
+    });
+
+    expect(mockProps.onCropChange).toHaveBeenCalled();
+  });
+
+  it('should apply aspect ratio when preset selected', async () => {
+    const user = userEvent.setup();
+    const config: CropToolConfig = { enablePresets: true };
+    render(<CropTool {...mockProps} config={config} originalCrop={mockCropData} />);
+    
+    const image = screen.getByAltText('Crop preview');
+    fireEvent.load(image);
+
+    await waitFor(async () => {
+      const squarePreset = screen.getByText('1:1');
+      await user.click(squarePreset);
+    });
+
+    expect(mockProps.onCropChange).toHaveBeenCalled();
+  });
+
+  it('should display crop position in status bar', async () => {
+    render(<CropTool {...mockProps} originalCrop={mockCropData} />);
+    
+    const image = screen.getByAltText('Crop preview');
+    fireEvent.load(image);
+
+    await waitFor(() => {
+      expect(screen.getByText('Position: 50, 50')).toBeInTheDocument();
+    });
+  });
+
+  it('should apply size constraints', async () => {
+    const constraints: CropConstraints = {
+      minWidth: 100,
+      minHeight: 100,
+      maxWidth: 300,
+      maxHeight: 300,
