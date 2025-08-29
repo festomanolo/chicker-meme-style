@@ -158,3 +158,57 @@ export class NotificationAnalyticsService {
       if (document.visibilityState === 'hidden' && this.eventQueue.length > 0) {
         this.flushEventQueue();
       }
+    });
+  }
+
+  /**
+   * Get analytics summary
+   */
+  getAnalyticsSummary(): {
+    sessionId: string;
+    queuedEvents: number;
+    config: AnalyticsConfig;
+  } {
+    return {
+      sessionId: this.sessionId,
+      queuedEvents: this.eventQueue.length,
+      config: this.config,
+    };
+  }
+
+  /**
+   * Clear event queue
+   */
+  clearQueue(): void {
+    this.eventQueue = [];
+    if (this.flushTimer) {
+      clearTimeout(this.flushTimer);
+      this.flushTimer = null;
+    }
+  }
+
+  /**
+   * Update configuration
+   */
+  updateConfig(newConfig: Partial<AnalyticsConfig>): void {
+    this.config = { ...this.config, ...newConfig };
+  }
+}
+
+// Singleton instance
+let analyticsInstance: NotificationAnalyticsService | null = null;
+
+/**
+ * Get or create analytics service instance
+ */
+export const getAnalyticsService = (config?: Partial<AnalyticsConfig>): NotificationAnalyticsService => {
+  if (!analyticsInstance) {
+    analyticsInstance = new NotificationAnalyticsService(config);
+  }
+  return analyticsInstance;
+};
+
+/**
+ * Track notification event (convenience function)
+ */
+export const trackNotificationEvent = (event: NotificationAnalytics): void => {
