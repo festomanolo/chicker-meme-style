@@ -154,3 +154,54 @@ describe('MockupAssetLoader', () => {
     it('should preload multiple mockups', async () => {
       const mockups = [
         mockMockup,
+        { ...mockMockup, id: 'test-mockup-2', name: 'Test Mockup 2' },
+      ];
+
+      const results = await mockupLoader.preloadMockups(mockups);
+
+      expect(results).toHaveLength(2);
+      expect(results[0].loaded).toBe(true);
+      expect(results[1].loaded).toBe(true);
+    }, 15000);
+
+    it('should handle partial failures in preloading', async () => {
+      const mockups = [
+        mockMockup,
+        {
+          ...mockMockup,
+          id: 'error-mockup',
+          variants: {
+            '1x': '/error-1x.webp',
+            '2x': '/error-2x.webp',
+            '3x': '/error-3x.webp',
+          },
+        },
+      ];
+
+      const results = await mockupLoader.preloadMockups(mockups);
+
+      expect(results).toHaveLength(2);
+      expect(results[0].loaded).toBe(true);
+      expect(results[1].loaded).toBe(false);
+      expect(results[1].error).toBeDefined();
+    }, 15000);
+  });
+
+  describe('validateMockup', () => {
+    it('should validate correct mockup structure', () => {
+      const result = validateMockup(mockMockup);
+
+      expect(result.isValid).toBe(true);
+      expect(result.errors).toHaveLength(0);
+    });
+
+    it('should detect missing required fields', () => {
+      const invalidMockup = {
+        ...mockMockup,
+        id: '',
+        name: '',
+      };
+
+      const result = validateMockup(invalidMockup);
+
+      expect(result.isValid).toBe(false);
