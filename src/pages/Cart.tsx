@@ -226,3 +226,60 @@ const Cart = () => {
                               </div>
                             </div>
 
+                            <div className="flex items-center gap-2">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => moveToWishlist(item.id)}
+                                className="text-muted-foreground hover:text-primary"
+                              >
+                                <Heart className="h-4 w-4 mr-1" />
+                                Save
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleRemoveItem(item.id)}
+                                className="text-muted-foreground hover:text-destructive"
+                              >
+                                <Trash2 className="h-4 w-4 mr-1" />
+                                Remove
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {index < items.length - 1 && (
+                        <Separator className="mt-6" />
+                      )}
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+
+              {/* Promo Code */}
+              <Card className="glass-card">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Tag className="h-5 w-5" />
+                    Promo Code
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {appliedPromo ? (
+                    <div className="flex items-center justify-between p-3 bg-success/10 rounded-lg">
+                      <span className="text-success font-medium">
+                        Promo code "{appliedPromo}" applied! 20% off
+                      </span>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setAppliedPromo(null)}
+                        className="text-success hover:text-success/80"
+                      >
+                        Remove
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="flex gap-2">
