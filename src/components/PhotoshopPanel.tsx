@@ -180,3 +180,63 @@ export const PhotoshopPanel: React.FC<PhotoshopPanelProps> = ({
                             : 'bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700'
                         }`}
                       >
+                        <div className="flex items-center gap-2">
+                          <span>{type.icon}</span>
+                          <div>
+                            <div className="font-medium">{type.name}</div>
+                            <div className="text-gray-500">TZS {type.price.toLocaleString()}</div>
+                          </div>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="text-xs font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+                    Color
+                  </label>
+                  <div className="grid grid-cols-6 gap-1">
+                    {tshirtColors.map(color => (
+                      <button
+                        key={color.name}
+                        onClick={() => onTshirtColorChange(color)}
+                        className={`w-8 h-8 rounded border-2 transition-all ${
+                          selectedTshirtColor.name === color.name
+                            ? 'border-blue-500 ring-2 ring-blue-200'
+                            : 'border-gray-300 hover:border-gray-400'
+                        }`}
+                        style={{ backgroundColor: color.hex }}
+                        title={color.name}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Layers Section */}
+            <SectionHeader 
+              title="Layers" 
+              icon={Layers} 
+              section="layers" 
+              count={designElements.length}
+            />
+            {expandedSections.includes('layers') && (
+              <div className="border-b border-gray-200 dark:border-gray-700">
+                {designElements.length === 0 ? (
+                  <div className="p-4 text-center text-xs text-gray-500">
+                    No layers yet
+                  </div>
+                ) : (
+                  <div className="max-h-64 overflow-y-auto">
+                    {designElements.slice().reverse().map(element => (
+                      <div
+                        key={element.id}
+                        className={`flex items-center gap-2 p-2 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer transition-colors ${
+                          selectedElement === element.id ? 'bg-blue-50 dark:bg-blue-900/20' : ''
+                        }`}
+                      >
+                        <button
+                          onClick={() => onElementVisibilityToggle(element.id)}
+                          className="p-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded"
