@@ -58,3 +58,62 @@ describe('LayersPanel - Fixed Rendering', () => {
       layerAssertions.expectCorrectLayerCount(container, 6);
       layerAssertions.expectNoGroupDuplicates(container);
       layerAssertions.expectUniqueElements(container, '[data-testid^="layer-item-"]');
+    });
+
+    it('should show correct layer counts in footer', () => {
+      const { layers, groups } = createMockLayersWithGroups(3, 2, 2);
+      const { container } = renderLayersPanel({ layers, groups });
+
+      layerAssertions.expectAccurateLayerCounts(container, 7, 3, 4);
+    });
+  });
+
+  describe('Group Functionality', () => {
+    it('should render group headers correctly', () => {
+      const { layers, groups } = createMockLayersWithGroups(1, 2, 2);
+      renderLayersPanel({ layers, groups });
+
+      expect(screen.getByText('Group 1')).toBeInTheDocument();
+      expect(screen.getByText('Group 2')).toBeInTheDocument();
+      
+      // Should show member counts
+      expect(screen.getAllByText('2')).toHaveLength(2); // Both groups have 2 members
+    });
+
+    it('should handle group expansion without duplicates', async () => {
+      const user = userEvent.setup();
+      const { layers, groups } = createMockLayersWithGroups(2, 1, 2);
+      const onGroupToggle = jest.fn();
+      
+      const { container } = renderLayersPanel({
+        layers,
+        groups,
+        onGroupToggle
+      });
+
+      // Initially collapsed - should not show group content
+      layerAssertions.expectGroupExpansionBehavior(container, 'group-1', 0);
+
+      // Expand first group
+      const firstGroupHeader = screen.getByTestId('group-header-group-1');
+      await user.click(firstGroupHeader);
+
+      expect(onGroupToggle).toHaveBeenCalledWith('group-1');
+    });
+
+    it('should show grouped layers only when group is expanded', () => {
+      const { layers, groups } = createMockLayersWithGroups(1, 1, 2);
+      groups[0].expanded = true; // Expand first group
+      
+      const { container } = renderLayersPanel({ layers, groups });
+
+      // Should show group content
+      layerAssertions.expectGroupExpansionBehavior(container, 'group-1', 2);
+      
+      // Verify no duplicates
+      layerAssertions.expectNoGroupDuplicates(container);
+    });
+
+    it('should handle multiple groups with different expansion states', () => {
+      const { layers, groups } = createMockLayersWithGroups(2, 2, 3);
+      groups[0].expanded = true;  // First group expanded
