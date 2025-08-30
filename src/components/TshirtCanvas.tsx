@@ -106,3 +106,57 @@ export const TshirtCanvas: React.FC<TshirtCanvasProps> = ({
           newWidth = Math.max(20, (canvasX - centerX) * 2);
           newHeight = Math.max(20, (canvasY - centerY) * 2);
           newX = centerX - newWidth / 2;
+          newY = centerY - newHeight / 2;
+          break;
+      }
+
+      onElementUpdate(selectedElement, {
+        width: newWidth,
+        height: newHeight,
+        x: newX,
+        y: newY
+      });
+    }
+  }, [isDragging, isResizing, selectedElement, dragOffset, resizeHandle, designElements, onElementUpdate]);
+
+  const handleMouseUp = useCallback(() => {
+    setIsDragging(false);
+    setIsResizing(false);
+    setResizeHandle(null);
+  }, []);
+
+  useEffect(() => {
+    if (isDragging || isResizing) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+      return () => {
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+      };
+    }
+  }, [isDragging, isResizing, handleMouseMove, handleMouseUp]);
+
+  const ResizeHandles: React.FC<{ elementId: string }> = ({ elementId }) => {
+    if (selectedElement !== elementId) return null;
+
+    return (
+      <>
+        {['nw', 'ne', 'sw', 'se'].map(handle => (
+          <div
+            key={handle}
+            className={`resize-handle absolute w-3 h-3 bg-blue-500 border-2 border-white rounded-full cursor-${handle}-resize shadow-lg`}
+            data-handle={handle}
+            style={{
+              top: handle.includes('n') ? -6 : 'auto',
+              bottom: handle.includes('s') ? -6 : 'auto',
+              left: handle.includes('w') ? -6 : 'auto',
+              right: handle.includes('e') ? -6 : 'auto',
+            }}
+          />
+        ))}
+      </>
+    );
+  };
+
+  return (
+    <div className="relative flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900">
