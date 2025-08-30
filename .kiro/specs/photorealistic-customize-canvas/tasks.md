@@ -138,3 +138,50 @@
   - Create dismissal logic with 20-minute cooldown
   - Add page exclusion logic for Settings and More pages
   - Write unit tests for notification timing and dismissal behavior
+  - _Requirements: 7.1, 7.2, 7.6, 7.7, 7.8_
+
+- [x] 8.2 Implement WhatsApp integration and analytics
+  - Create WhatsApp link generation with wa.me format
+  - Add configurable phone number and default message settings
+  - Implement analytics tracking for show, click, dismiss, and link opened events
+  - Create notification state persistence across sessions
+  - Write tests for WhatsApp link generation and analytics events
+  - _Requirements: 7.3, 7.4, 7.5, 9.1, 9.2_
+
+- [ ] 9. Add keyboard navigation and accessibility features
+- [ ] 9.1 Implement comprehensive keyboard support
+  - Add Tab order navigation for all interactive controls
+  - Implement arrow key nudging (1px default, 10px with Shift)
+  - Create Enter to confirm and Esc to cancel functionality
+  - Add focus indicators and keyboard shortcuts
+  - Write tests for keyboard navigation and shortcuts
+  - _Requirements: 5.6, 8.1, 8.2_
+
+- [ ] 9.2 Add accessibility labels and ARIA support
+  - Implement aria-label and role attributes for all interactive elements
+  - Create screen reader support for canvas elements and operations
+  - Add high contrast mode support and focus indicators
+  - Implement accessible error messages and status updates
+  - Write accessibility tests using automated testing tools
+  - _Requirements: 8.1, 8.2_
+
+- [ ] 10. Implement performance optimizations and GPU acceleration
+- [ ] 10.1 Add GPU acceleration for transforms and blending
+  - Implement CSS transform3d for hardware acceleration
+  - Use GPU-accelerated canvas operations for color blending
+  - Add WebGL fallbacks for complex operations
+  - Optimize render loops to maintain 60fps target
+  - Write performance tests to validate 60ms repaint requirement
+  - _Requirements: 8.5, 8.6_
+
+- [ ] 10.2 Implement image optimization and lazy loading
+  - Create image format detection and WebP conversion
+  - Add lazy loading for mockup assets and design elements
+  - Implement progressive image loading with quality tiers
+  - Create memory management for large image operations
+  - Write tests for image optimization and loading performance
+  - _Requirements: 8.6_
+
+- [ ] 11. Add analytics integration and state management APIs
+- [ ] 11.1 Create comprehensive analytics tracking
+  - Implement event tracking for all user interactions
