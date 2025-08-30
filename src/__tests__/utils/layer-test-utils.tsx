@@ -113,3 +113,60 @@ export const createLayerTestUtils = () => {
     );
     const groups = createMockGroups(
       groupCount, 
+      layersPerGroup, 
+      individualCount + 1
+    );
+
+    return {
+      layers: [...individualLayers, ...groupedLayers],
+      groups,
+      individualLayers,
+      groupedLayers
+    };
+  };
+
+  return {
+    renderLayersPanel,
+    createMockLayers,
+    createMockGroups,
+    createMockLayersWithGroups
+  };
+};
+
+// Specialized assertion helpers for layer components
+export const layerAssertions = {
+  /**
+   * Verify that all elements with a given selector have unique test IDs
+   */
+  expectUniqueElements: (container: HTMLElement, selector: string) => {
+    const elements = container.querySelectorAll(selector);
+    const testIds = Array.from(elements)
+      .map(el => el.getAttribute('data-testid'))
+      .filter(Boolean);
+    
+    const uniqueTestIds = new Set(testIds);
+    
+    expect(uniqueTestIds.size).toBe(testIds.length);
+    
+    if (uniqueTestIds.size !== testIds.length) {
+      const duplicates = testIds.filter((id, index) => testIds.indexOf(id) !== index);
+      throw new Error(`Duplicate test IDs found: ${duplicates.join(', ')}`);
+    }
+  },
+
+  /**
+   * Verify that no layer appears in both group and individual contexts
+   */
+  expectNoGroupDuplicates: (container: HTMLElement) => {
+    // Get all layer items in groups
+    const groupLayerElements = container.querySelectorAll('[data-testid^="group-"] [data-testid^="layer-item-"]');
+    const groupLayerIds = new Set<string>();
+    
+    groupLayerElements.forEach(element => {
+      const testId = element.getAttribute('data-testid');
+      if (testId) {
+        const layerId = testId.replace('layer-item-', '');
+        groupLayerIds.add(layerId);
+      }
+    });
+
