@@ -483,3 +483,63 @@ export const PhotoshopPanel: React.FC<PhotoshopPanelProps> = ({
 
             {/* Stickers */}
             <SectionHeader title="Stickers" icon={Sticker} section="stickers" />
+            {expandedSections.includes('stickers') && (
+              <div className="p-3 space-y-3 border-b border-gray-200 dark:border-gray-700">
+                <div className="relative">
+                  <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-3 w-3 text-gray-400" />
+                  <Input
+                    placeholder="Search stickers..."
+                    value={stickerSearch}
+                    onChange={(e) => setStickerSearch(e.target.value)}
+                    className="pl-7 h-7 text-xs"
+                  />
+                </div>
+                
+                <div className="flex gap-1 overflow-x-auto">
+                  {stickerPacks.map(pack => (
+                    <button
+                      key={pack.id}
+                      onClick={() => setSelectedStickerPack(pack)}
+                      className={`flex-shrink-0 px-2 py-1 rounded text-xs ${
+                        selectedStickerPack.id === pack.id
+                          ? 'bg-blue-100 dark:bg-blue-900/20 text-blue-600'
+                          : 'bg-gray-100 dark:bg-gray-800'
+                      }`}
+                    >
+                      {pack.icon}
+                    </button>
+                  ))}
+                </div>
+                
+                <div className="grid grid-cols-6 gap-1 max-h-32 overflow-y-auto">
+                  {selectedStickerPack.stickers
+                    .filter(sticker => 
+                      stickerSearch === '' || 
+                      sticker.name.toLowerCase().includes(stickerSearch.toLowerCase())
+                    )
+                    .map(sticker => (
+                      <button
+                        key={sticker.id}
+                        onClick={() => onAddSticker(sticker)}
+                        className="aspect-square p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800 text-lg"
+                        title={sticker.name}
+                      >
+                        {sticker.emoji}
+                      </button>
+                    ))}
+                </div>
+              </div>
+            )}
+
+            {/* Templates */}
+            <SectionHeader title="Templates" icon={ImageIcon} section="templates" />
+            {expandedSections.includes('templates') && (
+              <div className="p-3 space-y-2 border-b border-gray-200 dark:border-gray-700">
+                {templates.map(template => (
+                  <button
+                    key={template.id}
+                    onClick={() => onAddTemplate(template)}
+                    className="w-full p-2 rounded text-left text-xs hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg">{template.preview}</span>
