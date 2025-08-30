@@ -160,3 +160,57 @@ export const TshirtCanvas: React.FC<TshirtCanvasProps> = ({
 
   return (
     <div className="relative flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900">
+      <div 
+        className="relative"
+        style={{ transform: `scale(${canvasZoom / 100})` }}
+      >
+        {/* Realistic T-shirt Image */}
+        <div className="relative">
+          <img
+            src={getTshirtImage()}
+            alt="T-shirt"
+            className="w-96 h-auto drop-shadow-2xl"
+            style={{
+              filter: `hue-rotate(${selectedColor === '#000000' ? '0deg' : selectedColor === '#FFFFFF' ? '0deg' : '180deg'}) brightness(${selectedColor === '#000000' ? '0.3' : selectedColor === '#FFFFFF' ? '1.2' : '0.8'})`
+            }}
+          />
+          
+          {/* Design Area Overlay */}
+          <div
+            ref={canvasRef}
+            className="absolute top-20 left-1/2 transform -translate-x-1/2 w-72 h-80 cursor-crosshair"
+            onClick={(e) => {
+              if (e.target === e.currentTarget) {
+                onElementSelect(null);
+              }
+            }}
+            style={{
+              background: selectedElement ? 'rgba(59, 130, 246, 0.1)' : 'transparent',
+              border: selectedElement ? '2px dashed rgba(59, 130, 246, 0.5)' : 'none'
+            }}
+          >
+            {/* Design Elements */}
+            {designElements.map(element => (
+              element.visible && (
+                <div
+                  key={element.id}
+                  className={`absolute select-none transition-all duration-200 ${
+                    selectedElement === element.id ? 'ring-2 ring-blue-400 shadow-lg' : ''
+                  } ${element.locked ? 'cursor-not-allowed' : 'cursor-move'}`}
+                  style={{
+                    left: element.x,
+                    top: element.y,
+                    width: element.width || 'auto',
+                    height: element.height || 'auto',
+                    transform: `rotate(${element.rotation}deg)`,
+                    opacity: element.opacity,
+                    zIndex: selectedElement === element.id ? 20 : 10,
+                  }}
+                  onMouseDown={(e) => handleMouseDown(e, element.id)}
+                >
+                  {element.type === 'text' && (
+                    <span
+                      style={{
+                        fontFamily: element.font,
+                        fontSize: `${element.size}px`,
+                        color: element.color,
