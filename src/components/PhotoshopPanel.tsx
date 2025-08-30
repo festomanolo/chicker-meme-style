@@ -240,3 +240,64 @@ export const PhotoshopPanel: React.FC<PhotoshopPanelProps> = ({
                         <button
                           onClick={() => onElementVisibilityToggle(element.id)}
                           className="p-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded"
+                        >
+                          {element.visible ? (
+                            <Eye className="h-3 w-3" />
+                          ) : (
+                            <EyeOff className="h-3 w-3 text-gray-400" />
+                          )}
+                        </button>
+                        
+                        <div className="flex-1 min-w-0">
+                          <div className="text-xs font-medium truncate">
+                            {element.type === 'text' && `Text: ${element.content?.substring(0, 15)}...`}
+                            {element.type === 'image' && 'Image'}
+                            {element.type === 'template' && `Template: ${element.template?.name}`}
+                          </div>
+                        </div>
+                        
+                        <div className="flex gap-1">
+                          <button
+                            onClick={() => onElementDuplicate(element.id)}
+                            className="p-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded"
+                          >
+                            <Copy className="h-3 w-3" />
+                          </button>
+                          <button
+                            onClick={() => onElementDelete(element.id)}
+                            className="p-1 hover:bg-red-100 dark:hover:bg-red-900/20 rounded text-red-600"
+                          >
+                            <Trash2 className="h-3 w-3" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
+        {activeTab === 'properties' && (
+          <div className="p-3">
+            {selectedElementData ? (
+              <div className="space-y-4">
+                <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                  Element Properties
+                </div>
+                
+                {/* Transform */}
+                <div className="space-y-3">
+                  <div className="text-xs font-medium text-gray-600 dark:text-gray-400">Transform</div>
+                  
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <label className="text-xs text-gray-500">X</label>
+                      <Input
+                        type="number"
+                        value={selectedElementData.x}
+                        onChange={(e) => onElementUpdate(selectedElementData.id, { x: Number(e.target.value) })}
+                        className="h-7 text-xs"
+                      />
+                    </div>
