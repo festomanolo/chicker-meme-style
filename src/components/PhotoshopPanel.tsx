@@ -422,3 +422,64 @@ export const PhotoshopPanel: React.FC<PhotoshopPanelProps> = ({
               </div>
             ) : (
               <div className="text-center text-xs text-gray-500 py-8">
+                Select an element to edit properties
+              </div>
+            )}
+          </div>
+        )}
+
+        {activeTab === 'assets' && (
+          <div>
+            {/* Text Tool */}
+            <SectionHeader title="Text" icon={Type} section="text" />
+            {expandedSections.includes('text') && (
+              <div className="p-3 space-y-3 border-b border-gray-200 dark:border-gray-700">
+                <Textarea
+                  value={textInput}
+                  onChange={(e) => setTextInput(e.target.value)}
+                  placeholder="Enter text..."
+                  className="text-xs"
+                  rows={2}
+                />
+                <div className="grid grid-cols-2 gap-2">
+                  <select
+                    value={textFont}
+                    onChange={(e) => setTextFont(e.target.value)}
+                    className="text-xs p-2 border rounded"
+                  >
+                    {fonts.map(font => (
+                      <option key={font} value={font}>{font}</option>
+                    ))}
+                  </select>
+                  <Input
+                    type="number"
+                    value={textSize}
+                    onChange={(e) => setTextSize(Number(e.target.value))}
+                    className="h-8 text-xs"
+                    min="8"
+                    max="72"
+                  />
+                </div>
+                <Input
+                  type="color"
+                  value={textColor}
+                  onChange={(e) => setTextColor(e.target.value)}
+                  className="h-8"
+                />
+                <Button
+                  onClick={() => {
+                    if (textInput.trim()) {
+                      onAddText(textInput, textFont, textSize, textColor);
+                      setTextInput('');
+                    }
+                  }}
+                  className="w-full h-8 text-xs"
+                  disabled={!textInput.trim()}
+                >
+                  Add Text
+                </Button>
+              </div>
+            )}
+
+            {/* Stickers */}
+            <SectionHeader title="Stickers" icon={Sticker} section="stickers" />
