@@ -99,3 +99,53 @@ export const CropTool: React.FC<CropToolProps> = ({ element, onCrop, onCancel })
               src={element.imageUrl}
               alt="Crop preview"
               className="w-full h-full object-cover"
+              draggable={false}
+            />
+            
+            {/* Crop overlay */}
+            <div
+              className="absolute border-2 border-blue-500 bg-blue-500/20"
+              style={{
+                left: cropArea.x,
+                top: cropArea.y,
+                width: cropArea.width,
+                height: cropArea.height,
+                pointerEvents: 'none'
+              }}
+            />
+            
+            {/* Crop handles */}
+            {cropArea.width > 0 && cropArea.height > 0 && (
+              <>
+                {['nw', 'ne', 'sw', 'se'].map(handle => (
+                  <div
+                    key={handle}
+                    className="absolute w-3 h-3 bg-blue-500 border-2 border-white rounded-full"
+                    style={{
+                      left: handle.includes('w') ? cropArea.x - 6 : cropArea.x + cropArea.width - 6,
+                      top: handle.includes('n') ? cropArea.y - 6 : cropArea.y + cropArea.height - 6,
+                      cursor: `${handle}-resize`
+                    }}
+                  />
+                ))}
+              </>
+            )}
+          </div>
+        </div>
+        
+        <div className="flex justify-end gap-2">
+          <Button variant="outline" onClick={onCancel}>
+            Cancel
+          </Button>
+          <Button 
+            onClick={handleApplyCrop}
+            disabled={cropArea.width < 10 || cropArea.height < 10}
+          >
+            <Check className="h-4 w-4 mr-2" />
+            Apply Crop
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+};
