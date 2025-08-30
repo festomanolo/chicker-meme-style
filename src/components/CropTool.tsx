@@ -48,3 +48,54 @@ export const CropTool: React.FC<CropToolProps> = ({ element, onCrop, onCancel })
   }, [isDragging, dragStart]);
 
   const handleMouseUp = useCallback(() => {
+    setIsDragging(false);
+  }, []);
+
+  React.useEffect(() => {
+    if (isDragging) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+      return () => {
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+      };
+    }
+  }, [isDragging, handleMouseMove, handleMouseUp]);
+
+  const handleApplyCrop = () => {
+    if (cropArea.width > 10 && cropArea.height > 10) {
+      onCrop(element.id, cropArea);
+    }
+  };
+
+  if (element.type !== 'image') return null;
+
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+      <div className="bg-white dark:bg-gray-900 rounded-lg p-6 max-w-2xl w-full mx-4">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold flex items-center gap-2">
+            <Crop className="h-5 w-5" />
+            Crop Image
+          </h3>
+          <Button variant="ghost" size="sm" onClick={onCancel}>
+            <X className="h-4 w-4" />
+          </Button>
+        </div>
+        
+        <div className="relative mb-4">
+          <div
+            ref={cropRef}
+            className="relative border-2 border-dashed border-gray-300 cursor-crosshair"
+            style={{
+              width: element.width || 300,
+              height: element.height || 300,
+              maxWidth: '100%',
+              maxHeight: '400px'
+            }}
+            onMouseDown={handleMouseDown}
+          >
+            <img
+              src={element.imageUrl}
+              alt="Crop preview"
+              className="w-full h-full object-cover"
