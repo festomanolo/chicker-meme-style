@@ -543,3 +543,64 @@ export const PhotoshopPanel: React.FC<PhotoshopPanelProps> = ({
                   >
                     <div className="flex items-center gap-2">
                       <span className="text-lg">{template.preview}</span>
+                      <div>
+                        <div className="font-medium">{template.name}</div>
+                        <Badge variant="secondary" className="text-xs">
+                          {template.category}
+                        </Badge>
+                      </div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* Media Upload */}
+            <SectionHeader title="Media" icon={FileImage} section="media" />
+            {expandedSections.includes('media') && (
+              <div className="p-3 space-y-3">
+                <div className="grid grid-cols-2 gap-2">
+                  <Button
+                    variant="outline"
+                    className="h-16 flex flex-col items-center justify-center gap-1 text-xs"
+                    onClick={() => {
+                      const input = document.createElement('input');
+                      input.type = 'file';
+                      input.accept = 'image/*';
+                      input.onchange = (e) => {
+                        const file = (e.target as HTMLInputElement).files?.[0];
+                        if (file) onImageUpload(file);
+                      };
+                      input.click();
+                    }}
+                  >
+                    <FileImage className="h-4 w-4" />
+                    Gallery
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="h-16 flex flex-col items-center justify-center gap-1 text-xs"
+                    onClick={() => {
+                      const input = document.createElement('input');
+                      input.type = 'file';
+                      input.accept = 'image/*';
+                      input.capture = 'environment';
+                      input.onchange = (e) => {
+                        const file = (e.target as HTMLInputElement).files?.[0];
+                        if (file) onImageUpload(file);
+                      };
+                      input.click();
+                    }}
+                  >
+                    <Camera className="h-4 w-4" />
+                    Camera
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
