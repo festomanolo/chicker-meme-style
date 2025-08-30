@@ -177,3 +177,63 @@ describe('LayersPanel - Fixed Rendering', () => {
       const collapsedGroup = screen.getByTestId('group-header-group-2');
       
       // Expanded group should have ChevronDown
+      expect(expandedGroup.querySelector('.lucide-chevron-down')).toBeInTheDocument();
+      
+      // Collapsed group should have ChevronRight
+      expect(collapsedGroup.querySelector('.lucide-chevron-right')).toBeInTheDocument();
+    });
+
+    it('should handle layer interactions within groups correctly', async () => {
+      const user = userEvent.setup();
+      const { layers, groups } = createMockLayersWithGroups(0, 1, 2);
+      groups[0].expanded = true;
+      
+      const onLayerSelect = jest.fn();
+      const onLayerVisibilityToggle = jest.fn();
+      
+      renderLayersPanel({ 
+        layers, 
+        groups, 
+        onLayerSelect, 
+        onLayerVisibilityToggle 
+      });
+
+      // Find a layer within the group
+      const groupLayer = screen.getByTestId('layer-item-layer-1');
+      
+      // Test layer selection within group
+      await user.click(groupLayer);
+      expect(onLayerSelect).toHaveBeenCalledWith('layer-1', false);
+      
+      // Test layer visibility toggle within group
+      const visibilityButton = groupLayer.querySelector('[aria-label*="Hide layer"], [aria-label*="Show layer"]');
+      await user.click(visibilityButton!);
+      expect(onLayerVisibilityToggle).toHaveBeenCalledWith('layer-1');
+    });
+
+    it('should maintain group structure during search', () => {
+      const { layers, groups } = createMockLayersWithGroups(1, 1, 2);
+      
+      const { container } = renderLayersPanel({ 
+        layers, 
+        groups, 
+        searchQuery: 'Layer' 
+      });
+
+      // During search, all matching layers should be shown
+      // but still maintain uniqueness
+      layerAssertions.expectUniqueSearchResults(container);
+      layerAssertions.expectUniqueElements(container, '[data-testid^="layer-item-"]');
+    });
+
+    it('should show visual indicators for invisible groups', () => {
+      const { layers, groups } = createMockLayersWithGroups(0, 1, 2);
+      groups[0].visible = false; // Make group invisible
+      
+      renderLayersPanel({ layers, groups });
+
+      const groupHeader = screen.getByTestId('group-header-group-1');
+      
+      // Should have opacity styling for invisible group
+      expect(groupHeader).toHaveClass('opacity-50');
+      
