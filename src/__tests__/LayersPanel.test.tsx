@@ -475,3 +475,63 @@ describe('LayersPanel - Fixed Rendering', () => {
 
       const layer = screen.getByTestId('layer-item-layer-1');
       await user.dblClick(layer);
+
+      const input = screen.getByDisplayValue('Layer 1');
+      await user.clear(input);
+      await user.type(input, 'Changed Name');
+      await user.keyboard('{Escape}');
+
+      // Should not call onLayerUpdate
+      expect(onLayerUpdate).not.toHaveBeenCalled();
+      
+      // Should show original name
+      expect(screen.getByText('Layer 1')).toBeInTheDocument();
+    });
+  });
+
+  describe('Accessibility', () => {
+    it('should have proper accessibility attributes', () => {
+      const layers = createMockLayers(3);
+      const { container } = renderLayersPanel({ layers });
+
+      layerAssertions.expectAccessibilityAttributes(container);
+    });
+
+    it('should maintain unique keys across re-renders', () => {
+      const layers = createMockLayers(3);
+      const { rerender, container } = renderLayersPanel({ layers });
+
+      const initialKeys = Array.from(container.querySelectorAll('[data-testid^="layer-item-"]'))
+        .map(el => el.getAttribute('data-testid'));
+
+      // Re-render with same data
+      rerender(<LayersPanel layers={layers} groups={[]} selectedIds={[]} 
+        onLayerSelect={jest.fn()} onLayerReorder={jest.fn()} onLayerUpdate={jest.fn()}
+        onLayerDelete={jest.fn()} onLayerDuplicate={jest.fn()} 
+        onLayerVisibilityToggle={jest.fn()} onLayerLockToggle={jest.fn()} />);
+
+      const newKeys = Array.from(container.querySelectorAll('[data-testid^="layer-item-"]'))
+        .map(el => el.getAttribute('data-testid'));
+
+      expect(initialKeys).toEqual(newKeys);
+    });
+  });
+
+  describe('Edge Cases', () => {
+    it('should handle empty layer list', () => {
+      const { container } = renderLayersPanel({ layers: [] });
+
+      expect(screen.getByText('No layers found')).toBeInTheDocument();
+      layerAssertions.expectCorrectLayerCount(container, 0);
+    });
+
+    it('should handle layers with no groups', () => {
+      const layers = createMockLayers(3);
+      const { container } = renderLayersPanel({ layers, groups: [] });
+
+      layerAssertions.expectCorrectLayerCount(container, 3);
+      layerAssertions.expectUniqueElements(container, '[data-testid^="layer-item-"]');
+    });
+
+    it('should handle groups with no layers', () => {
+      const groups = createMockGroups(2, 0);
