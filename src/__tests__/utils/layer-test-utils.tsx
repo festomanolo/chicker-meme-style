@@ -170,3 +170,60 @@ export const layerAssertions = {
       }
     });
 
+    // Get all individual layer items
+    const individualLayerElements = container.querySelectorAll('[data-testid^="individual-"] [data-testid^="layer-item-"], [data-testid^="layer-item-"]:not([data-testid^="group-"] [data-testid^="layer-item-"])');
+    const individualLayerIds = new Set<string>();
+    
+    individualLayerElements.forEach(element => {
+      const testId = element.getAttribute('data-testid');
+      if (testId) {
+        const layerId = testId.replace('layer-item-', '');
+        individualLayerIds.add(layerId);
+      }
+    });
+
+    // Check for intersection (layers appearing in both contexts)
+    const intersection = new Set([...groupLayerIds].filter(id => individualLayerIds.has(id)));
+    
+    expect(intersection.size).toBe(0);
+    
+    if (intersection.size > 0) {
+      throw new Error(`Layers found in both group and individual contexts: ${Array.from(intersection).join(', ')}`);
+    }
+  },
+
+  /**
+   * Verify the correct total number of layer elements are rendered
+   */
+  expectCorrectLayerCount: (container: HTMLElement, expectedCount: number) => {
+    const allLayerElements = container.querySelectorAll('[data-testid^="layer-item-"]');
+    expect(allLayerElements.length).toBe(expectedCount);
+  },
+
+  /**
+   * Verify that grouped layers only appear when their group is expanded
+   */
+  expectGroupExpansionBehavior: (container: HTMLElement, groupId: string, expectedLayerCount: number) => {
+    const groupContent = container.querySelector(`[data-testid="group-content-${groupId}"]`);
+    
+    if (groupContent) {
+      // Group is expanded - should show layers
+      const groupLayers = groupContent.querySelectorAll('[data-testid^="layer-item-"]');
+      expect(groupLayers.length).toBe(expectedLayerCount);
+    } else {
+      // Group is collapsed - should not show layer content
+      const groupElement = container.querySelector(`[data-testid="layer-group-${groupId}"]`);
+      expect(groupElement).toBeTruthy();
+      
+      const layersInGroup = groupElement?.querySelectorAll('[data-testid^="layer-item-"]');
+      expect(layersInGroup?.length || 0).toBe(0);
+    }
+  },
+
+  /**
+   * Verify search results don't contain duplicates
+   */
+  expectUniqueSearchResults: (container: HTMLElement) => {
+    const searchResults = container.querySelectorAll('[data-testid^="search-result-"]');
+    const resultIds = Array.from(searchResults).map(el => el.getAttribute('data-testid'));
+    const uniqueIds = new Set(resultIds);
