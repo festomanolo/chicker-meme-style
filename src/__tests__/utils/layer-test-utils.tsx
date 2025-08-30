@@ -227,3 +227,61 @@ export const layerAssertions = {
     const searchResults = container.querySelectorAll('[data-testid^="search-result-"]');
     const resultIds = Array.from(searchResults).map(el => el.getAttribute('data-testid'));
     const uniqueIds = new Set(resultIds);
+    
+    expect(uniqueIds.size).toBe(resultIds.length);
+  },
+
+  /**
+   * Verify that layer counts in footer are accurate
+   */
+  expectAccurateLayerCounts: (
+    container: HTMLElement, 
+    totalLayers: number, 
+    individualLayers: number, 
+    groupedLayers: number
+  ) => {
+    const footer = container.querySelector('.border-t');
+    expect(footer).toBeTruthy();
+    
+    const footerText = footer?.textContent || '';
+    
+    // Should show total count
+    expect(footerText).toContain(totalLayers.toString());
+    
+    // Should show breakdown of individual vs grouped
+    if (groupedLayers > 0) {
+      expect(footerText).toContain(individualLayers.toString());
+      expect(footerText).toContain(groupedLayers.toString());
+    }
+  },
+
+  /**
+   * Verify that all layer items have proper accessibility attributes
+   */
+  expectAccessibilityAttributes: (container: HTMLElement) => {
+    const layerItems = container.querySelectorAll('[data-testid^="layer-item-"]');
+    
+    layerItems.forEach(item => {
+      expect(item).toHaveAttribute('role', 'button');
+      expect(item).toHaveAttribute('tabIndex', '0');
+      expect(item).toHaveAttribute('aria-label');
+      expect(item).toHaveAttribute('aria-selected');
+    });
+  },
+
+  /**
+   * Verify that the key management system is working correctly
+   */
+  expectValidKeyManagement: () => {
+    const keyManager = LayerKeyManager.getInstance();
+    const isValid = keyManager.validateUniqueKeys();
+    expect(isValid).toBe(true);
+    if (!isValid) {
+      const debugInfo = keyManager.getDebugInfo();
+      throw new Error(`Key management validation failed: ${JSON.stringify(debugInfo)}`);
+    }
+  },
+
+  /**
+   * Verify that keys are properly cleaned up
+   */
