@@ -296,3 +296,63 @@ describe('LayersPanel - Fixed Rendering', () => {
       // All layers match search, but should still respect uniqueness
       layerAssertions.expectUniqueSearchResults(container);
       layerAssertions.expectUniqueElements(container, '[data-testid^="layer-item-"]');
+    });
+
+    it('should show search results correctly', () => {
+      const layers = createMockLayers(4);
+      const { container } = renderLayersPanel({
+        layers,
+        searchQuery: 'Layer 2'
+      });
+
+      // Should find exactly one match
+      expect(screen.getByText('Layer 2')).toBeInTheDocument();
+      expect(screen.queryByText('Layer 1')).not.toBeInTheDocument();
+      
+      layerAssertions.expectUniqueElements(container, '[data-testid^="layer-item-"]');
+    });
+
+    it('should update search results without duplicates', async () => {
+      const user = userEvent.setup();
+      const onSearchChange = jest.fn();
+      const layers = createMockLayers(3);
+      
+      const { container } = renderLayersPanel({
+        layers,
+        onSearchChange
+      });
+
+      const searchInput = screen.getByPlaceholderText('Search layers...');
+      
+      // Use fireEvent.change for more predictable behavior
+      fireEvent.change(searchInput, { target: { value: 'Layer 1' } });
+
+      // Check that the function was called with the complete string
+      expect(onSearchChange).toHaveBeenCalledWith('Layer 1');
+      expect(onSearchChange).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('Layer Interactions', () => {
+    it('should handle layer selection without affecting duplicates', async () => {
+      const user = userEvent.setup();
+      const onLayerSelect = jest.fn();
+      const layers = createMockLayers(4);
+      
+      const { container } = renderLayersPanel({
+        layers,
+        onLayerSelect
+      });
+
+      const firstLayer = screen.getByTestId('layer-item-layer-1');
+      await user.click(firstLayer);
+
+      expect(onLayerSelect).toHaveBeenCalledWith('layer-1', false);
+      layerAssertions.expectUniqueElements(container, '[data-testid^="layer-item-"]');
+    });
+
+    it('should handle multi-select with Ctrl+click', async () => {
+      const user = userEvent.setup();
+      const onLayerSelect = jest.fn();
+      const layers = createMockLayers(3);
+      
