@@ -301,3 +301,64 @@ export const PhotoshopPanel: React.FC<PhotoshopPanelProps> = ({
                         className="h-7 text-xs"
                       />
                     </div>
+                    <div>
+                      <label className="text-xs text-gray-500">Y</label>
+                      <Input
+                        type="number"
+                        value={selectedElementData.y}
+                        onChange={(e) => onElementUpdate(selectedElementData.id, { y: Number(e.target.value) })}
+                        className="h-7 text-xs"
+                      />
+                    </div>
+                  </div>
+                  
+                  {(selectedElementData.type === 'image' || selectedElementData.type === 'template') && (
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <label className="text-xs text-gray-500">Width</label>
+                        <Input
+                          type="number"
+                          value={selectedElementData.width || 100}
+                          onChange={(e) => onElementUpdate(selectedElementData.id, { width: Number(e.target.value) })}
+                          className="h-7 text-xs"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-xs text-gray-500">Height</label>
+                        <Input
+                          type="number"
+                          value={selectedElementData.height || 100}
+                          onChange={(e) => onElementUpdate(selectedElementData.id, { height: Number(e.target.value) })}
+                          className="h-7 text-xs"
+                        />
+                      </div>
+                    </div>
+                  )}
+                  
+                  <div>
+                    <label className="text-xs text-gray-500 mb-1 block">
+                      Rotation: {selectedElementData.rotation}°
+                    </label>
+                    <Slider
+                      value={[selectedElementData.rotation]}
+                      onValueChange={([value]) => onElementUpdate(selectedElementData.id, { rotation: value })}
+                      min={0}
+                      max={360}
+                      step={1}
+                      className="w-full"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="text-xs text-gray-500 mb-1 block">
+                      Opacity: {Math.round(selectedElementData.opacity * 100)}%
+                    </label>
+                    <Slider
+                      value={[selectedElementData.opacity]}
+                      onValueChange={([value]) => onElementUpdate(selectedElementData.id, { opacity: value })}
+                      min={0}
+                      max={1}
+                      step={0.01}
+                      className="w-full"
+                    />
+                  </div>
