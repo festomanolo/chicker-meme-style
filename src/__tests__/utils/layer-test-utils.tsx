@@ -285,3 +285,60 @@ export const layerAssertions = {
   /**
    * Verify that keys are properly cleaned up
    */
+  expectCleanKeyState: () => {
+    const keyManager = LayerKeyManager.getInstance();
+    const debugInfo = keyManager.getDebugInfo();
+    // After cleanup, there should be no keys
+    expect(debugInfo.totalKeys).toBe(0);
+  }
+};
+
+// Mock data generators for specific test scenarios
+export const mockDataGenerators = {
+  /**
+   * Generate test data for duplicate detection scenarios
+   */
+  duplicateDetectionScenario: () => {
+    const { layers, groups } = createLayerTestUtils().createMockLayersWithGroups(3, 2, 2);
+    return { layers, groups };
+  },
+
+  /**
+   * Generate test data for search functionality
+   */
+  searchScenario: () => {
+    const layers = [
+      ...createLayerTestUtils().createMockLayers(2),
+      {
+        id: 'text-layer',
+        name: 'Special Text Layer',
+        type: 'text' as const,
+        content: 'Searchable content',
+        visible: true,
+        locked: false,
+        opacity: 1,
+        zIndex: 3,
+        x: 0, y: 0, width: 100, height: 50,
+        rotation: 0, scaleX: 1, scaleY: 1,
+        createdAt: Date.now(),
+        updatedAt: Date.now()
+      }
+    ];
+    
+    return { layers, groups: [] };
+  },
+
+  /**
+   * Generate test data for group expansion scenarios
+   */
+  groupExpansionScenario: () => {
+    const { layers, groups } = createLayerTestUtils().createMockLayersWithGroups(2, 2, 3);
+    
+    // Make first group expanded
+    groups[0].expanded = true;
+    
+    return { layers, groups };
+  }
+};
+
+export default createLayerTestUtils;
