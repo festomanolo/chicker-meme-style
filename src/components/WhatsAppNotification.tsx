@@ -44,3 +44,48 @@ export const WhatsAppNotification: React.FC<WhatsAppNotificationProps> = ({
 
     const checkActivity = () => {
       const timeSinceActivity = Date.now() - lastActivity;
+      const twoMinutes = 2 * 60 * 1000; // 2 minutes in milliseconds
+      
+      if (timeSinceActivity >= twoMinutes) {
+        setIsVisible(true);
+      }
+    };
+
+    // Show immediately on route change (after a short delay)
+    const routeChangeTimer = setTimeout(() => {
+      if (!isDismissed) {
+        setIsVisible(true);
+      }
+    }, 3000);
+
+    // Check every 30 seconds
+    const activityInterval = setInterval(checkActivity, 30000);
+
+    return () => {
+      clearTimeout(routeChangeTimer);
+      clearInterval(activityInterval);
+    };
+  }, [lastActivity, shouldExclude, isDismissed, location.pathname]);
+
+  // Auto-hide after 10 seconds
+  useEffect(() => {
+    if (isVisible) {
+      const autoHideTimer = setTimeout(() => {
+        setIsVisible(false);
+      }, 10000);
+
+      return () => clearTimeout(autoHideTimer);
+    }
+  }, [isVisible]);
+
+  const handleDismiss = () => {
+    setIsVisible(false);
+    setIsDismissed(true);
+    // Reset dismissed state after 10 minutes
+    setTimeout(() => setIsDismissed(false), 10 * 60 * 1000);
+  };
+
+  const handleWhatsAppClick = () => {
+    const message = encodeURIComponent(
+      "Hi! I'd like to share what vibe I want to express with my t-shirt design. Can you help me?"
+    );
