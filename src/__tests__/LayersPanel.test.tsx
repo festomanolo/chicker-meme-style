@@ -356,3 +356,62 @@ describe('LayersPanel - Fixed Rendering', () => {
       const onLayerSelect = jest.fn();
       const layers = createMockLayers(3);
       
+      renderLayersPanel({ layers, onLayerSelect });
+
+      const layer = screen.getByTestId('layer-item-layer-1');
+      
+      // Use fireEvent for more precise control over the event
+      fireEvent.click(layer, { ctrlKey: true });
+
+      expect(onLayerSelect).toHaveBeenCalledWith('layer-1', true);
+    });
+
+    it('should handle layer visibility toggle', async () => {
+      const user = userEvent.setup();
+      const onLayerVisibilityToggle = jest.fn();
+      const layers = createMockLayers(2);
+      
+      renderLayersPanel({ layers, onLayerVisibilityToggle });
+
+      // Find the visibility button within the specific layer
+      const layer1 = screen.getByTestId('layer-item-layer-1');
+      const visibilityButton = layer1.querySelector('[aria-label*="Hide layer"], [aria-label*="Show layer"]');
+      
+      await user.click(visibilityButton!);
+
+      expect(onLayerVisibilityToggle).toHaveBeenCalledWith('layer-1');
+    });
+
+    it('should handle layer lock toggle', async () => {
+      const user = userEvent.setup();
+      const onLayerLockToggle = jest.fn();
+      const layers = createMockLayers(2);
+      
+      renderLayersPanel({ layers, onLayerLockToggle });
+
+      // Find the lock button within the specific layer
+      const layer1 = screen.getByTestId('layer-item-layer-1');
+      const lockButton = layer1.querySelector('[aria-label*="Lock layer"], [aria-label*="Unlock layer"]');
+      
+      await user.click(lockButton!);
+
+      expect(onLayerLockToggle).toHaveBeenCalledWith('layer-1');
+    });
+
+    it('should handle layer duplication', async () => {
+      const user = userEvent.setup();
+      const onLayerDuplicate = jest.fn();
+      const layers = createMockLayers(2);
+      
+      renderLayersPanel({ layers, onLayerDuplicate });
+
+      // Find the duplicate button within the specific layer
+      const layer1 = screen.getByTestId('layer-item-layer-1');
+      const duplicateButton = layer1.querySelector('[aria-label="Duplicate layer"]');
+      
+      await user.click(duplicateButton!);
+
+      expect(onLayerDuplicate).toHaveBeenCalledWith('layer-1');
+    });
+
+    it('should handle layer deletion', async () => {
