@@ -89,3 +89,49 @@ export const WhatsAppNotification: React.FC<WhatsAppNotificationProps> = ({
     const message = encodeURIComponent(
       "Hi! I'd like to share what vibe I want to express with my t-shirt design. Can you help me?"
     );
+    const whatsappUrl = `https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}?text=${message}`;
+    window.open(whatsappUrl, '_blank');
+    handleDismiss();
+  };
+
+  if (!isVisible || shouldExclude) return null;
+
+  return (
+    <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 animate-in slide-in-from-top-2 duration-500">
+      <div className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border border-gray-200/50 dark:border-gray-700/50 rounded-2xl shadow-2xl max-w-md mx-4">
+        <div className="flex items-center gap-3 p-4">
+          {/* WhatsApp Icon */}
+          <div className="flex-shrink-0 w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
+            <MessageCircle className="h-5 w-5 text-white" />
+          </div>
+          
+          {/* Message */}
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-medium text-gray-900 dark:text-gray-100 leading-relaxed">
+              Share with us what vibe you want to express, and we'll respond as quick as possible on WhatsApp.
+            </p>
+          </div>
+          
+          {/* Actions */}
+          <div className="flex items-center gap-2">
+            <Button
+              onClick={handleWhatsAppClick}
+              size="sm"
+              className="bg-green-500 hover:bg-green-600 text-white text-xs px-3 py-1.5 h-auto rounded-lg"
+            >
+              WhatsApp
+            </Button>
+            <Button
+              onClick={handleDismiss}
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 p-0 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
