@@ -92,3 +92,49 @@
 - [ ] 6. Build history and undo system
 - [x] 6.1 Create HistoryManager service
   - Implement HistoryManager with 50-entry maximum stack
+  - Create state serialization and deserialization utilities
+  - Add undo/redo functionality with proper state restoration
+  - Implement history compression for memory efficiency
+  - Write unit tests for history operations and state management
+  - _Requirements: 5.5, 8.4_
+
+- [x] 6.2 Integrate history with all canvas operations
+  - Connect history saving to all element modifications
+  - Implement automatic history snapshots on operation completion
+  - Add keyboard shortcuts for undo/redo (Ctrl+Z, Ctrl+Y)
+  - Create history state validation and error recovery
+  - Write integration tests for history across all operations
+  - _Requirements: 5.5, 5.6_
+
+- [ ] 7. Create mobile-optimized editing panel
+- [x] 7.1 Build responsive panel infrastructure
+  - Create MobileEditingPanel component with slide-over behavior
+  - Implement panel width calculations (42% viewport, 260px min, 420px max)
+  - Add full-height 75% width mode for small phones
+  - Create smooth panel expand/collapse animations
+  - Write tests for panel responsive behavior across screen sizes
+  - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5_
+
+- [x] 7.2 Implement Photoshop-like tool organization
+  - Create tools row with Move, Crop, Text, Image Replace, Mask, Pen, Eyedropper icons
+  - Implement 44px touch targets for all tool icons
+  - Build collapsible sections for Layers, Properties, Quick Actions
+  - Add context-sensitive properties panel that updates based on selection
+  - Write tests for tool switching and panel section interactions
+  - _Requirements: 3.6, 3.7_
+
+- [x] 7.3 Optimize canvas behavior with panel interactions
+  - Implement canvas shrinking when panel is open while maintaining zoom/pan
+  - Create quick collapse button for panel
+  - Add smooth transitions between panel states
+  - Ensure canvas remains functional during panel animations
+  - Write tests for canvas-panel interaction behavior
+  - _Requirements: 3.5, 3.8_
+
+- [ ] 8. Implement WhatsApp notification system
+- [x] 8.1 Create notification component and timing logic
+  - Build WhatsAppNotification component with macOS-style design
+  - Implement 2-minute interval timing with user activity detection
+  - Create dismissal logic with 20-minute cooldown
+  - Add page exclusion logic for Settings and More pages
+  - Write unit tests for notification timing and dismissal behavior
