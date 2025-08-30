@@ -214,3 +214,57 @@ export const TshirtCanvas: React.FC<TshirtCanvasProps> = ({
                         fontFamily: element.font,
                         fontSize: `${element.size}px`,
                         color: element.color,
+                        fontWeight: 'bold',
+                        textShadow: '2px 2px 4px rgba(0,0,0,0.5)',
+                        whiteSpace: 'pre-wrap',
+                      }}
+                    >
+                      {element.content}
+                    </span>
+                  )}
+                  
+                  {element.type === 'image' && (
+                    <img
+                      src={element.imageUrl}
+                      alt="Design element"
+                      className="max-w-none shadow-lg rounded pointer-events-none"
+                      style={{
+                        width: element.width,
+                        height: element.height,
+                      }}
+                      draggable={false}
+                    />
+                  )}
+                  
+                  {element.type === 'template' && (
+                    <div className="bg-white bg-opacity-90 rounded-lg p-2 shadow-lg backdrop-blur-sm">
+                      <span className="text-xl block mb-1">
+                        {element.template?.preview}
+                      </span>
+                      <p className="text-xs font-bold text-gray-800">
+                        {element.template?.name}
+                      </p>
+                    </div>
+                  )}
+                  
+                  <ResizeHandles elementId={element.id} />
+                </div>
+              )
+            ))}
+            
+            {/* Empty state */}
+            {designElements.length === 0 && (
+              <div className="absolute inset-0 flex items-center justify-center text-gray-400 pointer-events-none">
+                <div className="text-center">
+                  <div className="text-4xl mb-2">👕</div>
+                  <p className="text-sm font-medium">Design Area</p>
+                  <p className="text-xs">Add elements to start designing</p>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
