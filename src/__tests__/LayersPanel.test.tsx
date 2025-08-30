@@ -117,3 +117,63 @@ describe('LayersPanel - Fixed Rendering', () => {
     it('should handle multiple groups with different expansion states', () => {
       const { layers, groups } = createMockLayersWithGroups(2, 2, 3);
       groups[0].expanded = true;  // First group expanded
+      groups[1].expanded = false; // Second group collapsed
+      
+      const { container } = renderLayersPanel({ layers, groups });
+
+      // First group should show its layers
+      layerAssertions.expectGroupExpansionBehavior(container, 'group-1', 3);
+      
+      // Second group should not show its layers
+      layerAssertions.expectGroupExpansionBehavior(container, 'group-2', 0);
+      
+      // Should have 2 individual + 3 from expanded group = 5 total visible layers
+      layerAssertions.expectCorrectLayerCount(container, 5);
+      layerAssertions.expectNoGroupDuplicates(container);
+    });
+
+    it('should handle group with no layers gracefully', () => {
+      const layers = createMockLayers(2);
+      const groups = createMockGroups(1, 0); // Group with no children
+      groups[0].expanded = true;
+      
+      const { container } = renderLayersPanel({ layers, groups });
+
+      // Group header should still be visible
+      expect(screen.getByText('Group 1')).toBeInTheDocument();
+      expect(screen.getByText('0')).toBeInTheDocument(); // Member count should be 0
+      
+      // Should show 2 individual layers
+      layerAssertions.expectCorrectLayerCount(container, 2);
+    });
+
+    it('should handle group expansion/collapse toggle correctly', async () => {
+      const user = userEvent.setup();
+      const { layers, groups } = createMockLayersWithGroups(1, 1, 2);
+      const onGroupToggle = jest.fn();
+      
+      renderLayersPanel({ layers, groups, onGroupToggle });
+
+      const groupHeader = screen.getByTestId('group-header-group-1');
+      
+      // First click - expand
+      await user.click(groupHeader);
+      expect(onGroupToggle).toHaveBeenCalledWith('group-1');
+      
+      // Second click - collapse
+      await user.click(groupHeader);
+      expect(onGroupToggle).toHaveBeenCalledTimes(2);
+      expect(onGroupToggle).toHaveBeenLastCalledWith('group-1');
+    });
+
+    it('should show correct chevron icons for expanded/collapsed groups', () => {
+      const { layers, groups } = createMockLayersWithGroups(0, 2, 1);
+      groups[0].expanded = true;
+      groups[1].expanded = false;
+      
+      renderLayersPanel({ layers, groups });
+
+      const expandedGroup = screen.getByTestId('group-header-group-1');
+      const collapsedGroup = screen.getByTestId('group-header-group-2');
+      
+      // Expanded group should have ChevronDown
