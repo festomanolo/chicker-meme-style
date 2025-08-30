@@ -362,3 +362,63 @@ export const PhotoshopPanel: React.FC<PhotoshopPanelProps> = ({
                       className="w-full"
                     />
                   </div>
+                </div>
+
+                {/* Text Properties */}
+                {selectedElementData.type === 'text' && (
+                  <div className="space-y-3">
+                    <div className="text-xs font-medium text-gray-600 dark:text-gray-400">Text</div>
+                    
+                    <Textarea
+                      value={selectedElementData.content || ''}
+                      onChange={(e) => onElementUpdate(selectedElementData.id, { content: e.target.value })}
+                      className="text-xs"
+                      rows={2}
+                    />
+                    
+                    <select
+                      value={selectedElementData.font || 'Arial'}
+                      onChange={(e) => onElementUpdate(selectedElementData.id, { font: e.target.value })}
+                      className="w-full text-xs p-2 border rounded"
+                    >
+                      {fonts.map(font => (
+                        <option key={font} value={font}>{font}</option>
+                      ))}
+                    </select>
+                    
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <label className="text-xs text-gray-500">Size</label>
+                        <Input
+                          type="number"
+                          value={selectedElementData.size || 24}
+                          onChange={(e) => onElementUpdate(selectedElementData.id, { size: Number(e.target.value) })}
+                          className="h-7 text-xs"
+                          min="8"
+                          max="72"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-xs text-gray-500">Color</label>
+                        <Input
+                          type="color"
+                          value={selectedElementData.color || '#000000'}
+                          onChange={(e) => onElementUpdate(selectedElementData.id, { color: e.target.value })}
+                          className="h-7"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Lock */}
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-gray-600 dark:text-gray-400">Locked</span>
+                  <Switch
+                    checked={selectedElementData.locked}
+                    onCheckedChange={(checked) => onElementUpdate(selectedElementData.id, { locked: checked })}
+                  />
+                </div>
+              </div>
+            ) : (
+              <div className="text-center text-xs text-gray-500 py-8">
