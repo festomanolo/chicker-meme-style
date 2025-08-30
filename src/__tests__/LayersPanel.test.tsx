@@ -594,3 +594,63 @@ describe('LayersPanel - Fixed Rendering', () => {
       rerender(<LayersPanel layers={layers} groups={[]} selectedIds={[]} 
         onLayerSelect={jest.fn()} onLayerReorder={jest.fn()} onLayerUpdate={jest.fn()}
         onLayerDelete={jest.fn()} onLayerDuplicate={jest.fn()} 
+        onLayerVisibilityToggle={jest.fn()} onLayerLockToggle={jest.fn()} />);
+
+      // Get keys after re-render
+      const newElements = container.querySelectorAll('[data-testid^="layer-item-"]');
+      const newKeys = Array.from(newElements).map(el => el.getAttribute('data-testid'));
+
+      // Keys should be consistent
+      expect(initialKeys).toEqual(newKeys);
+      layerAssertions.expectValidKeyManagement();
+    });
+
+    it('should handle complex scenarios with multiple contexts', () => {
+      const { layers, groups } = createMockLayersWithGroups(3, 2, 3);
+      groups[0].expanded = true;
+      groups[1].expanded = false;
+      const { container, rerender } = renderLayersPanel({ layers, groups });
+
+      // Initial render - normal mode
+      layerAssertions.expectValidKeyManagement();
+      layerAssertions.expectNoGroupDuplicates(container);
+
+      // Switch to search mode
+      rerender(<LayersPanel layers={layers} groups={groups} selectedIds={[]} 
+        searchQuery="Layer" onLayerSelect={jest.fn()} onLayerReorder={jest.fn()} 
+        onLayerUpdate={jest.fn()} onLayerDelete={jest.fn()} onLayerDuplicate={jest.fn()} 
+        onLayerVisibilityToggle={jest.fn()} onLayerLockToggle={jest.fn()} />);
+
+      // Search mode should still maintain unique keys
+      layerAssertions.expectValidKeyManagement();
+      layerAssertions.expectUniqueSearchResults(container);
+
+      // Switch back to normal mode
+      rerender(<LayersPanel layers={layers} groups={groups} selectedIds={[]} 
+        onLayerSelect={jest.fn()} onLayerReorder={jest.fn()} onLayerUpdate={jest.fn()}
+        onLayerDelete={jest.fn()} onLayerDuplicate={jest.fn()} 
+        onLayerVisibilityToggle={jest.fn()} onLayerLockToggle={jest.fn()} />);
+
+      // Should still be valid
+      layerAssertions.expectValidKeyManagement();
+      layerAssertions.expectNoGroupDuplicates(container);
+    });
+
+    it('should handle performance with large numbers of layers', () => {
+      const startTime = performance.now();
+      // Create a large number of layers
+      const layers = createMockLayers(100);
+      const { container } = renderLayersPanel({ layers });
+      const endTime = performance.now();
+      const renderTime = endTime - startTime;
+
+      // Should render in reasonable time (less than 1000ms for 100 layers)
+      expect(renderTime).toBeLessThan(1000);
+
+      // All keys should be valid
+      layerAssertions.expectValidKeyManagement();
+      layerAssertions.expectCorrectLayerCount(container, 100);
+      layerAssertions.expectUniqueElements(container, '[data-testid^="layer-item-"]');
+    });
+  });
+});
