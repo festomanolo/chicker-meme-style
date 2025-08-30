@@ -30,3 +30,35 @@ export interface HistoryState {
 
 export interface TshirtColor {
   name: string;
+  value: string;
+  hex: string;
+}
+
+export interface TshirtType {
+  id: string;
+  name: string;
+  price: number;
+  description: string;
+  icon: string;
+  shape: string;
+}
+
+export interface Template {
+  id: string;
+  name: string;
+  preview: string;
+  category: string;
+}
+
+export interface Sticker {
+  id: string;
+  emoji: string;
+  name: string;
+}
+
+export interface StickerPack {
+  id: string;
+  name: string;
+  icon: string;
+  stickers: Sticker[];
+}
