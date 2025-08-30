@@ -415,3 +415,63 @@ describe('LayersPanel - Fixed Rendering', () => {
     });
 
     it('should handle layer deletion', async () => {
+      const user = userEvent.setup();
+      const onLayerDelete = jest.fn();
+      const layers = createMockLayers(2);
+      
+      renderLayersPanel({ layers, onLayerDelete });
+
+      // Find the delete button within the specific layer
+      const layer1 = screen.getByTestId('layer-item-layer-1');
+      const deleteButton = layer1.querySelector('[aria-label="Delete layer"]');
+      
+      await user.click(deleteButton!);
+
+      expect(onLayerDelete).toHaveBeenCalledWith('layer-1');
+    });
+  });
+
+  describe('Inline Editing', () => {
+    it('should enable inline editing on double click', async () => {
+      const user = userEvent.setup();
+      const layers = createMockLayers(1);
+      
+      renderLayersPanel({ layers, enableInlineEdit: true });
+
+      const layer = screen.getByTestId('layer-item-layer-1');
+      await user.dblClick(layer);
+
+      // Should show input field for editing
+      const input = screen.getByDisplayValue('Layer 1');
+      expect(input).toBeInTheDocument();
+    });
+
+    it('should update layer name on inline edit', async () => {
+      const user = userEvent.setup();
+      const onLayerUpdate = jest.fn();
+      const layers = createMockLayers(1);
+      
+      renderLayersPanel({ layers, onLayerUpdate, enableInlineEdit: true });
+
+      const layer = screen.getByTestId('layer-item-layer-1');
+      await user.dblClick(layer);
+
+      const input = screen.getByDisplayValue('Layer 1');
+      await user.clear(input);
+      await user.type(input, 'Updated Name');
+      await user.keyboard('{Enter}');
+
+      expect(onLayerUpdate).toHaveBeenCalledWith('layer-1', {
+        name: 'Updated Name',
+      });
+    });
+
+    it('should cancel inline edit on Escape', async () => {
+      const user = userEvent.setup();
+      const onLayerUpdate = jest.fn();
+      const layers = createMockLayers(1);
+      
+      renderLayersPanel({ layers, onLayerUpdate, enableInlineEdit: true });
+
+      const layer = screen.getByTestId('layer-item-layer-1');
+      await user.dblClick(layer);
