@@ -237,3 +237,62 @@ describe('LayersPanel - Fixed Rendering', () => {
       // Should have opacity styling for invisible group
       expect(groupHeader).toHaveClass('opacity-50');
       
+      // Should show eye-off icon
+      expect(groupHeader.querySelector('.lucide-eye-off')).toBeInTheDocument();
+    });
+
+    it('should show visual indicators for locked groups', () => {
+      const { layers, groups } = createMockLayersWithGroups(0, 1, 2);
+      groups[0].locked = true; // Make group locked
+      
+      renderLayersPanel({ layers, groups });
+
+      const groupHeader = screen.getByTestId('group-header-group-1');
+      
+      // Should have opacity styling for locked group
+      expect(groupHeader).toHaveClass('opacity-60');
+      
+      // Should show lock icon
+      expect(groupHeader.querySelector('.lucide-lock')).toBeInTheDocument();
+    });
+
+    it('should show empty group message when group has no layers', () => {
+      const layers = createMockLayers(1);
+      const groups = createMockGroups(1, 0); // Group with no children
+      groups[0].expanded = true;
+      
+      renderLayersPanel({ layers, groups });
+
+      expect(screen.getByText('No layers in this group')).toBeInTheDocument();
+    });
+
+    it('should handle group visibility and lock state combinations', () => {
+      const { layers, groups } = createMockLayersWithGroups(0, 1, 1);
+      groups[0].visible = false;
+      groups[0].locked = true;
+      
+      renderLayersPanel({ layers, groups });
+
+      const groupHeader = screen.getByTestId('group-header-group-1');
+      
+      // Should show both indicators
+      expect(groupHeader.querySelector('.lucide-eye-off')).toBeInTheDocument();
+      expect(groupHeader.querySelector('.lucide-lock')).toBeInTheDocument();
+      
+      // Should have both opacity classes (locked takes precedence)
+      expect(groupHeader).toHaveClass('opacity-60');
+    });
+  });
+
+  describe('Search Functionality', () => {
+    it('should handle search without duplicating grouped layers', () => {
+      const { layers, groups } = createMockLayersWithGroups(2, 1, 2);
+      const { container } = renderLayersPanel({
+        layers,
+        groups,
+        searchQuery: 'Layer'
+      });
+
+      // All layers match search, but should still respect uniqueness
+      layerAssertions.expectUniqueSearchResults(container);
+      layerAssertions.expectUniqueElements(container, '[data-testid^="layer-item-"]');
