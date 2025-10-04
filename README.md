@@ -100,4 +100,4 @@ The script will generate:
 
 MIT
 
-<!-- pr-milestone: chore/android-proguard-keep-rules (2025-09-07T22:02:51Z) -->
+<!-- pr-milestone: docs/customizer-keyboard-shortcuts (2025-10-04T12:42:57Z) -->
