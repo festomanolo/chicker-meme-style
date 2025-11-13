@@ -1434,3 +1434,63 @@ const Customize = () => {
     );
   }
 
+  // Desktop layout  
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <div className="glass-card border-b border-card-border px-6 py-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">
+              Meme Creator Studio
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              Design your custom meme t-shirt
+            </p>
+          </div>
+          <div className="flex gap-3">
+            <span className="text-sm text-muted-foreground">
+              Zoom: {canvasZoom}%
+            </span>
+            <Button variant="outline" onClick={saveDesign}>
+              <Save className="h-4 w-4 mr-2" />
+              Save
+            </Button>
+            <Button onClick={shareDesign}>
+              <Share2 className="h-4 w-4 mr-2" />
+              Share
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex">
+        {/* Main Canvas Area */}
+        <div
+          className="flex-1 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 min-h-screen flex items-center justify-center"
+          style={{ marginRight: `${rightPanelWidth}px` }}
+        >
+          <canvas
+            ref={canvasRef}
+            className="absolute inset-0 pointer-events-none"
+            style={{ display: "none" }}
+          />
+          <TshirtCanvas 
+            color={selectedTshirtColor.value}
+            elements={designElements}
+            selectedElement={selectedElement}
+            onElementUpdate={updateElement}
+          />
+        </div>
+
+        {/* Right Panel */}
+        <RightPanel />
+
+        {/* Quick Actions */}
+        <QuickActions />
+      </div>
+    </div>
+  );
+};
+
+export default Customize;
