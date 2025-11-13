@@ -776,3 +776,63 @@ const Customize = () => {
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-semibold">Design Tools</h2>
               <div className="flex gap-2">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() =>
+                    setRightPanelWidth(rightPanelWidth === 320 ? 450 : 320)
+                  }
+                >
+                  <Move className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          {/* Panel Navigation */}
+          <div className="border-b border-border">
+            <div className="flex flex-wrap gap-1 p-2">
+              {panels.map((panel) => (
+                <Button
+                  key={panel.id}
+                  variant={expandedPanel === panel.id ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() =>
+                    setExpandedPanel(expandedPanel === panel.id ? "" : panel.id)
+                  }
+                  className="flex items-center gap-2"
+                >
+                  <panel.icon className="h-4 w-4" />
+                  <span className="text-xs">{panel.title}</span>
+                </Button>
+              ))}
+            </div>
+          </div>
+
+          {/* Panel Content */}
+          <div className="flex-1 overflow-y-auto p-4">
+            {expandedPanel === "style" && (
+              <div className="space-y-6">
+                {/* T-shirt Type Selector */}
+                <TshirtTypeSelector
+                  selectedType={selectedTshirtType}
+                  onTypeSelect={setSelectedTshirtType}
+                />
+
+                {/* T-shirt Color Selector */}
+                <div className="space-y-2">
+                  <h3 className="text-sm font-medium">T-shirt Color</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {tshirtColors.map((color) => (
+                      <button
+                        key={color.name}
+                        className={`w-8 h-8 rounded-full border-2 ${
+                          selectedTshirtColor.name === color.name 
+                            ? 'border-primary' 
+                            : 'border-gray-300'
+                        }`}
+                        style={{ backgroundColor: color.value }}
+                        onClick={() => setSelectedTshirtColor(color)}
+                        title={color.name}
+                      />
+                    ))}
