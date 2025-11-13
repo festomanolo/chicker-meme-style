@@ -110,3 +110,59 @@ class SQLiteDatabase {
         user_id TEXT NOT NULL,
         status TEXT NOT NULL,
         total REAL NOT NULL,
+        items TEXT NOT NULL,
+        shippingAddress TEXT NOT NULL,
+        date TEXT NOT NULL,
+        tracking TEXT,
+        estimatedDelivery TEXT,
+        created_at INTEGER NOT NULL,
+        FOREIGN KEY (user_id) REFERENCES users (id)
+      );
+    `;
+
+    await this.db.executeSql(createUsersTable);
+    await this.db.executeSql(createCartsTable);
+    await this.db.executeSql(createCartItemsTable);
+    await this.db.executeSql(createOrdersTable);
+  }
+
+  private async createDemoUser(): Promise<void> {
+    const demoEmail = 'demo@chicker.com';
+    const existingUser = await this.getUserByEmail(demoEmail);
+    
+    if (!existingUser) {
+      const hashedPassword = await PasswordUtils.hashPassword('password123');
+      await this.createUser({
+        id: PasswordUtils.generateUserId(),
+        name: 'Demo User',
+        email: demoEmail,
+        password_hash: hashedPassword,
+      });
+    }
+  }
+
+  // User functions
+  async createUser(user: Omit<User, 'created_at'>): Promise<void> {
+    if (!this.db) throw new Error('Database not initialized');
+    
+    const query = `
+      INSERT INTO users (id, name, email, password_hash, created_at)
+      VALUES (?, ?, ?, ?, ?)
+    `;
+    
+    await this.db.executeSql(query, [
+      user.id,
+      user.name,
+      user.email,
+      user.password_hash,
+      Date.now(),
+    ]);
+  }
+
+  async getUserByEmail(email: string): Promise<User | null> {
+    if (!this.db) throw new Error('Database not initialized');
+    
+    const query = 'SELECT * FROM users WHERE email = ?';
+    const [results] = await this.db.executeSql(query, [email]);
+    
+    if (results.rows.length > 0) {
