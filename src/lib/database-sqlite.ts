@@ -277,3 +277,59 @@ class SQLiteDatabase {
       id: item.id,
       name: item.name || `Product ${item.product_id}`,
       quantity: item.quantity,
+      price: item.price,
+      size: item.size || 'M',
+      color: item.color || 'White'
+    }));
+
+    const query = `
+      INSERT INTO orders (id, user_id, status, total, items, shippingAddress, date, tracking, estimatedDelivery, created_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+    
+    const tracking = `TZ${Math.random().toString().slice(2, 11)}`;
+    const estimatedDelivery = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString();
+    
+    await this.db.executeSql(query, [
+      orderId,
+      userId,
+      'paid',
+      total,
+      JSON.stringify(orderItems),
+      JSON.stringify({
+        name: shippingInfo.name,
+        address: shippingInfo.address,
+        city: shippingInfo.city,
+        country: shippingInfo.country
+      }),
+      new Date().toISOString().split('T')[0],
+      tracking,
+      estimatedDelivery,
+      Date.now(),
+    ]);
+    
+    return orderId;
+  }
+
+  async getOrdersForUser(userId: string): Promise<any[]> {
+    if (!this.db) throw new Error('Database not initialized');
+    
+    const query = 'SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC';
+    const [results] = await this.db.executeSql(query, [userId]);
+    
+    const orders: any[] = [];
+    for (let i = 0; i < results.rows.length; i++) {
+      const order = results.rows.item(i);
+      orders.push({
+        ...order,
+        items: JSON.parse(order.items),
+        shippingAddress: JSON.parse(order.shippingAddress),
+      });
+    }
+    
+    return orders;
+  }
+}
+
+export const sqliteDb = new SQLiteDatabase();
+export const initSQLiteDatabase = async () => await sqliteDb.init();
