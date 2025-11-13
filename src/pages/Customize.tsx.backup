@@ -178,3 +178,62 @@ const Customize = () => {
   }, []);
 
   const saveToHistory = useCallback(() => {
+    const newState: HistoryState = {
+      elements: [...designElements],
+      selectedElement,
+      timestamp: Date.now(),
+    };
+
+    const newHistory = history.slice(0, historyIndex + 1);
+    newHistory.push(newState);
+
+    if (newHistory.length > 50) {
+      newHistory.shift();
+    } else {
+      setHistoryIndex(historyIndex + 1);
+    }
+
+    setHistory(newHistory);
+  }, [designElements, selectedElement, history, historyIndex]);
+
+  const undo = () => {
+    if (historyIndex > 0) {
+      const previousState = history[historyIndex - 1];
+      setDesignElements(previousState.elements);
+      setSelectedElement(previousState.selectedElement);
+      setHistoryIndex(historyIndex - 1);
+    }
+  };
+
+  const redo = () => {
+    if (historyIndex < history.length - 1) {
+      const nextState = history[historyIndex + 1];
+      setDesignElements(nextState.elements);
+      setSelectedElement(nextState.selectedElement);
+      setHistoryIndex(historyIndex + 1);
+    }
+  };
+
+  const generateId = () =>
+    `element_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
+  const addTextElement = (text: string, font: string, size: number, color: string) => {
+    if (!text.trim()) return;
+
+    const newElement: DesignElement = {
+      id: generateId(),
+      type: "text",
+      content: text,
+      font,
+      size,
+      color,
+      x: 100 + Math.random() * 50,
+      y: 100 + Math.random() * 50,
+      rotation: 0,
+      opacity: 1,
+      visible: true,
+      locked: false,
+    };
+
+    setDesignElements([...designElements, newElement]);
+    saveToHistory();
