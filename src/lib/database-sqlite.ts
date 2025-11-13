@@ -221,3 +221,59 @@ class SQLiteDatabase {
     await this.db.executeSql(query, [
       itemId,
       cartItem.cart_id,
+      cartItem.product_id,
+      cartItem.quantity,
+      cartItem.price,
+      cartItem.name || null,
+      cartItem.size || null,
+      cartItem.color || null,
+    ]);
+    
+    return itemId;
+  }
+
+  async getCartItems(cartId: string): Promise<CartItem[]> {
+    if (!this.db) throw new Error('Database not initialized');
+    
+    const query = 'SELECT * FROM cart_items WHERE cart_id = ?';
+    const [results] = await this.db.executeSql(query, [cartId]);
+    
+    const items: CartItem[] = [];
+    for (let i = 0; i < results.rows.length; i++) {
+      items.push(results.rows.item(i));
+    }
+    
+    return items;
+  }
+
+  async removeCartItem(itemId: string): Promise<void> {
+    if (!this.db) throw new Error('Database not initialized');
+    
+    const query = 'DELETE FROM cart_items WHERE id = ?';
+    await this.db.executeSql(query, [itemId]);
+  }
+
+  async updateCartItemQuantity(itemId: string, quantity: number): Promise<void> {
+    if (!this.db) throw new Error('Database not initialized');
+    
+    const query = 'UPDATE cart_items SET quantity = ? WHERE id = ?';
+    await this.db.executeSql(query, [quantity, itemId]);
+  }
+
+  async clearCart(cartId: string): Promise<void> {
+    if (!this.db) throw new Error('Database not initialized');
+    
+    const query = 'DELETE FROM cart_items WHERE cart_id = ?';
+    await this.db.executeSql(query, [cartId]);
+  }
+
+  // Order functions
+  async createOrder(userId: string, items: CartItem[], total: number, shippingInfo: any): Promise<string> {
+    if (!this.db) throw new Error('Database not initialized');
+    
+    const orderId = `ORD-${new Date().getFullYear()}-${String(Date.now()).slice(-6)}`;
+    
+    const orderItems = items.map(item => ({
+      id: item.id,
+      name: item.name || `Product ${item.product_id}`,
+      quantity: item.quantity,
