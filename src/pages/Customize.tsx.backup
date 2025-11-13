@@ -656,3 +656,63 @@ const Customize = () => {
                     }}
                   >
                     {element.content}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+        
+        {/* Canvas Controls */}
+        <div className="mt-6 flex items-center space-x-4">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setCanvasZoom(Math.max(0.5, canvasZoom - 0.1))}
+          >
+            <ZoomOut className="w-4 h-4" />
+          </Button>
+          <span className="text-sm text-gray-600 dark:text-gray-400">
+            {Math.round(canvasZoom * 100)}%
+          </span>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setCanvasZoom(Math.min(2, canvasZoom + 0.1))}
+          >
+            <ZoomIn className="w-4 h-4" />
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setCanvasZoom(1)}
+          >
+            Reset
+          </Button>
+        </div>
+      </div>
+
+      {/* Photoshop-style Panel */}
+      <PhotoshopPanel
+        designElements={designElements}
+        selectedElement={selectedElement}
+        onElementUpdate={updateElement}
+        onElementDelete={deleteElement}
+        onElementDuplicate={duplicateElement}
+        onElementVisibilityToggle={toggleElementVisibility}
+        onAddText={addTextElement}
+        onAddSticker={addSticker}
+        onAddTemplate={addTemplate}
+        onImageUpload={handleImageUpload}
+        selectedTshirtColor={selectedTshirtColor}
+        selectedTshirtType={selectedTshirtType}
+        onTshirtColorChange={setSelectedTshirtColor}
+        onTshirtTypeChange={setSelectedTshirtType}
+        tshirtColors={tshirtColors}
+        tshirtTypes={tshirtTypes}
+        templates={templates}
+        stickerPacks={stickerPacks}
+      />
+
+      {/* Quick Actions FAB */}
+      <QuickActions />
