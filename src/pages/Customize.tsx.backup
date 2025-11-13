@@ -357,3 +357,63 @@ const Customize = () => {
     if (!file) return;
 
     setIsProcessingImage(true);
+
+    try {
+      const imageUrl = await removeBackground(file);
+
+      const newElement: DesignElement = {
+        id: generateId(),
+        type: "image",
+        imageUrl,
+        x: 80 + Math.random() * 40,
+        y: 80 + Math.random() * 40,
+        width: 120,
+        height: 120,
+        rotation: 0,
+        opacity: 1,
+        visible: true,
+        locked: false,
+      };
+
+      setDesignElements([...designElements, newElement]);
+      saveToHistory();
+    } catch (error) {
+      console.error("Error processing image:", error);
+    } finally {
+      setIsProcessingImage(false);
+    }
+  };
+
+  const handleCrop = (elementId: string, cropData: { x: number; y: number; width: number; height: number }) => {
+    const element = designElements.find(el => el.id === elementId);
+    if (!element || element.type !== 'image') return;
+
+    // In a real implementation, you would crop the actual image
+    // For now, we'll just update the element dimensions
+    updateElement(elementId, {
+      width: cropData.width,
+      height: cropData.height,
+    });
+
+    setShowCropTool(false);
+    setCropElement(null);
+    saveToHistory();
+  };
+
+  const openCropTool = (elementId: string) => {
+    const element = designElements.find(el => el.id === elementId);
+    if (element && element.type === 'image') {
+      setCropElement(element);
+      setShowCropTool(true);
+    }
+  };
+
+  const deleteElement = (elementId: string) => {
+    setDesignElements(designElements.filter((el) => el.id !== elementId));
+    if (selectedElement === elementId) {
+      setSelectedElement(null);
+    }
+    saveToHistory();
+  };
+
+  const duplicateElement = (elementId: string) => {
