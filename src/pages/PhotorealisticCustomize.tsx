@@ -98,3 +98,52 @@ export const PhotorealisticCustomize: React.FC<PhotorealisticCustomizeProps> = (
 
   const handleLayerUpdate = useCallback((layerId: string, updates: Partial<LayerElement>) => {
     const newLayers = layerManager.updateLayer(layers, layerId, updates);
+    setLayers(newLayers);
+    history.updateLayer(layerId, updates, getCanvasState());
+  }, [layers, layerManager, history, getCanvasState]);
+
+  // Color operations
+  const handleColorChange = useCallback((color: TshirtColor) => {
+    setTshirtColor(color);
+    history.saveState(getCanvasState(), 'Change color');
+  }, [history, getCanvasState]);
+
+  // Tool operations
+  const handleToolSelect = useCallback((tool: ToolType) => {
+    setSelectedTool(tool);
+    if (tool === 'crop') {
+      setEditMode('crop');
+    } else if (tool === 'move') {
+      setEditMode('transform');
+    }
+  }, []);
+
+  // Get selected element
+  const selectedElement = selectedIds.length === 1 
+    ? layers.find(l => l.id === selectedIds[0]) || null 
+    : null;
+
+  // Load default mockup
+  useEffect(() => {
+    if (!mockup) {
+      const defaultMockup: TshirtMockup = {
+        id: 'default-tshirt',
+        name: 'Classic T-Shirt',
+        category: 'apparel',
+        baseColor: '#ffffff',
+        assets: {
+          '1x': '/mockups/tshirt-1x.jpg',
+          '2x': '/mockups/tshirt-2x.jpg',
+          '3x': '/mockups/tshirt-3x.jpg',
+        },
+        printArea: {
+          x: 200,
+          y: 150,
+          width: 400,
+          height: 300,
+        },
+        metadata: {
+          dimensions: { width: 800, height: 600 },
+          dpi: 300,
+        },
+      };
