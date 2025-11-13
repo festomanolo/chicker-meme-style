@@ -39,3 +39,44 @@ export const PHOTOREALISTIC_MOCKUPS: TshirtMockup[] = [
       fabricTexture: 'cotton-medium',
     },
   },
+  {
+    id: 'regular-back',
+    name: 'Regular T-Shirt Back',
+    type: 'back',
+    category: 'regular',
+    variants: {
+      '1x': `${MOCKUP_BASE_URL}/regular-back-1x.webp`,
+      '2x': `${MOCKUP_BASE_URL}/regular-back-2x.webp`,
+      '3x': `${MOCKUP_BASE_URL}/regular-back-3x.webp`,
+    },
+    maskUrl: `${MOCKUP_BASE_URL}/regular-back-mask.png`,
+    designArea: {
+      x: 160,
+      y: 100,
+      width: 200,
+      height: 260,
+      curvature: {
+        points: [
+          { x: 0, y: 0 },
+          { x: 200, y: 0 },
+          { x: 200, y: 260 },
+          { x: 0, y: 260 },
+        ],
+        closed: true,
+      },
+    },
+    metadata: {
+      originalWidth: 520,
+      originalHeight: 600,
+      designAreaRatio: 0.42,
+      shadowIntensity: 0.25,
+      fabricTexture: 'cotton-medium',
+    },
+  },
+];
+
+// Long sleeve mockups
+export const LONGSLEEVE_MOCKUPS: TshirtMockup[] = [
+  {
+    id: 'longsleeve-front',
+    name: 'Long Sleeve T-Shirt Front',
