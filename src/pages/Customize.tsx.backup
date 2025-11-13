@@ -1255,3 +1255,62 @@ const Customize = () => {
                             <label className="text-sm font-medium">Size</label>
                             <div className="grid grid-cols-2 gap-2">
                               <Input
+                                placeholder="Width"
+                                type="number"
+                                value={element.width || 150}
+                                onChange={(e) =>
+                                  updateElement(element.id, {
+                                    width: Number(e.target.value),
+                                  })
+                                }
+                                className="h-8 text-xs"
+                              />
+                              <Input
+                                placeholder="Height"
+                                type="number"
+                                value={element.height || 150}
+                                onChange={(e) =>
+                                  updateElement(element.id, {
+                                    height: Number(e.target.value),
+                                  })
+                                }
+                                className="h-8 text-xs"
+                              />
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Text Properties */}
+                        {element.type === "text" && (
+                          <>
+                            <div className="space-y-2">
+                              <label className="text-sm font-medium">
+                                Text
+                              </label>
+                              <Textarea
+                                value={element.content || ""}
+                                onChange={(e) =>
+                                  updateElement(element.id, {
+                                    content: e.target.value,
+                                  })
+                                }
+                                className="h-16 text-xs"
+                                rows={2}
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <label className="text-sm font-medium">
+                                Font
+                              </label>
+                              <select
+                                value={element.font || "Arial"}
+                                onChange={(e) =>
+                                  updateElement(element.id, {
+                                    font: e.target.value,
+                                  })
+                                }
+                                className="w-full bg-input border border-input-border rounded px-2 py-1 text-xs"
+                              >
+                                {fonts.map((font) => (
+                                  <option key={font} value={font}>
+                                    {font}
