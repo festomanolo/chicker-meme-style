@@ -596,3 +596,63 @@ const Customize = () => {
       <WhatsAppNotification />
       
       {/* Main Canvas Area */}
+      <div className="flex-1 flex flex-col items-center justify-center p-8 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+        {/* T-shirt Display */}
+        <div className="relative">
+          <RealisticTshirt
+            color={selectedTshirtColor}
+            type={selectedTshirtType}
+            view={tshirtView}
+            size="large"
+            className="transition-all duration-300 hover:scale-105"
+          />
+          
+          {/* Design Elements Overlay */}
+          <div className="absolute inset-0 pointer-events-none">
+            {designElements.map((element) => (
+              <div
+                key={element.id}
+                className={`absolute pointer-events-auto cursor-move ${
+                  selectedElement?.id === element.id ? 'ring-2 ring-blue-500' : ''
+                }`}
+                style={{
+                  left: `${element.x}px`,
+                  top: `${element.y}px`,
+                  transform: `rotate(${element.rotation || 0}deg) scale(${canvasZoom})`,
+                  opacity: element.opacity || 1,
+                  display: element.visible !== false ? 'block' : 'none'
+                }}
+                onClick={() => setSelectedElement(element)}
+              >
+                {element.type === 'text' && (
+                  <div
+                    style={{
+                      fontSize: `${element.fontSize || 16}px`,
+                      fontFamily: element.fontFamily || 'Arial',
+                      color: element.color || selectedTshirtColor.textColor,
+                      fontWeight: element.fontWeight || 'normal',
+                      fontStyle: element.fontStyle || 'normal',
+                      textAlign: element.textAlign || 'left'
+                    }}
+                  >
+                    {element.content}
+                  </div>
+                )}
+                {element.type === 'image' && (
+                  <img
+                    src={element.content}
+                    alt="Design element"
+                    style={{
+                      width: `${element.width || 100}px`,
+                      height: `${element.height || 100}px`
+                    }}
+                  />
+                )}
+                {element.type === 'sticker' && (
+                  <div
+                    style={{
+                      fontSize: `${element.size || 24}px`,
+                      color: element.color || selectedTshirtColor.textColor
+                    }}
+                  >
+                    {element.content}
