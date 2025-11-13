@@ -58,3 +58,63 @@ const tshirtTypes: TshirtType[] = [
     name: "Hoodie",
     price: 45000,
     description: "Comfortable pullover hoodie",
+    icon: "🧥",
+    shape: "hoodie",
+  },
+  {
+    id: "tank",
+    name: "Tank Top",
+    price: 20000,
+    description: "Sleeveless summer tee",
+    icon: "👕",
+    shape: "tank",
+  },
+];
+
+const templates: Template[] = [
+  { id: "1", name: "Drake Pointing", preview: "🤔➡️", category: "Popular" },
+  { id: "2", name: "Distracted Boyfriend", preview: "👀", category: "Popular" },
+  { id: "3", name: "Woman Yelling at Cat", preview: "😾", category: "Popular" },
+  { id: "4", name: "This is Fine", preview: "🔥☕", category: "Relatable" },
+  { id: "5", name: "Galaxy Brain", preview: "🧠✨", category: "Smart" },
+  { id: "6", name: "Stonks", preview: "📈", category: "Trending" },
+  { id: "7", name: "Surprised Pikachu", preview: "😲⚡", category: "Popular" },
+  { id: "8", name: "Change My Mind", preview: "🪑💭", category: "Debate" },
+];
+
+const stickerPacks: StickerPack[] = [
+  {
+    id: "whatsapp",
+    name: "WhatsApp Stickers",
+    icon: "💬",
+    stickers: [
+      { id: "w1", emoji: "😂", name: "Laughing" },
+      { id: "w2", emoji: "🤣", name: "ROFL" },
+      { id: "w3", emoji: "😭", name: "Crying Laughing" },
+      { id: "w4", emoji: "🔥", name: "Fire" },
+      { id: "w5", emoji: "💯", name: "100" },
+      { id: "w6", emoji: "👑", name: "Crown" },
+      { id: "w7", emoji: "💪", name: "Strong" },
+      { id: "w8", emoji: "🚀", name: "Rocket" },
+    ]
+  },
+  {
+    id: "memes",
+    name: "Meme Pack",
+    icon: "🎭",
+    stickers: [
+      { id: "m1", emoji: "🐸", name: "Pepe" },
+      { id: "m2", emoji: "🤡", name: "Clown" },
+      { id: "m3", emoji: "🧠", name: "Big Brain" },
+      { id: "m4", emoji: "💀", name: "Skull" },
+      { id: "m5", emoji: "🗿", name: "Moai" },
+      { id: "m6", emoji: "📈", name: "Stonks" },
+      { id: "m7", emoji: "🎪", name: "Circus" },
+      { id: "m8", emoji: "🤯", name: "Mind Blown" },
+    ]
+  },
+  {
+    id: "animals",
+    name: "Animal Pack",
+    icon: "🐾",
+    stickers: [
