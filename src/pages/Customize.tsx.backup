@@ -1135,3 +1135,63 @@ const Customize = () => {
                     onClick={importFromCamera}
                     className="h-20 flex flex-col items-center justify-center gap-2"
                   >
+                    <Camera className="h-6 w-6" />
+                    <span className="text-xs">Camera</span>
+                  </Button>
+                </div>
+
+                {/* Upload Area */}
+                <div className="border-2 border-dashed border-border rounded-lg p-6 text-center">
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handleImageUpload}
+                    accept="image/*"
+                    multiple
+                    className="hidden"
+                  />
+                  <Upload className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
+                  <p className="text-sm text-muted-foreground mb-2">
+                    Upload custom images
+                  </p>
+                  <p className="text-xs text-muted-foreground mb-3">
+                    Background removal included
+                  </p>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={isProcessingImage}
+                  >
+                    {isProcessingImage ? "Processing..." : "Choose Files"}
+                  </Button>
+                </div>
+
+                {/* Media Access Info */}
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                  <div className="flex items-start gap-2">
+                    <Folder className="h-4 w-4 text-blue-600 mt-0.5" />
+                    <div>
+                      <p className="text-sm font-medium text-blue-900">Media Access</p>
+                      <p className="text-xs text-blue-700 mt-1">
+                        Access your device's photos, WhatsApp stickers, and other media files
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Recent Images */}
+                {designElements.filter(el => el.type === "image").length > 0 && (
+                  <div>
+                    <h4 className="text-sm font-medium mb-2">Recent Images</h4>
+                    <div className="grid grid-cols-3 gap-2">
+                      {designElements
+                        .filter(el => el.type === "image")
+                        .slice(-6)
+                        .map((element) => (
+                          <button
+                            key={element.id}
+                            onClick={() => setSelectedElement(element.id)}
+                            className="aspect-square rounded border-2 border-border hover:border-primary transition-colors overflow-hidden"
+                          >
+                            <img
