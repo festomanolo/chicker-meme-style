@@ -297,3 +297,63 @@ const Customize = () => {
   const importFromCamera = () => {
     const input = document.createElement('input');
     input.type = 'file';
+    input.accept = 'image/*';
+    input.capture = 'environment';
+    input.onchange = (e) => {
+      const files = (e.target as HTMLInputElement).files;
+      if (files && files[0]) {
+        handleImageUpload({ target: { files: [files[0]] } } as any);
+      }
+    };
+    input.click();
+  };
+
+  const removeBackground = async (imageFile: File): Promise<string> => {
+    return new Promise((resolve) => {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      const img = new Image();
+
+      img.onload = () => {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx?.drawImage(img, 0, 0);
+
+        if (!ctx) {
+          resolve(URL.createObjectURL(imageFile));
+          return;
+        }
+
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const data = imageData.data;
+
+        const cornerPixel = [data[0], data[1], data[2]];
+        const threshold = 30;
+
+        for (let i = 0; i < data.length; i += 4) {
+          const r = data[i];
+          const g = data[i + 1];
+          const b = data[i + 2];
+
+          const diff =
+            Math.abs(r - cornerPixel[0]) +
+            Math.abs(g - cornerPixel[1]) +
+            Math.abs(b - cornerPixel[2]);
+
+          if (diff < threshold) {
+            data[i + 3] = 0;
+          }
+        }
+
+        ctx.putImageData(imageData, 0, 0);
+        resolve(canvas.toDataURL("image/png"));
+      };
+
+      img.src = URL.createObjectURL(imageFile);
+    });
+  };
+
+  const handleImageUpload = async (file: File) => {
+    if (!file) return;
+
+    setIsProcessingImage(true);
