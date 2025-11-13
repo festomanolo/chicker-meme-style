@@ -417,3 +417,63 @@ const Customize = () => {
   };
 
   const duplicateElement = (elementId: string) => {
+    const element = designElements.find((el) => el.id === elementId);
+    if (!element) return;
+
+    const newElement: DesignElement = {
+      ...element,
+      id: generateId(),
+      x: element.x + 20,
+      y: element.y + 20,
+    };
+
+    setDesignElements([...designElements, newElement]);
+    saveToHistory();
+  };
+
+  const toggleElementVisibility = (elementId: string) => {
+    setDesignElements(
+      designElements.map((el) =>
+        el.id === elementId ? { ...el, visible: !el.visible } : el,
+      ),
+    );
+  };
+
+  const updateElement = useCallback(
+    (elementId: string, updates: Partial<DesignElement>) => {
+      setDesignElements(
+        designElements.map((el) =>
+          el.id === elementId ? { ...el, ...updates } : el,
+        ),
+      );
+    },
+    [designElements],
+  );
+
+  const saveDesign = () => {
+    const designData = {
+      tshirtColor: selectedTshirtColor,
+      tshirtType: selectedTshirtType,
+      elements: designElements,
+      timestamp: Date.now(),
+    };
+
+    localStorage.setItem("saved_design", JSON.stringify(designData));
+    alert("Design saved successfully!");
+  };
+
+  const shareDesign = async () => {
+    const designData = {
+      tshirtColor: selectedTshirtColor,
+      tshirtType: selectedTshirtType,
+      elements: designElements,
+    };
+
+    try {
+      await navigator.clipboard.writeText(JSON.stringify(designData));
+      alert("Design link copied to clipboard!");
+    } catch (error) {
+      console.error("Error sharing design:", error);
+      alert("Error sharing design. Please try again.");
+    }
+  };
