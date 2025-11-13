@@ -836,3 +836,63 @@ const Customize = () => {
                         title={color.name}
                       />
                     ))}
+                  </div>
+                </div>
+
+                {/* T-shirt View Toggle */}
+                <TshirtViewToggle
+                  currentView={tshirtView}
+                  onViewChange={setTshirtView}
+                />
+
+                {/* Preview */}
+                <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+                  <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                    Preview
+                  </h3>
+                  <div className="flex justify-center">
+                    <RealisticTshirt
+                      color={selectedTshirtColor}
+                      type={selectedTshirtType}
+                      view={tshirtView}
+                      size="small"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {expandedPanel === "layers" && (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-medium">
+                    Layers ({designElements.length})
+                  </h3>
+                  <span className="text-xs text-muted-foreground">
+                    {designElements.length === 0
+                      ? "No layers"
+                      : `${designElements.filter((el) => el.visible).length} visible`}
+                  </span>
+                </div>
+
+                <div className="space-y-2 max-h-96 overflow-y-auto">
+                  {designElements.length === 0 ? (
+                    <p className="text-sm text-muted-foreground text-center py-8">
+                      No elements yet. Add some text, images, or templates!
+                    </p>
+                  ) : (
+                    designElements
+                      .slice()
+                      .reverse()
+                      .map((element) => (
+                        <div
+                          key={element.id}
+                          className={`flex items-center gap-2 p-3 rounded border cursor-pointer transition-colors ${
+                            selectedElement === element.id
+                              ? "border-primary bg-primary/10"
+                              : "border-gray-200 hover:bg-gray-50"
+                          }`}
+                          onClick={() => setSelectedElement(element.id)}
+                        >
+                          <Button
+                            variant="ghost"
