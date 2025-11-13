@@ -537,3 +537,62 @@ const Customize = () => {
                       top: `${y}px`,
                       animation: `fadeInUp 0.3s ease-out ${index * 0.1}s both`,
                     }}
+                    title={action.label}
+                  >
+                    <action.icon className="h-5 w-5" />
+                  </Button>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Main FAB */}
+          <Button
+            size="icon"
+            className="w-16 h-16 rounded-full shadow-xl bg-primary hover:bg-primary/90"
+            onClick={() => setShowQuickActions(!showQuickActions)}
+          >
+            {showQuickActions ? (
+              <X className="h-6 w-6" />
+            ) : (
+              <Plus className="h-6 w-6" />
+            )}
+          </Button>
+        </div>
+      </div>
+    );
+  };
+
+  // Mobile layout for smaller screens
+  if (isMobile) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col">
+        {/* Mobile Header */}
+        <div className="glass-card border-b border-card-border px-4 py-3">
+          <h1 className="text-lg font-bold text-center">Meme T-Shirt Studio</h1>
+        </div>
+
+        {/* Main Content Area with T-shirt on left, panels on right */}
+        <div className="flex-1 flex">
+          {/* T-shirt Canvas Area */}
+          <div className="flex-1 p-4 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 overflow-hidden">
+            <div className="h-full flex flex-col items-center justify-center">
+              <TshirtCanvas 
+                color={selectedTshirtColor.value}
+                elements={designElements}
+                selectedElement={selectedElement}
+                onElementUpdate={updateElement}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex">
+      {/* WhatsApp Notification */}
+      <WhatsAppNotification />
+      
+      {/* Main Canvas Area */}
