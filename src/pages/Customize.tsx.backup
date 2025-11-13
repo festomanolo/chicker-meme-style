@@ -118,3 +118,63 @@ const stickerPacks: StickerPack[] = [
     name: "Animal Pack",
     icon: "🐾",
     stickers: [
+      { id: "a1", emoji: "🐶", name: "Dog" },
+      { id: "a2", emoji: "🐱", name: "Cat" },
+      { id: "a3", emoji: "🦊", name: "Fox" },
+      { id: "a4", emoji: "🐼", name: "Panda" },
+      { id: "a5", emoji: "🦁", name: "Lion" },
+      { id: "a6", emoji: "🐸", name: "Frog" },
+      { id: "a7", emoji: "🐧", name: "Penguin" },
+      { id: "a8", emoji: "🦄", name: "Unicorn" },
+    ]
+  },
+  {
+    id: "food",
+    name: "Food Pack",
+    icon: "🍕",
+    stickers: [
+      { id: "f1", emoji: "🍕", name: "Pizza" },
+      { id: "f2", emoji: "🍔", name: "Burger" },
+      { id: "f3", emoji: "🌮", name: "Taco" },
+      { id: "f4", emoji: "🍩", name: "Donut" },
+      { id: "f5", emoji: "🍦", name: "Ice Cream" },
+      { id: "f6", emoji: "🍰", name: "Cake" },
+      { id: "f7", emoji: "☕", name: "Coffee" },
+      { id: "f8", emoji: "🍺", name: "Beer" },
+    ]
+  }
+];
+
+const Customize = () => {
+  const [selectedTshirtColor, setSelectedTshirtColor] = useState(tshirtColors[0]);
+  const [selectedTshirtType, setSelectedTshirtType] = useState(tshirtTypes[0]);
+  const [tshirtView, setTshirtView] = useState<'front' | 'back'>('front');
+  const [designElements, setDesignElements] = useState<DesignElement[]>([]);
+  const [selectedElement, setSelectedElement] = useState<string | null>(null);
+  const [canvasZoom, setCanvasZoom] = useState(100);
+  const [isMobile, setIsMobile] = useState(false);
+  const [history, setHistory] = useState<HistoryState[]>([]);
+  const [historyIndex, setHistoryIndex] = useState(-1);
+  const [isProcessingImage, setIsProcessingImage] = useState(false);
+  const [showQuickActions, setShowQuickActions] = useState(false);
+  const [showCropTool, setShowCropTool] = useState(false);
+  const [cropElement, setCropElement] = useState<DesignElement | null>(null);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  useEffect(() => {
+    const initialState: HistoryState = {
+      elements: [],
+      selectedElement: null,
+      timestamp: Date.now(),
+    };
+    setHistory([initialState]);
+    setHistoryIndex(0);
+  }, []);
+
+  const saveToHistory = useCallback(() => {
