@@ -120,3 +120,44 @@ export const LONGSLEEVE_MOCKUPS: TshirtMockup[] = [
       '1x': `${MOCKUP_BASE_URL}/longsleeve-back-1x.webp`,
       '2x': `${MOCKUP_BASE_URL}/longsleeve-back-2x.webp`,
       '3x': `${MOCKUP_BASE_URL}/longsleeve-back-3x.webp`,
+    },
+    maskUrl: `${MOCKUP_BASE_URL}/longsleeve-back-mask.png`,
+    designArea: {
+      x: 160,
+      y: 100,
+      width: 200,
+      height: 260,
+      curvature: {
+        points: [
+          { x: 0, y: 0 },
+          { x: 200, y: 0 },
+          { x: 200, y: 260 },
+          { x: 0, y: 260 },
+        ],
+        closed: true,
+      },
+    },
+    metadata: {
+      originalWidth: 520,
+      originalHeight: 600,
+      designAreaRatio: 0.42,
+      shadowIntensity: 0.28,
+      fabricTexture: 'cotton-medium',
+    },
+  },
+];
+
+// Combined mockup registry
+export const ALL_MOCKUPS = [...PHOTOREALISTIC_MOCKUPS, ...LONGSLEEVE_MOCKUPS];
+
+// Helper functions for mockup selection
+export const getMockupsByCategory = (category: TshirtMockup['category']) => 
+  ALL_MOCKUPS.filter(mockup => mockup.category === category);
+
+export const getMockupById = (id: string) => 
+  ALL_MOCKUPS.find(mockup => mockup.id === id);
+
+export const getMockupPair = (category: TshirtMockup['category']) => ({
+  front: ALL_MOCKUPS.find(m => m.category === category && m.type === 'front'),
+  back: ALL_MOCKUPS.find(m => m.category === category && m.type === 'back'),
+});
