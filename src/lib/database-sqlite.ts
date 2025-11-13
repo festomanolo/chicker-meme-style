@@ -166,3 +166,58 @@ class SQLiteDatabase {
     const [results] = await this.db.executeSql(query, [email]);
     
     if (results.rows.length > 0) {
+      return results.rows.item(0);
+    }
+    return null;
+  }
+
+  async getUserById(id: string): Promise<User | null> {
+    if (!this.db) throw new Error('Database not initialized');
+    
+    const query = 'SELECT * FROM users WHERE id = ?';
+    const [results] = await this.db.executeSql(query, [id]);
+    
+    if (results.rows.length > 0) {
+      return results.rows.item(0);
+    }
+    return null;
+  }
+
+  // Cart functions
+  async getCartForUser(userId: string): Promise<Cart | null> {
+    if (!this.db) throw new Error('Database not initialized');
+    
+    const query = 'SELECT * FROM carts WHERE user_id = ?';
+    const [results] = await this.db.executeSql(query, [userId]);
+    
+    if (results.rows.length > 0) {
+      return results.rows.item(0);
+    }
+    return null;
+  }
+
+  async createCart(userId: string): Promise<string> {
+    if (!this.db) throw new Error('Database not initialized');
+    
+    const cartId = `cart_${Date.now()}`;
+    const query = `
+      INSERT INTO carts (id, user_id, created_at)
+      VALUES (?, ?, ?)
+    `;
+    
+    await this.db.executeSql(query, [cartId, userId, Date.now()]);
+    return cartId;
+  }
+
+  async addCartItem(cartItem: Omit<CartItem, 'id'>): Promise<string> {
+    if (!this.db) throw new Error('Database not initialized');
+    
+    const itemId = `item_${Date.now()}`;
+    const query = `
+      INSERT INTO cart_items (id, cart_id, product_id, quantity, price, name, size, color)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+    
+    await this.db.executeSql(query, [
+      itemId,
+      cartItem.cart_id,
