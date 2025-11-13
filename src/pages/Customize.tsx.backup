@@ -1314,3 +1314,63 @@ const Customize = () => {
                                 {fonts.map((font) => (
                                   <option key={font} value={font}>
                                     {font}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+                            <div className="grid grid-cols-2 gap-2">
+                              <div>
+                                <label className="text-sm font-medium">
+                                  Size
+                                </label>
+                                <Input
+                                  type="number"
+                                  value={element.size || 24}
+                                  onChange={(e) =>
+                                    updateElement(element.id, {
+                                      size: Number(e.target.value),
+                                    })
+                                  }
+                                  className="h-8 text-xs"
+                                  min="8"
+                                  max="72"
+                                />
+                              </div>
+                              <div>
+                                <label className="text-sm font-medium">
+                                  Color
+                                </label>
+                                <Input
+                                  type="color"
+                                  value={element.color || "#000000"}
+                                  onChange={(e) =>
+                                    updateElement(element.id, {
+                                      color: e.target.value,
+                                    })
+                                  }
+                                  className="h-8"
+                                />
+                              </div>
+                            </div>
+                          </>
+                        )}
+
+                        {/* Common Properties */}
+                        <div className="space-y-3">
+                          <div>
+                            <label className="text-sm font-medium">
+                              Rotation: {element.rotation}°
+                            </label>
+                            <Slider
+                              value={[element.rotation]}
+                              onValueChange={([value]) =>
+                                updateElement(element.id, { rotation: value })
+                              }
+                              min={0}
+                              max={360}
+                              step={1}
+                              className="mt-1"
+                            />
+                          </div>
+
+                          <div>
