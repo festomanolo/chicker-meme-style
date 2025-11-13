@@ -1,0 +1,60 @@
+import { useState, useRef, useEffect, useCallback } from "react";
+import { Button } from "@/components/ui/button";
+import { TshirtCanvas } from "@/components/TshirtCanvas";
+import { PhotoshopPanel } from "@/components/PhotoshopPanel";
+import { WhatsAppNotification } from "@/components/WhatsAppNotification";
+import { CropTool } from "@/components/CropTool";
+import { DesignElement, HistoryState, TshirtColor, TshirtType, Template, StickerPack } from "@/types/design";
+import {
+  Undo,
+  Redo,
+  ZoomIn,
+  ZoomOut,
+  Save,
+  Share2,
+  Download,
+  Plus,
+  X,
+} from "lucide-react";
+
+// Import T-shirt components
+import TshirtTypeSelector from "../components/tshirt/TshirtTypeSelector";
+import TshirtViewToggle from "../components/tshirt/TshirtViewToggle";
+
+const tshirtColors: TshirtColor[] = [
+  { name: "White", value: "#FFFFFF", hex: "#FFFFFF" },
+  { name: "Black", value: "#000000", hex: "#000000" },
+  { name: "Navy", value: "#1F2937", hex: "#1F2937" },
+  { name: "Gray", value: "#6B7280", hex: "#6B7280" },
+  { name: "Red", value: "#EF4444", hex: "#EF4444" },
+  { name: "Blue", value: "#3B82F6", hex: "#3B82F6" },
+  { name: "Green", value: "#10B981", hex: "#10B981" },
+  { name: "Yellow", value: "#F59E0B", hex: "#F59E0B" },
+  { name: "Purple", value: "#8B5CF6", hex: "#8B5CF6" },
+  { name: "Pink", value: "#EC4899", hex: "#EC4899" },
+  { name: "Orange", value: "#F97316", hex: "#F97316" },
+  { name: "Teal", value: "#14B8A6", hex: "#14B8A6" },
+];
+
+const tshirtTypes: TshirtType[] = [
+  {
+    id: "regular",
+    name: "Regular T-Shirt",
+    price: 25000,
+    description: "Classic short sleeve cotton tee",
+    icon: "👕",
+    shape: "regular",
+  },
+  {
+    id: "longsleeve",
+    name: "Long Sleeve T-Shirt",
+    price: 30000,
+    description: "Long sleeve cotton tee for extra coverage",
+    icon: "🧥",
+    shape: "longsleeve",
+  },
+  {
+    id: "hoodie",
+    name: "Hoodie",
+    price: 45000,
+    description: "Comfortable pullover hoodie",
