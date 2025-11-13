@@ -48,3 +48,53 @@ export const PhotorealisticCustomize: React.FC<PhotorealisticCustomizeProps> = (
 }) => {
   // Core state
   const [mockup, setMockup] = useState<TshirtMockup | null>(initialMockup || null);
+  const [tshirtColor, setTshirtColor] = useState<TshirtColor>(
+    initialColor || { h: 0, s: 0, v: 100, rgb: { r: 255, g: 255, b: 255 } }
+  );
+  const [layers, setLayers] = useState<LayerElement[]>([]);
+  const [groups, setGroups] = useState<LayerGroup[]>([]);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [selectedTool, setSelectedTool] = useState<ToolType>('move');
+  const [editMode, setEditMode] = useState<'transform' | 'crop'>('transform');
+
+  // Services
+  const layerManager = new LayerManager();
+  const colorManager = new ColorManager();
+  const transformManager = new TransformManager();
+
+  // Hooks
+  const history = useCanvasHistory({
+    maxEntries: 50,
+    enableKeyboardShortcuts: true,
+  });
+
+  const mobilePanel = useMobileEditingPanel();
+
+  const snapGuides = useSnapGuides({
+    snapThreshold: 10,
+    showGuides: true,
+  });
+
+  // Canvas state for history
+  const getCanvasState = useCallback(() => ({
+    layers,
+    selectedIds,
+    canvasSettings: {
+      zoom: 1,
+      panX: 0,
+      panY: 0,
+      width: 800,
+      height: 600,
+    },
+  }), [layers, selectedIds]);
+
+  // Layer operations
+  const handleLayerAdd = useCallback((layer: LayerElement) => {
+    const newLayers = layerManager.addLayer(layers, layer);
+    setLayers(newLayers);
+    setSelectedIds([layer.id]);
+    history.addLayer(layer, getCanvasState());
+  }, [layers, layerManager, history, getCanvasState]);
+
+  const handleLayerUpdate = useCallback((layerId: string, updates: Partial<LayerElement>) => {
+    const newLayers = layerManager.updateLayer(layers, layerId, updates);
