@@ -1075,3 +1075,63 @@ const Customize = () => {
                     <Star className="h-4 w-4 mr-1" />
                     Random
                   </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      const popularStickers = [
+                        { id: "p1", emoji: "😂", name: "Laughing" },
+                        { id: "p2", emoji: "🔥", name: "Fire" },
+                        { id: "p3", emoji: "💯", name: "100" },
+                      ];
+                      const randomSticker = popularStickers[Math.floor(Math.random() * popularStickers.length)];
+                      addSticker(randomSticker);
+                    }}
+                    className="flex-1"
+                  >
+                    <Heart className="h-4 w-4 mr-1" />
+                    Popular
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {expandedPanel === "templates" && (
+              <div className="space-y-3">
+                {templates.map((template) => (
+                  <button
+                    key={template.id}
+                    onClick={() => addTemplate(template)}
+                    className="w-full p-3 glass border border-glass-border rounded-lg hover:bg-hover transition-colors text-left"
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="text-2xl">{template.preview}</span>
+                      <div>
+                        <p className="font-medium text-sm">{template.name}</p>
+                        <Badge variant="secondary" className="text-xs">
+                          {template.category}
+                        </Badge>
+                      </div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {expandedPanel === "media" && (
+              <div className="space-y-4">
+                {/* Media Import Options */}
+                <div className="grid grid-cols-2 gap-3">
+                  <Button
+                    variant="outline"
+                    onClick={importFromGallery}
+                    className="h-20 flex flex-col items-center justify-center gap-2"
+                  >
+                    <FileImage className="h-6 w-6" />
+                    <span className="text-xs">Gallery</span>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={importFromCamera}
+                    className="h-20 flex flex-col items-center justify-center gap-2"
+                  >
