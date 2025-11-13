@@ -1195,3 +1195,63 @@ const Customize = () => {
                             className="aspect-square rounded border-2 border-border hover:border-primary transition-colors overflow-hidden"
                           >
                             <img
+                              src={element.imageUrl}
+                              alt="Recent"
+                              className="w-full h-full object-cover"
+                            />
+                          </button>
+                        ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {expandedPanel === "properties" && (
+              <div className="space-y-4">
+                {selectedElement ? (
+                  (() => {
+                    const element = designElements.find(
+                      (el) => el.id === selectedElement,
+                    );
+                    if (!element) return null;
+
+                    return (
+                      <>
+                        {/* Position Controls */}
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium">
+                            Position
+                          </label>
+                          <div className="grid grid-cols-2 gap-2">
+                            <Input
+                              placeholder="X"
+                              type="number"
+                              value={element.x}
+                              onChange={(e) =>
+                                updateElement(element.id, {
+                                  x: Number(e.target.value),
+                                })
+                              }
+                              className="h-8 text-xs"
+                            />
+                            <Input
+                              placeholder="Y"
+                              type="number"
+                              value={element.y}
+                              onChange={(e) =>
+                                updateElement(element.id, {
+                                  y: Number(e.target.value),
+                                })
+                              }
+                              className="h-8 text-xs"
+                            />
+                          </div>
+                        </div>
+
+                        {/* Size Controls for images */}
+                        {element.type === "image" && (
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium">Size</label>
+                            <div className="grid grid-cols-2 gap-2">
+                              <Input
