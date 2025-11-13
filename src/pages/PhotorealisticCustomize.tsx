@@ -197,3 +197,53 @@ export const PhotorealisticCustomize: React.FC<PhotorealisticCustomizeProps> = (
                 onChange={handleColorChange}
                 presets={colorManager.getPresets()}
               />
+            </div>
+            
+            <div className="flex-1">
+              <LayersPanel
+                layers={layers}
+                groups={groups}
+                selectedIds={selectedIds}
+                onLayerSelect={(id) => setSelectedIds([id])}
+                onLayerReorder={() => {}}
+                onLayerUpdate={handleLayerUpdate}
+                onLayerDuplicate={() => {}}
+                onLayerDelete={() => {}}
+                onLayerVisibilityToggle={() => {}}
+                onLayerLockToggle={() => {}}
+                onGroupCreate={() => {}}
+                onGroupRemove={() => {}}
+              />
+            </div>
+          </div>
+
+          {/* Canvas */}
+          <div className="flex-1">
+            <CanvasContainer
+              isPanelOpen={false}
+              showControls={true}
+            >
+              {mockup && (
+                <PhotorealisticMockup
+                  mockup={mockup}
+                  color={tshirtColor}
+                />
+              )}
+            </CanvasContainer>
+          </div>
+
+          {/* Properties */}
+          <div className="w-80 bg-white dark:bg-gray-800 border-l">
+            <PropertiesPanel
+              selectedTool={selectedTool}
+              selectedElement={selectedElement}
+              onElementUpdate={handleLayerUpdate}
+            />
+          </div>
+        </div>
+      </div>
+    </NotificationProvider>
+  );
+};
+
+export default PhotorealisticCustomize;
