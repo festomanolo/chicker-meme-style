@@ -147,3 +147,53 @@ export const PhotorealisticCustomize: React.FC<PhotorealisticCustomizeProps> = (
           dpi: 300,
         },
       };
+      setMockup(defaultMockup);
+    }
+  }, [mockup]);
+
+  return (
+    <NotificationProvider
+      config={{
+        phoneNumber: '1234567890',
+        defaultMessage: 'Hi! I need help with my t-shirt design.',
+        excludedPages: ['/settings', '/account'],
+      }}
+    >
+      <div className={cn('h-screen flex flex-col bg-gray-50 dark:bg-gray-900', className)}>
+        {/* Header */}
+        <div className="flex items-center justify-between p-4 bg-white dark:bg-gray-800 border-b">
+          <div className="flex items-center gap-4">
+            <h1 className="text-xl font-bold">T-Shirt Designer</h1>
+            <ToolsRow
+              selectedTool={selectedTool}
+              onToolSelect={handleToolSelect}
+            />
+          </div>
+          
+          <div className="flex items-center gap-2">
+            <HistoryControls
+              canUndo={history.canUndo}
+              canRedo={history.canRedo}
+              onUndo={history.undo}
+              onRedo={history.redo}
+            />
+            
+            <button
+              onClick={() => onSave?.(getCanvasState())}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg"
+            >
+              Save
+            </button>
+          </div>
+        </div>
+
+        {/* Main content */}
+        <div className="flex-1 flex">
+          {/* Sidebar */}
+          <div className="w-80 bg-white dark:bg-gray-800 border-r flex-col">
+            <div className="p-4">
+              <ColorRangeSelector
+                color={tshirtColor}
+                onChange={handleColorChange}
+                presets={colorManager.getPresets()}
+              />
