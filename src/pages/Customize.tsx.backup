@@ -955,3 +955,63 @@ const Customize = () => {
               <div className="space-y-4">
                 <div>
                   <label className="text-sm font-medium mb-2 block">
+                    Text Content
+                  </label>
+                  <Textarea
+                    value={textInput}
+                    onChange={(e) => setTextInput(e.target.value)}
+                    placeholder="Enter your meme text..."
+                    rows={3}
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-sm font-medium mb-2 block">
+                      Font
+                    </label>
+                    <select
+                      value={textFont}
+                      onChange={(e) => setTextFont(e.target.value)}
+                      className="w-full bg-input border border-input-border rounded px-3 py-2"
+                    >
+                      {fonts.map((font) => (
+                        <option key={font} value={font}>
+                          {font}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium mb-2 block">
+                      Size
+                    </label>
+                    <Input
+                      type="number"
+                      value={textSize}
+                      onChange={(e) => setTextSize(Number(e.target.value))}
+                      min="8"
+                      max="72"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="text-sm font-medium mb-2 block">
+                    Color
+                  </label>
+                  <Input
+                    type="color"
+                    value={textColor}
+                    onChange={(e) => setTextColor(e.target.value)}
+                    className="h-10"
+                  />
+                </div>
+                <Button onClick={addTextElement} className="w-full">
+                  <Type className="h-4 w-4 mr-2" />
+                  Add Text
+                </Button>
+              </div>
+            )}
+
+            {expandedPanel === "stickers" && (
+              <div className="space-y-4">
+                {/* Search Bar */}
