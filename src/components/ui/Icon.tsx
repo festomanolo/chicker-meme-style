@@ -42,3 +42,47 @@ const iconMap: Record<string, string> = {
   'upload': '⬆️',
   'refresh': '🔄',
   'lock': '🔒',
+  'unlock': '🔓',
+  'eye': '👁️',
+  'eye-off': '🙈',
+  'warning': '⚠️',
+  'information': 'ℹ️',
+  'success': '✅',
+  'error': '❌',
+  'logout': '🚪',
+  'receipt-outline': '🧾',
+  'person-outline': '👤',
+  'settings-outline': '⚙️',
+  'help-circle-outline': '❓',
+  'information-circle-outline': 'ℹ️',
+  'chevron-forward': '▶️',
+  'log-out-outline': '🚪',
+  'card-outline': '💳',
+  'card': '💳',
+  'checkmark-circle': '✅',
+};
+
+export const Icon: React.FC<IconProps> = ({ 
+  name, 
+  size = 24, 
+  color = '#000', 
+  style 
+}) => {
+  const iconSymbol = iconMap[name] || '?';
+  
+  return (
+    <Text 
+      style={[
+        {
+          fontSize: size,
+          color,
+          textAlign: 'center',
+          lineHeight: size,
+        },
+        style
+      ]}
+    >
+      {iconSymbol}
+    </Text>
+  );
+};
