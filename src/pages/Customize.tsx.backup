@@ -237,3 +237,63 @@ const Customize = () => {
 
     setDesignElements([...designElements, newElement]);
     saveToHistory();
+  };
+
+  const addTemplate = (template: Template) => {
+    const newElement: DesignElement = {
+      id: generateId(),
+      type: "template",
+      template,
+      x: 80 + Math.random() * 40,
+      y: 80 + Math.random() * 40,
+      width: 150,
+      height: 150,
+      rotation: 0,
+      opacity: 1,
+      visible: true,
+      locked: false,
+    };
+
+    setDesignElements([...designElements, newElement]);
+    saveToHistory();
+  };
+
+  const addSticker = (sticker: { id: string; emoji: string; name: string }) => {
+    const newElement: DesignElement = {
+      id: generateId(),
+      type: "sticker",
+      content: sticker.emoji,
+      font: "Arial",
+      size: 48,
+      color: "#000000",
+      x: 80 + Math.random() * 60,
+      y: 80 + Math.random() * 60,
+      rotation: 0,
+      opacity: 1,
+      visible: true,
+      locked: false,
+    };
+
+    setDesignElements([...designElements, newElement]);
+    saveToHistory();
+  };
+
+  const importFromGallery = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.multiple = true;
+    input.onchange = (e) => {
+      const files = (e.target as HTMLInputElement).files;
+      if (files) {
+        Array.from(files).forEach(file => {
+          handleImageUpload({ target: { files: [file] } } as any);
+        });
+      }
+    };
+    input.click();
+  };
+
+  const importFromCamera = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
