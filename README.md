@@ -100,4 +100,4 @@ The script will generate:
 
 MIT
 
-<!-- pr-milestone: docs/customizer-keyboard-shortcuts (2025-10-04T12:42:57Z) -->
+<!-- pr-milestone: test/canvas-layer-ordering-spec (2025-12-05T06:41:15Z) -->
