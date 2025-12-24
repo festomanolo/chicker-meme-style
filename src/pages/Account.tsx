@@ -469,3 +469,62 @@ const SettingsPage = () => {
   const renderContent = () => {
     switch (active) {
       case "appearance":
+        return <Appearance />;
+      case "notifications":
+        return <Notifications />;
+      case "privacy":
+        return <Privacy />;
+      case "profile":
+        return <Profile />;
+      case "addresses":
+        return <Addresses />;
+      case "payments":
+        return <Payments />;
+      case "about":
+        return <About />;
+      case "general":
+      default:
+        return <General />;
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-background">
+      <div className="border-b border-border px-6 py-6 bg-background/60 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="max-w-5xl mx-auto">
+          <div className="flex items-center justify-between gap-6">
+            <div className="flex items-center gap-4">
+              <Avatar className="w-14 h-14">
+                <AvatarImage src="/api/placeholder/64/64" />
+                <AvatarFallback className="text-base font-semibold">
+                  {userInfo.name.split(" ").map((n) => n[0]).join("")}
+                </AvatarFallback>
+              </Avatar>
+              <div>
+                <h1 className="text-2xl font-semibold tracking-tight">Account Settings</h1>
+                <div className="text-sm text-muted-foreground">Welcome back, {userInfo.name}</div>
+              </div>
+            </div>
+            <Button
+              variant="outline"
+              onClick={handleLogout}
+              className="flex items-center gap-2"
+            >
+              <LogOut className="h-4 w-4" />
+              Sign Out
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-5xl mx-auto px-6 py-8">
+        <div className="grid grid-cols-1 md:grid-cols-[260px_1fr] gap-6">
+          <Nav />
+          <div>{renderContent()}</div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default SettingsPage;
