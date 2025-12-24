@@ -224,3 +224,59 @@ export const SHADOWS = {
     shadowColor: '#000000',
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.2,
+    shadowRadius: 16,
+    elevation: 12,
+  },
+} as const;
+
+// Animation
+export const ANIMATION = {
+  duration: {
+    fast: 150,
+    normal: 300,
+    slow: 500,
+  },
+  easing: {
+    ease: 'ease',
+    easeIn: 'ease-in',
+    easeOut: 'ease-out',
+    easeInOut: 'ease-in-out',
+  },
+} as const;
+
+// Breakpoints for responsive design
+export const BREAKPOINTS = {
+  mobile: 480,
+  tablet: 768,
+  desktop: 1024,
+} as const;
+
+// Screen dimensions
+export const SCREEN = {
+  width: screenWidth,
+  height: screenHeight,
+  isSmall: screenWidth <= 375,
+  isMedium: screenWidth > 375 && screenWidth <= 414,
+  isLarge: screenWidth > 414,
+} as const;
+
+// Theme object
+export const theme = {
+  colors: COLORS,
+  typography: TYPOGRAPHY,
+  spacing: SPACING,
+  shadows: SHADOWS,
+  animation: ANIMATION,
+  layout: LAYOUT,
+  breakpoints: BREAKPOINTS,
+  screen: SCREEN,
+} as const;
+
+export type Theme = typeof theme;
+export type Colors = typeof COLORS;
+export type Typography = typeof TYPOGRAPHY;
+
+
+
+
+
