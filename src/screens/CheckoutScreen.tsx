@@ -222,3 +222,58 @@ export const CheckoutScreen: React.FC = () => {
               <TextInput
                 style={styles.input}
                 value={shippingInfo.address}
+                onChangeText={(value) => handleInputChange('address', value)}
+                placeholder="Enter your address"
+                multiline
+              />
+            </View>
+
+            <View style={styles.inputGroup}>
+              <Text style={styles.inputLabel}>City *</Text>
+              <TextInput
+                style={styles.input}
+                value={shippingInfo.city}
+                onChangeText={(value) => handleInputChange('city', value)}
+                placeholder="Enter your city"
+              />
+            </View>
+
+            <View style={styles.inputGroup}>
+              <Text style={styles.inputLabel}>Country</Text>
+              <TextInput
+                style={styles.input}
+                value={shippingInfo.country}
+                onChangeText={(value) => handleInputChange('country', value)}
+                placeholder="Enter your country"
+              />
+            </View>
+          </View>
+
+          {/* Payment Method */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Payment Method</Text>
+            <View style={styles.paymentMethod}>
+              <Icon name="card" size={24} color={theme.colors.primary} />
+              <Text style={styles.paymentText}>Mock Payment (Demo)</Text>
+            </View>
+          </View>
+
+          {/* Order Total */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Order Total</Text>
+            <View style={styles.totalRow}>
+              <Text style={styles.totalLabel}>Subtotal</Text>
+              <Text style={styles.totalValue}>${subtotal.toFixed(2)}</Text>
+            </View>
+            <View style={styles.totalRow}>
+              <Text style={styles.totalLabel}>Shipping</Text>
+              <Text style={styles.totalValue}>
+                {shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`}
+              </Text>
+            </View>
+            <View style={styles.totalRow}>
+              <Text style={styles.totalLabel}>Tax (18%)</Text>
+              <Text style={styles.totalValue}>${tax.toFixed(2)}</Text>
+            </View>
+            <View style={[styles.totalRow, styles.grandTotalRow]}>
+              <Text style={styles.grandTotalLabel}>Total</Text>
