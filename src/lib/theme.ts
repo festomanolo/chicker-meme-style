@@ -167,3 +167,60 @@ export const TYPOGRAPHY = {
       lineHeight: 20,
       fontWeight: '600',
       letterSpacing: 0.1,
+    },
+    buttonSmall: {
+      fontSize: 14,
+      lineHeight: 18,
+      fontWeight: '600',
+      letterSpacing: 0.1,
+    },
+  },
+} as const;
+
+// Spacing
+export const SPACING = {
+  xs: 4,
+  sm: 8,
+  md: 16,
+  lg: 24,
+  xl: 32,
+  '2xl': 48,
+  '3xl': 64,
+  '4xl': 96,
+} as const;
+
+// Shadows
+export const SHADOWS = {
+  sm: {
+    boxShadow: '0px 1px 2px rgba(0, 0, 0, 0.05)',
+    // Native fallback
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
+  },
+  md: {
+    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
+    // Native fallback
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  lg: {
+    boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.15)',
+    // Native fallback
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 6,
+  },
+  xl: {
+    boxShadow: '0px 8px 16px rgba(0, 0, 0, 0.2)',
+    // Native fallback
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.2,
