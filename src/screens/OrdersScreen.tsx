@@ -213,3 +213,57 @@ export const OrdersScreen: React.FC = () => {
         {/* Orders List */}
         <ScrollView showsVerticalScrollIndicator={false} style={styles.ordersList}>
           {isLoading ? (
+            <View style={styles.loadingContainer}>
+              <Text style={styles.loadingText}>Loading orders...</Text>
+            </View>
+          ) : filteredOrders.length > 0 ? (
+            <View style={styles.ordersContainer}>
+              {filteredOrders.map(renderOrderItem)}
+            </View>
+          ) : (
+            <View style={styles.emptyContainer}>
+              <Icon name="receipt-outline" size={64} color={theme.colors.textSecondary} />
+              <Text style={styles.emptyTitle}>No orders found</Text>
+              <Text style={styles.emptySubtitle}>
+                {searchQuery ? "Try adjusting your search terms" : "You haven't placed any orders yet"}
+              </Text>
+              <TouchableOpacity
+                style={styles.shopButton}
+                onPress={() => navigation.navigate('Home' as never)}
+                activeOpacity={0.8}
+              >
+                <Text style={styles.shopButtonText}>Start Shopping</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        </ScrollView>
+      </ContentContainer>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: theme.colors.background,
+  },
+  searchContainer: {
+    paddingHorizontal: theme.spacing.lg,
+    paddingVertical: theme.spacing.md,
+  },
+  searchBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.layout.BUTTON_RADIUS,
+    paddingHorizontal: theme.spacing.md,
+    paddingVertical: theme.spacing.sm,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: theme.typography.fontSize.base,
+    color: theme.colors.text,
+    marginLeft: theme.spacing.sm,
+  },
