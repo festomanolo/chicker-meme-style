@@ -126,3 +126,46 @@ const styles = StyleSheet.create({
   backButton: {
     width: 40,
     height: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: theme.colors.surface,
+  },
+  title: {
+    ...theme.typography.text.h4,
+    color: theme.colors.text,
+    textAlign: 'center',
+    maxWidth: '100%',
+  },
+  cartButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: theme.colors.surface,
+    position: 'relative',
+  },
+  cartBadge: {
+    position: 'absolute',
+    top: -4,
+    right: -4,
+    backgroundColor: theme.colors.error,
+    borderRadius: 10,
+    minWidth: 20,
+    height: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 4,
+  },
+  cartBadgeText: {
+    ...theme.typography.text.caption,
+    color: theme.colors.textInverse,
+    fontWeight: '600',
+  },
+});
+
+
+
+
+
