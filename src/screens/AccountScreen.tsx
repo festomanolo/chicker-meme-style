@@ -134,3 +134,48 @@ const styles = StyleSheet.create({
     ...theme.typography.text.body,
     color: theme.colors.textSecondary,
   },
+  menuSection: {
+    backgroundColor: theme.colors.background,
+    borderRadius: theme.layout.CARD_RADIUS,
+    marginBottom: theme.spacing.xl,
+    ...theme.shadows.sm,
+  },
+  menuItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: theme.spacing.md,
+    paddingHorizontal: theme.spacing.lg,
+    borderBottomWidth: 1,
+    borderBottomColor: theme.colors.borderLight,
+  },
+  menuItemLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  menuItemTitle: {
+    ...theme.typography.text.body,
+    color: theme.colors.text,
+    marginLeft: theme.spacing.md,
+  },
+  logoutButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: theme.colors.surface,
+    paddingVertical: theme.spacing.md,
+    borderRadius: theme.layout.BUTTON_RADIUS,
+    borderWidth: 1,
+    borderColor: theme.colors.error,
+  },
+  logoutText: {
+    ...theme.typography.text.button,
+    color: theme.colors.error,
+    marginLeft: theme.spacing.sm,
+  },
+});
+
+
+
+
+
