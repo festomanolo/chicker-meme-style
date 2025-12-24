@@ -283,3 +283,60 @@ const styles = StyleSheet.create({
     fontSize: 48,
   },
   productInfo: {
+    padding: 16,
+  },
+  productTitle: {
+    fontSize: 16,
+    color: '#333',
+    fontWeight: '600',
+    marginBottom: 4,
+  },
+  productDescription: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 8,
+    lineHeight: 18,
+  },
+  productPrice: {
+    fontSize: 16,
+    color: '#FF6B35',
+    fontWeight: '700',
+  },
+  memeOfTheDay: {
+    marginBottom: 32,
+  },
+  memeTitle: {
+    fontSize: 24,
+    color: '#333',
+    textAlign: 'center',
+    marginBottom: 24,
+    fontWeight: '700',
+  },
+  memeCard: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    overflow: 'hidden',
+    boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.15)',
+    // Native fallback
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+  memeImageContainer: {
+    width: '100%',
+    height: 200,
+    backgroundColor: '#f0f0f0',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  memeEmoji: {
+    fontSize: 80,
+  },
+  memeContent: {
+    padding: 24,
+  },
+  memeCardTitle: {
+    fontSize: 20,
+    color: '#333',
