@@ -374,3 +374,57 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: theme.spacing.sm,
   },
+  orderTotal: {
+    ...theme.typography.text.h4,
+    color: theme.colors.primary,
+    fontWeight: '700',
+  },
+  trackingText: {
+    ...theme.typography.text.bodySmall,
+    color: theme.colors.textSecondary,
+  },
+  deliveryText: {
+    ...theme.typography.text.bodySmall,
+    color: theme.colors.success,
+    fontWeight: '500',
+  },
+  loadingContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: theme.spacing.xl,
+  },
+  loadingText: {
+    ...theme.typography.text.body,
+    color: theme.colors.textSecondary,
+  },
+  emptyContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: theme.spacing.xl,
+    paddingVertical: theme.spacing.xl,
+  },
+  emptyTitle: {
+    ...theme.typography.text.h3,
+    color: theme.colors.text,
+    marginTop: theme.spacing.lg,
+    marginBottom: theme.spacing.sm,
+  },
+  emptySubtitle: {
+    ...theme.typography.text.body,
+    color: theme.colors.textSecondary,
+    textAlign: 'center',
+    marginBottom: theme.spacing.xl,
+  },
+  shopButton: {
+    backgroundColor: theme.colors.primary,
+    paddingVertical: theme.spacing.md,
+    paddingHorizontal: theme.spacing.xl,
+    borderRadius: theme.layout.BUTTON_RADIUS,
+  },
+  shopButtonText: {
+    ...theme.typography.text.button,
+    color: theme.colors.textInverse,
+  },
+});
