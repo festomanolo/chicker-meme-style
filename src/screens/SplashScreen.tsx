@@ -93,3 +93,50 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: theme.colors.primary,
     alignItems: 'center',
+    justifyContent: 'center',
+  },
+  content: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  logoContainer: {
+    alignItems: 'center',
+    marginBottom: theme.spacing.xl,
+  },
+  logoEmoji: {
+    fontSize: 80,
+    marginBottom: theme.spacing.md,
+  },
+  logoText: {
+    fontSize: 48,
+    fontWeight: '800',
+    color: theme.colors.textInverse,
+    letterSpacing: -1,
+  },
+  tagline: {
+    fontSize: 18,
+    color: theme.colors.textInverse,
+    opacity: 0.9,
+    marginBottom: theme.spacing.xl,
+    textAlign: 'center',
+  },
+  loadingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  loadingDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: theme.colors.textInverse,
+    marginHorizontal: 4,
+    opacity: 0.3,
+  },
+  loadingDotDelay1: {
+    opacity: 0.6,
+  },
+  loadingDotDelay2: {
+    opacity: 1,
+  },
+});
