@@ -28,3 +28,33 @@ export function TopBar() {
                 className="w-full h-full object-contain animate-pulse"
                 style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))' }}
               />
+            </div>
+            <div>
+              <h1 className="text-base font-bold text-foreground">Chicker</h1>
+              <p className="text-xs text-muted-foreground">Meme Tees</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Section - Cart & Profile */}
+        <div className="flex items-center gap-2">
+          {!isMobile && (
+            <Button variant="ghost" size="icon" className="relative macos-hover rounded-lg h-8 w-8">
+              <ShoppingCart className="h-4 w-4" />
+              <Badge 
+                variant="destructive" 
+                className="absolute -top-1 -right-1 h-4 w-4 flex items-center justify-center text-xs p-0 bg-accent text-accent-foreground"
+              >
+                3
+              </Badge>
+            </Button>
+          )}
+          
+          <Button variant="ghost" size="icon" className="macos-hover rounded-lg h-8 w-8">
+            <User className="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
+    </header>
+  );
+}
