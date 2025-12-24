@@ -90,3 +90,48 @@ class Database {
     await this.setCollection('users', users);
   }
 
+  async getUserByEmail(email: string): Promise<User | null> {
+    const users = await this.getCollection('users');
+    return users.find(user => user.email === email) || null;
+  }
+
+  async getUserById(id: string): Promise<User | null> {
+    const users = await this.getCollection('users');
+    return users.find(user => user.id === id) || null;
+  }
+
+  async updateUser(id: string, updates: Partial<User>): Promise<void> {
+    const users = await this.getCollection('users');
+    const userIndex = users.findIndex(user => user.id === id);
+    if (userIndex !== -1) {
+      users[userIndex] = { ...users[userIndex], ...updates };
+      await this.setCollection('users', users);
+    }
+  }
+
+  // Cart functions
+  async getCartForUser(userId: string): Promise<Cart | null> {
+    const carts = await this.getCollection('carts');
+    return carts.find(cart => cart.user_id === userId) || null;
+  }
+
+  async createCart(userId: string): Promise<string> {
+    const cartId = `cart_${Date.now()}`;
+    const carts = await this.getCollection('carts');
+    carts.push({ id: cartId, user_id: userId, created_at: Date.now() });
+    await this.setCollection('carts', carts);
+    return cartId;
+  }
+
+  async addCartItem(cartItem: Omit<CartItem, 'id'>): Promise<string> {
+    const itemId = `item_${Date.now()}`;
+    const items = await this.getCollection('cart_items');
+    items.push({ id: itemId, ...cartItem });
+    await this.setCollection('cart_items', items);
+    return itemId;
+  }
+
+  async getCartItems(cartId: string): Promise<CartItem[]> {
+    const items = await this.getCollection('cart_items');
+    return items.filter(item => item.cart_id === cartId);
+  }
