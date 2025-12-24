@@ -320,3 +320,57 @@ const styles = StyleSheet.create({
   },
   orderCard: {
     backgroundColor: theme.colors.surface,
+    borderRadius: theme.layout.CARD_RADIUS,
+    padding: theme.spacing.lg,
+    marginBottom: theme.spacing.md,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+  },
+  orderHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: theme.spacing.md,
+  },
+  orderId: {
+    ...theme.typography.text.h4,
+    color: theme.colors.text,
+    fontWeight: '600',
+  },
+  orderDate: {
+    ...theme.typography.text.bodySmall,
+    color: theme.colors.textSecondary,
+    marginTop: theme.spacing.xs,
+  },
+  statusContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: theme.colors.background,
+    paddingHorizontal: theme.spacing.sm,
+    paddingVertical: theme.spacing.xs,
+    borderRadius: theme.layout.BUTTON_RADIUS,
+  },
+  statusText: {
+    ...theme.typography.text.bodySmall,
+    fontWeight: '600',
+    marginLeft: theme.spacing.xs,
+  },
+  orderItems: {
+    marginBottom: theme.spacing.md,
+  },
+  itemText: {
+    ...theme.typography.text.body,
+    color: theme.colors.text,
+    marginBottom: theme.spacing.xs,
+  },
+  moreItems: {
+    ...theme.typography.text.bodySmall,
+    color: theme.colors.textSecondary,
+    fontStyle: 'italic',
+  },
+  orderFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: theme.spacing.sm,
+  },
