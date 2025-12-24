@@ -155,3 +155,56 @@ export const ProductDetailScreen: React.FC = () => {
                     <Text
                       style={[
                         styles.optionText,
+                        selectedColor === color && styles.optionTextActive,
+                      ]}
+                    >
+                      {color}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+
+            {/* Quantity Selection */}
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Quantity</Text>
+              <View style={styles.quantityContainer}>
+                <TouchableOpacity
+                  style={styles.quantityButton}
+                  onPress={() => handleQuantityChange(quantity - 1)}
+                  activeOpacity={0.7}
+                >
+                  <Icon name="remove" size={20} color={theme.colors.text} />
+                </TouchableOpacity>
+                <Text style={styles.quantityText}>{quantity}</Text>
+                <TouchableOpacity
+                  style={styles.quantityButton}
+                  onPress={() => handleQuantityChange(quantity + 1)}
+                  activeOpacity={0.7}
+                >
+                  <Icon name="add" size={20} color={theme.colors.text} />
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            {/* Features */}
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Features</Text>
+              {product.features.map((feature, index) => (
+                <View key={index} style={styles.featureItem}>
+                  <Icon name="checkmark-circle" size={16} color={theme.colors.success} />
+                  <Text style={styles.featureText}>{feature}</Text>
+                </View>
+              ))}
+            </View>
+          </View>
+        </ScrollView>
+
+        {/* Add to Cart Button */}
+        <View style={styles.addToCartContainer}>
+          <View style={styles.priceContainer}>
+            <Text style={styles.totalLabel}>Total:</Text>
+            <Text style={styles.totalPrice}>${(product.price * quantity).toFixed(2)}</Text>
+          </View>
+          <TouchableOpacity
+            style={styles.addToCartButton}
