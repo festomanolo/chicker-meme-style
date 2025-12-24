@@ -65,3 +65,37 @@ The script will generate:
 - Resource shrinking
 - PNG crunching
 - R8 full mode optimization
+- Limited to ARM architectures only
+
+### Build Optimizations
+- Console.log removal in production
+- Dead code elimination
+- Asset optimization
+- Bundle splitting for web
+
+## Project Structure
+
+```
+├── src/
+│   ├── components/     # Reusable UI components
+│   ├── screens/        # App screens
+│   ├── lib/           # Utilities and stores
+│   └── data/          # Static data
+├── android/           # Android native code
+├── App.tsx           # Main app component
+└── index.js          # React Native entry point
+```
+
+## Technologies
+
+- React Native 0.76.9
+- Capacitor 6.0
+- React Navigation 6
+- Zustand (state management)
+- AsyncStorage (data persistence)
+- TypeScript
+- Vite (web bundling)
+
+## License
+
+MIT
