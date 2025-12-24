@@ -260,3 +260,56 @@ const styles = StyleSheet.create({
     ...theme.typography.text.body,
     color: theme.colors.textSecondary,
     lineHeight: 24,
+    marginBottom: theme.spacing.xl,
+  },
+  section: {
+    marginBottom: theme.spacing.xl,
+  },
+  sectionTitle: {
+    ...theme.typography.text.h4,
+    color: theme.colors.text,
+    marginBottom: theme.spacing.md,
+  },
+  optionsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: theme.spacing.sm,
+  },
+  optionButton: {
+    paddingHorizontal: theme.spacing.md,
+    paddingVertical: theme.spacing.sm,
+    borderRadius: theme.layout.BUTTON_RADIUS,
+    backgroundColor: theme.colors.surface,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+  },
+  optionButtonActive: {
+    backgroundColor: theme.colors.primary,
+    borderColor: theme.colors.primary,
+  },
+  optionText: {
+    ...theme.typography.text.bodySmall,
+    color: theme.colors.text,
+    fontWeight: '500',
+  },
+  optionTextActive: {
+    color: theme.colors.textInverse,
+  },
+  quantityContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: theme.spacing.md,
+  },
+  quantityButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: theme.colors.surface,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  quantityText: {
+    ...theme.typography.text.h4,
+    color: theme.colors.text,
+    minWidth: 40,
+    textAlign: 'center',
