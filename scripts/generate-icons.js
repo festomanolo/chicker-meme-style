@@ -50,3 +50,55 @@ async function generateIcons() {
   try {
     // Generate iOS icons
     console.log('📱 Generating iOS icons...');
+    for (const size of iconSizes.ios) {
+      await sharp(sourcePath)
+        .resize(size, size)
+        .png()
+        .toFile(path.join(iconDir, `ios-${size}.png`));
+    }
+
+    // Generate Android icons
+    console.log('🤖 Generating Android icons...');
+    for (const size of iconSizes.android) {
+      await sharp(sourcePath)
+        .resize(size, size)
+        .png()
+        .toFile(path.join(iconDir, `android-${size}.png`));
+    }
+
+    // Generate web icons
+    console.log('🌐 Generating web icons...');
+    for (const size of iconSizes.web) {
+      await sharp(sourcePath)
+        .resize(size, size)
+        .png()
+        .toFile(path.join(iconDir, `web-${size}.png`));
+    }
+
+    // Generate splash screens
+    console.log('🎨 Generating splash screens...');
+    
+    // iOS splash screens
+    for (let i = 0; i < splashSizes.ios.length; i++) {
+      const { width, height } = splashSizes.ios[i];
+      await sharp(sourcePath)
+        .resize(Math.floor(width * 0.4), Math.floor(height * 0.4), {
+          fit: 'contain',
+          background: { r: 255, g: 255, b: 255, alpha: 1 }
+        })
+        .extend({
+          top: Math.floor(height * 0.3),
+          bottom: Math.floor(height * 0.3),
+          left: Math.floor(width * 0.3),
+          right: Math.floor(width * 0.3),
+          background: { r: 255, g: 255, b: 255, alpha: 1 }
+        })
+        .png()
+        .toFile(path.join(splashDir, `ios-splash-${width}x${height}.png`));
+    }
+
+    // Android splash screens
+    for (let i = 0; i < splashSizes.android.length; i++) {
+      const { width, height } = splashSizes.android[i];
+      await sharp(sourcePath)
+        .resize(Math.floor(width * 0.4), Math.floor(height * 0.4), {
