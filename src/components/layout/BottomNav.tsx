@@ -88,3 +88,48 @@ const styles = StyleSheet.create({
     borderTopColor: theme.colors.borderLight,
   },
   container: {
+    height: theme.layout.BOTTOM_NAV_HEIGHT,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    backgroundColor: theme.colors.background,
+    paddingHorizontal: theme.spacing.sm,
+  },
+  tab: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: theme.spacing.sm,
+  },
+  iconContainer: {
+    position: 'relative',
+    marginBottom: theme.spacing.xs,
+  },
+  label: {
+    ...theme.typography.text.caption,
+    textAlign: 'center',
+  },
+  badge: {
+    position: 'absolute',
+    top: -6,
+    right: -8,
+    backgroundColor: theme.colors.error,
+    borderRadius: 8,
+    minWidth: 16,
+    height: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 2,
+  },
+  badgeText: {
+    ...theme.typography.text.caption,
+    color: theme.colors.textInverse,
+    fontWeight: '600',
+    fontSize: 10,
+  },
+});
+
+
+
+
+
