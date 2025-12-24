@@ -208,3 +208,55 @@ export const ProductDetailScreen: React.FC = () => {
           </View>
           <TouchableOpacity
             style={styles.addToCartButton}
+            onPress={handleAddToCart}
+            activeOpacity={0.8}
+          >
+            <Icon name="cart" size={20} color={theme.colors.textInverse} />
+            <Text style={styles.addToCartText}>Add to Cart</Text>
+          </TouchableOpacity>
+        </View>
+      </ContentContainer>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: theme.colors.background,
+  },
+  errorContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  errorText: {
+    ...theme.typography.text.h3,
+    color: theme.colors.textSecondary,
+  },
+  imageContainer: {
+    marginBottom: theme.spacing.lg,
+  },
+  productImage: {
+    width: '100%',
+    height: 300,
+    borderRadius: theme.layout.CARD_RADIUS,
+  },
+  productInfo: {
+    paddingHorizontal: theme.spacing.lg,
+  },
+  productTitle: {
+    ...theme.typography.text.h2,
+    color: theme.colors.text,
+    marginBottom: theme.spacing.sm,
+  },
+  productPrice: {
+    ...theme.typography.text.h3,
+    color: theme.colors.primary,
+    fontWeight: '700',
+    marginBottom: theme.spacing.lg,
+  },
+  productDescription: {
+    ...theme.typography.text.body,
+    color: theme.colors.textSecondary,
+    lineHeight: 24,
