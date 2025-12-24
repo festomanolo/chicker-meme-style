@@ -54,3 +54,59 @@ export const CheckoutScreen: React.FC = () => {
     }
     return true;
   };
+
+  const handlePlaceOrder = async () => {
+    if (!validateForm()) return;
+    if (items.length === 0) {
+      Alert.alert('Error', 'Your cart is empty');
+      return;
+    }
+
+    setIsProcessing(true);
+    try {
+      // Create order in database
+      const newOrderId = await db.createOrder(user!.id, items, total, shippingInfo);
+      
+      // Clear cart
+      await clearCart();
+      
+      setOrderId(newOrderId);
+      setOrderComplete(true);
+      
+      Alert.alert(
+        'Order Placed Successfully!',
+        `Your order ${newOrderId} has been placed. You will receive a confirmation email shortly.`,
+        [
+          {
+            text: 'View Orders',
+            onPress: () => navigation.navigate('Orders' as never),
+          },
+          {
+            text: 'Continue Shopping',
+            onPress: () => navigation.navigate('Home' as never),
+          },
+        ]
+      );
+    } catch (error) {
+      console.error('Order creation failed:', error);
+      Alert.alert('Error', 'Failed to place order. Please try again.');
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  if (orderComplete) {
+    return (
+      <View style={styles.container}>
+        <FixedHeader title="Order Complete" showCart={false} />
+        <ContentContainer>
+          <View style={styles.successContainer}>
+            <Icon name="success" size={64} color={theme.colors.success} />
+            <Text style={styles.successTitle}>Order Placed Successfully!</Text>
+            <Text style={styles.successSubtitle}>
+              Order ID: {orderId}
+            </Text>
+            <Text style={styles.successDescription}>
+              Thank you for your order! You will receive a confirmation email shortly.
+            </Text>
+            
