@@ -104,3 +104,56 @@ export function ProductCard({
         {/* Wishlist Button */}
         <Button
           variant="ghost"
+          size="icon"
+          className={`absolute top-2 right-2 glass ${
+            isLiked ? "text-destructive" : "text-muted-foreground"
+          } hover:text-destructive transition-colors duration-200 macos-hover h-8 w-8`}
+          onClick={() => setIsLiked(!isLiked)}
+        >
+          <Heart className={`h-3 w-3 ${isLiked ? "fill-current" : ""}`} onClick={(e) => { e.stopPropagation(); }} />
+        </Button>
+      </div>
+
+      <CardContent className="p-3 sm:p-4">
+        <div className="space-y-1.5 sm:space-y-2">
+          <h3 className="font-semibold text-xs sm:text-sm line-clamp-2 text-card-foreground group-hover:text-primary transition-colors">
+            {name}
+          </h3>
+          
+          {/* Rating */}
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <div className="flex items-center gap-1">
+              <Star className="h-2.5 w-2.5 sm:h-3 sm:w-3 fill-warning text-warning" />
+              <span className="text-xs font-medium text-foreground">{rating}</span>
+            </div>
+            <span className="text-xs text-muted-foreground">({reviews})</span>
+          </div>
+
+          {/* Price */}
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <span className="text-sm sm:text-lg font-bold text-foreground">
+              TZS {price.toLocaleString()}
+            </span>
+            {originalPrice && (
+              <span className="text-xs sm:text-sm text-muted-foreground line-through">
+                TZS {originalPrice.toLocaleString()}
+              </span>
+            )}
+          </div>
+        </div>
+      </CardContent>
+
+      <CardFooter className="p-3 sm:p-4 pt-0">
+        <Button
+          onClick={(e) => { e.stopPropagation(); handleAddToCart(); }}
+          disabled={isLoading}
+          size={isMobile ? "sm" : "default"}
+          className="w-full bg-primary hover:bg-primary-hover text-primary-foreground font-medium rounded-lg macos-transition text-xs sm:text-sm"
+        >
+          <ShoppingCart className="h-3 w-3 sm:h-4 sm:w-4 mr-1.5 sm:mr-2" />
+          {isLoading ? "Adding..." : "Add to Cart"}
+        </Button>
+      </CardFooter>
+    </Card>
+  );
+}
