@@ -384,3 +384,58 @@ const styles = StyleSheet.create({
   totalRow: {
     borderTopWidth: 1,
     borderTopColor: '#e0e0e0',
+    paddingTop: 8,
+    marginTop: 8,
+  },
+  totalLabel: {
+    fontSize: 20,
+    color: '#333',
+    fontWeight: '700',
+  },
+  totalValue: {
+    fontSize: 20,
+    color: '#FF6B35',
+    fontWeight: '700',
+  },
+  actionButtons: {
+    flexDirection: 'row',
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+    gap: 16,
+  },
+  clearButton: {
+    flex: 1,
+    backgroundColor: '#f5f5f5',
+    paddingVertical: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+  },
+  clearButtonText: {
+    fontSize: 16,
+    color: '#333',
+    fontWeight: '600',
+  },
+  checkoutButton: {
+    flex: 2,
+    backgroundColor: '#FF6B35',
+    paddingVertical: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  checkoutButtonDisabled: {
+    opacity: 0.6,
+  },
+  checkoutButtonText: {
+    fontSize: 16,
+    color: '#fff',
+    fontWeight: '600',
+  },
+});
+
+
+
+
+
