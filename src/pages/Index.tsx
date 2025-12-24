@@ -156,3 +156,56 @@ const Index = () => {
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
               Our most popular designs that everyone loves
             </p>
+          </div>
+          
+          <div className="responsive-grid">
+            {featuredProducts.map((product) => (
+              <ProductCard key={product.id} {...product} />
+            ))}
+          </div>
+          
+          <div className="text-center mt-12">
+            <Button variant="outline" size="lg" className="glass border-glass-border font-semibold px-8 py-3 rounded-xl macos-hover hover:bg-accent/5">
+              View All Products
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      
+
+      {/* Trending Section */}
+      <section className="px-4 sm:px-6 py-16 sm:py-20">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center gap-4 mb-12 sm:mb-16">
+            <div className="w-12 h-12 bg-gradient-to-br from-orange-400 to-red-500 rounded-2xl flex items-center justify-center">
+              <TrendingUp className="h-6 w-6 text-white" />
+            </div>
+            <div>
+              <h2 className="text-headline font-display text-3xl sm:text-4xl font-bold text-foreground">
+                Trending Now
+              </h2>
+              <p className="text-muted-foreground text-lg">
+                The hottest designs everyone's talking about 🔥
+              </p>
+            </div>
+          </div>
+          
+          <div className="responsive-grid">
+            {products.slice(0, 4).map((product) => (
+              <ProductCard key={product.id} {...product} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Flash Sales */}
+      <FlashSalesSection />
+
+      {/* Seasonal Collections */}
+      <section className="px-4 sm:px-6 py-16 sm:py-20">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-10">
+            <h2 className="text-headline font-display text-3xl sm:text-4xl font-bold">Seasonal Collections</h2>
+            <p className="text-muted-foreground">Curated picks for the moment</p>
