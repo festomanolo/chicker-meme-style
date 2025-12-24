@@ -221,3 +221,58 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
+    // Native fallback
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  searchIcon: {
+    fontSize: 18,
+    marginRight: 8,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 16,
+    color: '#333',
+  },
+  clearIcon: {
+    fontSize: 16,
+    color: '#666',
+    padding: 4,
+  },
+  categoriesContainer: {
+    marginBottom: 20,
+  },
+  categoriesList: {
+    flexDirection: 'row',
+    paddingHorizontal: 20,
+  },
+  categoryButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    marginRight: 12,
+    borderRadius: 20,
+    backgroundColor: '#f0f0f0',
+  },
+  categoryButtonActive: {
+    backgroundColor: '#FF6B35',
+  },
+  categoryText: {
+    fontSize: 14,
+    color: '#333',
+    fontWeight: '500',
+  },
+  categoryTextActive: {
+    color: '#fff',
+  },
+  productsContainer: {
+    paddingHorizontal: 20,
+    paddingBottom: 40,
+  },
+  resultsText: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 16,
+  },
