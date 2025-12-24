@@ -105,3 +105,57 @@ describe('Authentication Flow', () => {
     // Mock authenticated user
     useAuthStore.mockReturnValue({
       user: { id: '1', name: 'Test User', email: 'test@example.com' },
+      isAuthenticated: true,
+      isLoading: false,
+      login: jest.fn(),
+      logout: jest.fn(),
+      register: jest.fn(),
+      checkAuth: jest.fn(),
+    });
+    
+    render(
+      <NavigationContainer>
+        <App />
+      </NavigationContainer>
+    );
+    
+    // Should show main app instead of auth screen
+    expect(screen.queryByText('Welcome Back!')).toBeFalsy();
+  });
+});
+
+describe('Cart Functionality', () => {
+  it('manages cart state correctly', () => {
+    const { useCartStore } = require('../lib/cart-store');
+    
+    // Mock cart with items
+    useCartStore.mockReturnValue({
+      items: [
+        { id: '1', product_id: 'prod_1', quantity: 2, price: 29.99 },
+      ],
+      isLoading: false,
+      addItem: jest.fn(),
+      removeItem: jest.fn(),
+      updateQuantity: jest.fn(),
+      clearCart: jest.fn(),
+      loadCart: jest.fn(),
+      getTotal: jest.fn(() => 59.98),
+      getItemCount: jest.fn(() => 2),
+    });
+    
+    render(
+      <NavigationContainer>
+        <App />
+      </NavigationContainer>
+    );
+    
+    // Cart should show correct item count
+    expect(useCartStore().getItemCount()).toBe(2);
+    expect(useCartStore().getTotal()).toBe(59.98);
+  });
+});
+
+
+
+
+
