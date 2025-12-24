@@ -52,3 +52,57 @@ export const OrdersScreen: React.FC = () => {
   const { user } = useAuthStore();
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activeTab, setActiveTab] = useState('all');
+
+  useEffect(() => {
+    loadOrders();
+  }, [user]);
+
+  const loadOrders = async () => {
+    if (!user) return;
+    
+    try {
+      setIsLoading(true);
+      const userOrders = await db.getOrdersForUser(user.id);
+      setOrders(userOrders || []);
+    } catch (error) {
+      console.error('Failed to load orders:', error);
+      setOrders([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const filteredOrders = orders.filter(order => {
+    const matchesTab = activeTab === 'all' || order.status === activeTab;
+    const matchesSearch = order.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         order.items.some(item => item.name.toLowerCase().includes(searchQuery.toLowerCase()));
+    return matchesTab && matchesSearch;
+  });
+
+  const getStatusCounts = () => {
+    const counts = {
+      all: orders.length,
+      paid: 0,
+      printing: 0,
+      shipped: 0,
+      delivered: 0,
+    };
+    
+    orders.forEach(order => {
+      counts[order.status]++;
+    });
+    
+    return counts;
+  };
+
+  const statusCounts = getStatusCounts();
+
+  const renderOrderItem = (order: Order) => {
+    const statusInfo = statusConfig[order.status];
+    
+    return (
+      <View key={order.id} style={styles.orderCard}>
+        <View style={styles.orderHeader}>
+          <View>
