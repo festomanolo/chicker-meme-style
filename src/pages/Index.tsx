@@ -103,3 +103,56 @@ const Index = () => {
       {/* Featured Products */}
       {/* For You - Personalized */}
       <section className="mobile-padding px-4 sm:px-6 py-12 sm:py-16">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center justify-between mb-6 sm:mb-8">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                <Sparkles className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <h2 className="text-headline font-display text-2xl sm:text-3xl font-bold">For You</h2>
+                <p className="text-sm text-muted-foreground">Based on your likes, views, and what’s trending near you</p>
+              </div>
+            </div>
+          </div>
+          <div className="responsive-grid">
+            {(forYou.length ? forYou : featuredProducts).map((product) => (
+              <ProductCard key={product.id} {...product} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Category Shortcuts */}
+      <section className="px-4 sm:px-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center gap-3 mb-4">
+            <Grid2X2 className="h-5 w-5 text-muted-foreground" />
+            <h3 className="text-lg font-semibold">Categories</h3>
+          </div>
+          <div className="flex gap-3 overflow-x-auto pb-2 -mx-1 px-1">
+            {[
+              { name: "Fashion", icon: Shirt },
+              { name: "Electronics", icon: Smartphone },
+              { name: "Beauty", icon: HeartPulse },
+              { name: "Home", icon: Home },
+            ].map((c) => (
+              <button key={c.name} className="flex items-center gap-2 px-3 py-2 rounded-lg border border-border bg-card text-foreground whitespace-nowrap macos-hover">
+                <c.icon className="h-4 w-4" />
+                <span className="text-sm font-medium">{c.name}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Products */}
+      <section className="px-4 sm:px-6 py-16 sm:py-20">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12 sm:mb-16">
+            <h2 className="text-headline font-display text-3xl sm:text-4xl font-bold text-foreground mb-4">
+              Bestsellers
+              </h2>
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+              Our most popular designs that everyone loves
+            </p>
