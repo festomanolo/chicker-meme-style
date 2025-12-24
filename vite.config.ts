@@ -22,3 +22,27 @@ export default defineConfig(({ mode }) => ({
   define: {
     global: 'globalThis',
   },
+  build: {
+    outDir: 'dist',
+    sourcemap: false,
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
+      },
+    },
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          navigation: ['@react-navigation/native', '@react-navigation/stack', '@react-navigation/bottom-tabs'],
+        },
+      },
+    },
+  },
+  optimizeDeps: {
+    include: ['react', 'react-dom', 'react-native-web'],
+    exclude: ['react-native-safe-area-context'],
+  },
+}));
