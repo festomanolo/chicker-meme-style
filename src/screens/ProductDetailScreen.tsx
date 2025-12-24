@@ -50,3 +50,56 @@ const productData = {
     sizes: ['S', 'M', 'L', 'XL'],
     colors: ['White', 'Black', 'Navy'],
   },
+};
+
+export const ProductDetailScreen: React.FC = () => {
+  const navigation = useNavigation();
+  const route = useRoute();
+  const { productId } = route.params as ProductDetailScreenParams;
+  const { addItem } = useCartStore();
+
+  const [selectedSize, setSelectedSize] = useState('M');
+  const [selectedColor, setSelectedColor] = useState('White');
+  const [quantity, setQuantity] = useState(1);
+
+  const product = productData[productId as keyof typeof productData];
+
+  if (!product) {
+    return (
+      <View style={styles.container}>
+        <FixedHeader title="Product" showBack />
+        <ContentContainer>
+          <View style={styles.errorContainer}>
+            <Text style={styles.errorText}>Product not found</Text>
+          </View>
+        </ContentContainer>
+      </View>
+    );
+  }
+
+  const handleAddToCart = async () => {
+    try {
+      await addItem(product.id, quantity, product.price, product.title, selectedSize, selectedColor);
+      Alert.alert('Success', 'Added to cart!', [
+        { text: 'Continue Shopping', onPress: () => navigation.goBack() },
+        { text: 'View Cart', onPress: () => navigation.navigate('Cart' as never) },
+      ]);
+    } catch (error) {
+      Alert.alert('Error', 'Failed to add item to cart');
+    }
+  };
+
+  const handleQuantityChange = (newQuantity: number) => {
+    if (newQuantity >= 1 && newQuantity <= 10) {
+      setQuantity(newQuantity);
+    }
+  };
+
+  return (
+    <View style={styles.container}>
+      <FixedHeader title="Product" showBack />
+      <ContentContainer>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          {/* Product Image */}
+          <View style={styles.imageContainer}>
+            <Image source={product.image} style={styles.productImage} />
