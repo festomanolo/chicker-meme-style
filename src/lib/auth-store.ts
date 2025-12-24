@@ -91,3 +91,49 @@ export const useAuthStore = create<AuthState>()(
             await storage.setItem('auth_token', sessionToken);
             await storage.setItem('user_id', newUser.id);
             return true;
+          }
+          set({ isLoading: false });
+          return false;
+        } catch (error) {
+          console.error('Register error:', error);
+          set({ isLoading: false });
+          return false;
+        }
+      },
+
+      checkAuth: async () => {
+        set({ isLoading: true });
+        try {
+          const token = await storage.getItem('auth_token');
+          const userId = await storage.getItem('user_id');
+          
+          if (token && userId) {
+            const user = await db.getUserById(userId);
+            if (user) {
+              set({ user, isAuthenticated: true, isLoading: false });
+            } else {
+              set({ user: null, isAuthenticated: false, isLoading: false });
+              await storage.removeItem('auth_token');
+              await storage.removeItem('user_id');
+            }
+          } else {
+            set({ user: null, isAuthenticated: false, isLoading: false });
+          }
+        } catch (error) {
+          console.error('Check auth error:', error);
+          set({ user: null, isAuthenticated: false, isLoading: false });
+        }
+      },
+    }),
+    {
+      name: 'auth-storage',
+      storage: createJSONStorage(() => storage),
+      partialize: (state) => ({ user: state.user, isAuthenticated: state.isAuthenticated }),
+    }
+  )
+);
+
+
+
+
+
