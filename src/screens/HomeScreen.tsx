@@ -340,3 +340,60 @@ const styles = StyleSheet.create({
   memeCardTitle: {
     fontSize: 20,
     color: '#333',
+    marginBottom: 8,
+    fontWeight: '700',
+  },
+  memeCardDescription: {
+    fontSize: 16,
+    color: '#666',
+    marginBottom: 24,
+    lineHeight: 24,
+  },
+  memeButton: {
+    backgroundColor: '#FF6B35',
+    paddingVertical: 16,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  memeButtonText: {
+    fontSize: 16,
+    color: '#fff',
+    fontWeight: '600',
+  },
+  ctaSection: {
+    alignItems: 'center',
+    paddingVertical: 32,
+    paddingBottom: 50,
+  },
+  ctaTitle: {
+    fontSize: 24,
+    color: '#333',
+    textAlign: 'center',
+    marginBottom: 8,
+    fontWeight: '700',
+  },
+  ctaSubtitle: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+    marginBottom: 24,
+    lineHeight: 24,
+  },
+  ctaButton: {
+    backgroundColor: '#4CAF50',
+    paddingVertical: 16,
+    paddingHorizontal: 32,
+    borderRadius: 8,
+  },
+  ctaButtonText: {
+    fontSize: 16,
+    color: '#fff',
+    fontWeight: '600',
+  },
+});
+
+
+
+
+
