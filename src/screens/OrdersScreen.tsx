@@ -267,3 +267,56 @@ const styles = StyleSheet.create({
     color: theme.colors.text,
     marginLeft: theme.spacing.sm,
   },
+  tabsContainer: {
+    marginBottom: theme.spacing.md,
+  },
+  tabs: {
+    flexDirection: 'row',
+    paddingHorizontal: theme.spacing.lg,
+  },
+  tab: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: theme.spacing.md,
+    paddingVertical: theme.spacing.sm,
+    marginRight: theme.spacing.sm,
+    borderRadius: theme.layout.BUTTON_RADIUS,
+    backgroundColor: theme.colors.surface,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+  },
+  activeTab: {
+    backgroundColor: theme.colors.primary,
+    borderColor: theme.colors.primary,
+  },
+  tabText: {
+    ...theme.typography.text.bodySmall,
+    color: theme.colors.text,
+    fontWeight: '500',
+  },
+  activeTabText: {
+    color: theme.colors.textInverse,
+  },
+  tabBadge: {
+    backgroundColor: theme.colors.error,
+    borderRadius: 10,
+    minWidth: 18,
+    height: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: theme.spacing.xs,
+  },
+  tabBadgeText: {
+    ...theme.typography.text.caption,
+    color: theme.colors.textInverse,
+    fontWeight: '600',
+  },
+  ordersList: {
+    flex: 1,
+  },
+  ordersContainer: {
+    paddingHorizontal: theme.spacing.lg,
+    paddingBottom: theme.spacing.xl,
+  },
+  orderCard: {
+    backgroundColor: theme.colors.surface,
