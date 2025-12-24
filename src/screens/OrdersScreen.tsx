@@ -106,3 +106,56 @@ export const OrdersScreen: React.FC = () => {
       <View key={order.id} style={styles.orderCard}>
         <View style={styles.orderHeader}>
           <View>
+            <Text style={styles.orderId}>Order #{order.id}</Text>
+            <Text style={styles.orderDate}>{order.date}</Text>
+          </View>
+          <View style={styles.statusContainer}>
+            <Icon name={statusInfo.icon} size={16} color={statusInfo.color} />
+            <Text style={[styles.statusText, { color: statusInfo.color }]}>
+              {statusInfo.label}
+            </Text>
+          </View>
+        </View>
+
+        <View style={styles.orderItems}>
+          {order.items.slice(0, 2).map((item, index) => (
+            <Text key={index} style={styles.itemText}>
+              {item.quantity}x {item.name}
+            </Text>
+          ))}
+          {order.items.length > 2 && (
+            <Text style={styles.moreItems}>
+              +{order.items.length - 2} more items
+            </Text>
+          )}
+        </View>
+
+        <View style={styles.orderFooter}>
+          <Text style={styles.orderTotal}>${order.total.toFixed(2)}</Text>
+          {order.tracking && (
+            <Text style={styles.trackingText}>
+              Tracking: {order.tracking}
+            </Text>
+          )}
+        </View>
+
+        {order.estimatedDelivery && (
+          <Text style={styles.deliveryText}>
+            Estimated delivery: {order.estimatedDelivery}
+          </Text>
+        )}
+      </View>
+    );
+  };
+
+  const tabs = [
+    { key: 'all', label: 'All', count: statusCounts.all },
+    { key: 'paid', label: 'Paid', count: statusCounts.paid },
+    { key: 'printing', label: 'Printing', count: statusCounts.printing },
+    { key: 'shipped', label: 'Shipped', count: statusCounts.shipped },
+    { key: 'delivered', label: 'Delivered', count: statusCounts.delivered },
+  ];
+
+  return (
+    <View style={styles.container}>
+      <FixedHeader title="My Orders" />
