@@ -116,3 +116,62 @@ const SettingsPage = () => {
   };
 
   const Nav = () => (
+    <nav className="rounded-xl border border-border bg-card p-2">
+      {sections.map((item) => {
+        const Icon = item.icon;
+        const isActive = active === item.key;
+        return (
+          <button
+            key={item.key}
+            onClick={() => setActive(item.key)}
+            className={
+              "w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium macos-transition " +
+              (isActive
+                ? "bg-hover text-foreground ring-1 ring-border"
+                : "text-muted-foreground hover:bg-hover")
+            }
+          >
+            <Icon className="h-4 w-4" />
+            <span>{item.label}</span>
+          </button>
+        );
+      })}
+    </nav>
+  );
+
+  const SectionHeader = ({ title, description }: { title: string; description?: string }) => (
+    <div className="mb-4">
+      <h2 className="text-lg font-semibold tracking-tight">{title}</h2>
+      {description && <p className="text-sm text-muted-foreground">{description}</p>}
+    </div>
+  );
+
+  const Appearance = () => (
+    <div className="space-y-6">
+      <SectionHeader title="Appearance" description="Customize how Chicker looks and feels" />
+      <Card>
+        <CardContent className="p-4 space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h4 className="font-medium">Dark Mode</h4>
+              <p className="text-sm text-muted-foreground">Switch to the OLED dark theme</p>
+            </div>
+            <Switch
+              checked={preferences.darkMode}
+              onCheckedChange={(checked) => {
+                handlePreferenceChange("darkMode", checked);
+                setTheme(checked ? "dark" : "light");
+              }}
+            />
+          </div>
+          <Separator />
+          <div>
+            <Label htmlFor="language">Language</Label>
+            <select
+              id="language"
+              value={preferences.language}
+              onChange={(e) => handlePreferenceChange("language", e.target.value)}
+              className="w-full mt-1 bg-input border border-input-border rounded-lg px-3 py-2"
+            >
+              <option value="English">English</option>
+              <option value="Swahili">Kiswahili</option>
