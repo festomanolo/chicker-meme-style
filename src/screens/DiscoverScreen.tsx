@@ -165,3 +165,59 @@ export const DiscoverScreen: React.FC = () => {
 
       {/* Products */}
       <View style={styles.productsContainer}>
+        <Text style={styles.resultsText}>
+          {filteredProducts.length} {filteredProducts.length === 1 ? 'result' : 'results'} found
+        </Text>
+        <View style={styles.productsGrid}>
+          {filteredProducts.map((product) => (
+            <TouchableOpacity
+              key={product.id}
+              style={styles.productCard}
+              onPress={() => handleProductPress(product.id)}
+              activeOpacity={0.8}
+            >
+              <View style={styles.productImageContainer}>
+                <Text style={styles.productEmoji}>{product.emoji}</Text>
+              </View>
+              <View style={styles.productInfo}>
+                <Text style={styles.productTitle}>{product.title}</Text>
+                <Text style={styles.productDescription}>{product.description}</Text>
+                <Text style={styles.productPrice}>${product.price}</Text>
+              </View>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </View>
+    </ScrollView>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#f8f9fa',
+  },
+  header: {
+    paddingTop: 40,
+    paddingBottom: 20,
+    paddingHorizontal: 20,
+    backgroundColor: '#fff',
+  },
+  headerTitle: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: '#333',
+    textAlign: 'center',
+  },
+  searchContainer: {
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+  },
+  searchBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
