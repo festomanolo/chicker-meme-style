@@ -112,3 +112,60 @@ export const HomeScreen: React.FC = () => {
           style={styles.actionButton}
           onPress={() => navigation.navigate('Account' as never)}
           activeOpacity={0.8}
+        >
+          <Text style={styles.actionIcon}>👤</Text>
+          <Text style={styles.actionText}>Profile</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Featured Products */}
+      <View style={styles.section}>
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>
+            🔥 <Text style={styles.sectionTitleText}>Trending Now</Text> 🔥
+          </Text>
+          <Text style={styles.sectionSubtitle}>
+            The memes that are breaking the internet
+          </Text>
+        </View>
+        
+        <View style={styles.productsGrid}>
+          {featuredProducts.map(renderProductCard)}
+        </View>
+      </View>
+
+      {/* Meme of the Day */}
+      <View style={styles.memeOfTheDay}>
+        <Text style={styles.memeTitle}>🎯 Meme of the Day</Text>
+        <View style={styles.memeCard}>
+          <View style={styles.memeImageContainer}>
+            <Text style={styles.memeEmoji}>🔥</Text>
+          </View>
+          <View style={styles.memeContent}>
+            <Text style={styles.memeCardTitle}>"This is fine"</Text>
+            <Text style={styles.memeCardDescription}>
+              Perfect for when everything is definitely NOT fine, but you're just going with it anyway.
+            </Text>
+            <TouchableOpacity
+              style={styles.memeButton}
+              onPress={() => handleProductPress('1')}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.memeButtonText}>Get This Vibe</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+
+      {/* Call to Action */}
+      <View style={styles.ctaSection}>
+        <Text style={styles.ctaTitle}>Ready to Level Up?</Text>
+        <Text style={styles.ctaSubtitle}>
+          Join thousands of meme lords who've already upgraded their wardrobe
+        </Text>
+        <TouchableOpacity
+          style={styles.ctaButton}
+          onPress={() => navigation.navigate('Discover' as never)}
+          activeOpacity={0.8}
+        >
+          <Text style={styles.ctaButtonText}>Start Shopping →</Text>
