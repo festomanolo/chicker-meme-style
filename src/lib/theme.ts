@@ -111,3 +111,59 @@ export const TYPOGRAPHY = {
   // Font weights
   fontWeight: {
     normal: '400',
+    medium: '500',
+    semibold: '600',
+    bold: '700',
+  },
+  
+  // Text styles
+  text: {
+    h1: {
+      fontSize: 32,
+      lineHeight: 38,
+      fontWeight: '700',
+      letterSpacing: -0.5,
+    },
+    h2: {
+      fontSize: 28,
+      lineHeight: 34,
+      fontWeight: '600',
+      letterSpacing: -0.3,
+    },
+    h3: {
+      fontSize: 24,
+      lineHeight: 30,
+      fontWeight: '600',
+      letterSpacing: -0.2,
+    },
+    h4: {
+      fontSize: 20,
+      lineHeight: 26,
+      fontWeight: '600',
+      letterSpacing: -0.1,
+    },
+    body: {
+      fontSize: 16,
+      lineHeight: 24,
+      fontWeight: '400',
+    },
+    bodyLarge: {
+      fontSize: 18,
+      lineHeight: 26,
+      fontWeight: '400',
+    },
+    bodySmall: {
+      fontSize: 14,
+      lineHeight: 20,
+      fontWeight: '400',
+    },
+    caption: {
+      fontSize: 12,
+      lineHeight: 16,
+      fontWeight: '400',
+    },
+    button: {
+      fontSize: 16,
+      lineHeight: 20,
+      fontWeight: '600',
+      letterSpacing: 0.1,
