@@ -44,3 +44,50 @@ export const useAuthStore = create<AuthState>()(
           set({ isLoading: false });
           return false;
         }
+      },
+
+      logout: async () => {
+        set({ user: null, isAuthenticated: false });
+        await storage.removeItem('auth_token');
+        await storage.removeItem('user_id');
+      },
+
+      register: async (name: string, email: string, password: string) => {
+        set({ isLoading: true });
+        try {
+          if (!PasswordUtils.isValidEmail(email)) {
+            set({ isLoading: false });
+            return false;
+          }
+
+          const passwordValidation = PasswordUtils.validatePassword(password);
+          if (!passwordValidation.isValid) {
+            console.error('Password validation failed:', passwordValidation.errors);
+            set({ isLoading: false });
+            return false;
+          }
+
+          const existingUser = await db.getUserByEmail(email);
+          if (existingUser) {
+            set({ isLoading: false });
+            return false; // User already exists
+          }
+
+          const userId = PasswordUtils.generateUserId();
+          const hashedPassword = await PasswordUtils.hashPassword(password);
+          
+          const user: Omit<User, 'created_at'> = {
+            id: userId,
+            name: name.trim(),
+            email: email.toLowerCase().trim(),
+            password_hash: hashedPassword,
+          };
+
+          await db.createUser(user);
+          const newUser = await db.getUserByEmail(email);
+          if (newUser) {
+            const sessionToken = PasswordUtils.generateSessionToken();
+            set({ user: newUser, isAuthenticated: true, isLoading: false });
+            await storage.setItem('auth_token', sessionToken);
+            await storage.setItem('user_id', newUser.id);
+            return true;
