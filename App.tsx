@@ -42,3 +42,46 @@ const TestComponent = () => {
         <Text style={styles.testButtonText}>Test React Native</Text>
       </TouchableOpacity>
       
+      <Text style={styles.testStatus}>Status: {testState}</Text>
+      <Text style={styles.testInfo}>If you see this, basic React Native works!</Text>
+    </View>
+  );
+};
+
+// Progressive testing levels
+const TEST_LEVELS = {
+  BASIC: 'basic',           // Just React Native components
+  ASYNC_STORAGE: 'storage', // Add AsyncStorage
+  NAVIGATION: 'navigation', // Add React Navigation
+  FULL: 'full'             // Full app
+};
+
+// Main App Component
+export default function App() {
+  // Change this to progress through test levels
+  const [currentTestLevel] = useState(TEST_LEVELS.FULL); // Change to test different levels
+  const [testResults, setTestResults] = useState({});
+
+  // Basic React Native test
+  if (currentTestLevel === TEST_LEVELS.BASIC) {
+    return (
+      <View style={styles.container}>
+        <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
+        <TestComponent />
+      </View>
+    );
+  }
+
+  // AsyncStorage test
+  if (currentTestLevel === TEST_LEVELS.ASYNC_STORAGE) {
+    return (
+      <View style={styles.container}>
+        <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
+        <AsyncStorageTest />
+      </View>
+    );
+  }
+
+  // Navigation test
+  if (currentTestLevel === TEST_LEVELS.NAVIGATION) {
+    return (
