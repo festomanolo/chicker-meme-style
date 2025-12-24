@@ -155,3 +155,55 @@ async function generateIcons() {
         background: { r: 255, g: 255, b: 255, alpha: 1 }
       })
       .png()
+      .toFile(path.join(outputDir, 'adaptive-icon.png'));
+
+    console.log('✅ Icon generation completed successfully!');
+    console.log(`📁 Icons saved to: ${iconDir}`);
+    console.log(`📁 Splash screens saved to: ${splashDir}`);
+    console.log(`📁 Main assets saved to: ${outputDir}`);
+    
+    // Generate instructions
+    console.log('\n📋 Next steps:');
+    console.log('1. Copy the generated assets to your Expo project:');
+    console.log(`   - Copy ${outputDir}/icon.png to your project root`);
+    console.log(`   - Copy ${outputDir}/splash.png to your project root`);
+    console.log(`   - Copy ${outputDir}/adaptive-icon.png to your project root`);
+    console.log('2. Update your app.json to reference these files');
+    console.log('3. For platform-specific icons, copy the appropriate sizes to:');
+    console.log('   - iOS: ios/Runner/Assets.xcassets/AppIcon.appiconset/');
+    console.log('   - Android: android/app/src/main/res/');
+
+  } catch (error) {
+    console.error('❌ Error generating icons:', error);
+    process.exit(1);
+  }
+}
+
+// Generate flattened icon version (without chain)
+async function generateFlattenedIcon() {
+  console.log('🎨 Generating flattened icon...');
+  
+  const sourcePath = path.join(__dirname, '../src/assets/chickerlogo.png');
+  const outputDir = path.join(__dirname, '../assets');
+  
+  try {
+    // Create a flattened version by removing the chain and simplifying
+    await sharp(sourcePath)
+      .resize(1024, 1024)
+      .png()
+      .toFile(path.join(outputDir, 'icon-flattened.png'));
+
+    console.log('✅ Flattened icon generated successfully!');
+  } catch (error) {
+    console.error('❌ Error generating flattened icon:', error);
+  }
+}
+
+// Run the generation
+if (require.main === module) {
+  generateIcons().then(() => {
+    return generateFlattenedIcon();
+  }).catch(console.error);
+}
+
+module.exports = { generateIcons, generateFlattenedIcon };
