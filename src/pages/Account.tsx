@@ -292,3 +292,62 @@ const SettingsPage = () => {
                 <div className="text-sm text-muted-foreground flex items-center gap-1">
                   <MapPin className="h-3.5 w-3.5" /> {userInfo.location}
                 </div>
+              </div>
+            </div>
+            <Button variant="outline" onClick={() => setIsEditingProfile((v) => !v)}>
+              {isEditingProfile ? "Done" : "Edit"}
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <Label htmlFor="name">Full Name</Label>
+              <Input
+                id="name"
+                value={userInfo.name}
+                onChange={(e) => setUserInfo((prev) => ({ ...prev, name: e.target.value }))}
+                disabled={!isEditingProfile}
+                className="mt-1"
+              />
+            </div>
+            <div>
+              <Label htmlFor="email">Email Address</Label>
+              <Input
+                id="email"
+                type="email"
+                value={userInfo.email}
+                onChange={(e) => setUserInfo((prev) => ({ ...prev, email: e.target.value }))}
+                disabled={!isEditingProfile}
+                className="mt-1"
+              />
+            </div>
+            <div>
+              <Label htmlFor="phone">Phone Number</Label>
+              <Input
+                id="phone"
+                value={userInfo.phone}
+                onChange={(e) => setUserInfo((prev) => ({ ...prev, phone: e.target.value }))}
+                disabled={!isEditingProfile}
+                className="mt-1"
+              />
+            </div>
+            <div>
+              <Label htmlFor="location">Location</Label>
+              <Input
+                id="location"
+                value={userInfo.location}
+                onChange={(e) => setUserInfo((prev) => ({ ...prev, location: e.target.value }))}
+                disabled={!isEditingProfile}
+                className="mt-1"
+              />
+            </div>
+          </div>
+          <div>
+            <Label htmlFor="bio">Bio</Label>
+            <Textarea
+              id="bio"
+              value={userInfo.bio}
+              onChange={(e) => setUserInfo((prev) => ({ ...prev, bio: e.target.value }))}
+              disabled={!isEditingProfile}
+              rows={3}
