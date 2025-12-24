@@ -55,3 +55,59 @@ export const AuthScreen: React.FC = () => {
     } catch (error) {
       Alert.alert('Error', 'An unexpected error occurred');
     }
+  };
+
+  const toggleMode = () => {
+    setIsLogin(!isLogin);
+    setName('');
+    setEmail('');
+    setPassword('');
+    setConfirmPassword('');
+  };
+
+  return (
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        keyboardShouldPersistTaps="handled"
+      >
+        {/* Header */}
+        <View style={styles.header}>
+          <Text style={styles.title}>
+            {isLogin ? 'Welcome Back!' : 'Join Chicker'}
+          </Text>
+          <Text style={styles.subtitle}>
+            {isLogin
+              ? 'Sign in to your account'
+              : 'Create your account to get started'}
+          </Text>
+        </View>
+
+        {/* Form */}
+        <View style={styles.form}>
+          {!isLogin && (
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Name</Text>
+              <TextInput
+                style={styles.input}
+                value={name}
+                onChangeText={setName}
+                placeholder="Enter your name"
+                autoCapitalize="words"
+                autoCorrect={false}
+              />
+            </View>
+          )}
+
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Email</Text>
+            <TextInput
+              style={styles.input}
+              value={email}
+              onChangeText={setEmail}
+              placeholder="Enter your email"
+              keyboardType="email-address"
+              autoCapitalize="none"
