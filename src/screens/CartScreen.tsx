@@ -274,3 +274,58 @@ const styles = StyleSheet.create({
     padding: 16,
     marginBottom: 16,
     boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
+    // Native fallback
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  imageContainer: {
+    width: isSmallScreen ? '100%' : 80,
+    height: isSmallScreen ? 120 : 80,
+    marginBottom: isSmallScreen ? 8 : 0,
+    marginRight: isSmallScreen ? 0 : 16,
+    backgroundColor: '#f0f0f0',
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  productEmoji: {
+    fontSize: 40,
+  },
+  productDetails: {
+    flex: 1,
+    justifyContent: 'space-between',
+  },
+  productTitle: {
+    fontSize: 16,
+    color: '#333',
+    fontWeight: '600',
+    marginBottom: 4,
+  },
+  productPrice: {
+    fontSize: 16,
+    color: '#FF6B35',
+    fontWeight: '700',
+    marginBottom: 4,
+  },
+  productVariant: {
+    fontSize: 12,
+    color: '#666',
+    marginBottom: 8,
+  },
+  quantityContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  quantityButton: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#f5f5f5',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  quantityButtonText: {
