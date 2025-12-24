@@ -313,3 +313,55 @@ const styles = StyleSheet.create({
     color: theme.colors.text,
     minWidth: 40,
     textAlign: 'center',
+  },
+  featureItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: theme.spacing.sm,
+  },
+  featureText: {
+    ...theme.typography.text.body,
+    color: theme.colors.text,
+    marginLeft: theme.spacing.sm,
+  },
+  addToCartContainer: {
+    paddingHorizontal: theme.spacing.lg,
+    paddingVertical: theme.spacing.md,
+    backgroundColor: theme.colors.background,
+    borderTopWidth: 1,
+    borderTopColor: theme.colors.borderLight,
+  },
+  priceContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: theme.spacing.md,
+  },
+  totalLabel: {
+    ...theme.typography.text.h4,
+    color: theme.colors.text,
+  },
+  totalPrice: {
+    ...theme.typography.text.h3,
+    color: theme.colors.primary,
+    fontWeight: '700',
+  },
+  addToCartButton: {
+    backgroundColor: theme.colors.primary,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: theme.spacing.md,
+    borderRadius: theme.layout.BUTTON_RADIUS,
+  },
+  addToCartText: {
+    ...theme.typography.text.button,
+    color: theme.colors.textInverse,
+    marginLeft: theme.spacing.sm,
+  },
+});
+
+
+
+
+
