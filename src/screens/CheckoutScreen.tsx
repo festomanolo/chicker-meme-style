@@ -445,3 +445,59 @@ const styles = StyleSheet.create({
   },
   emptySubtitle: {
     ...theme.typography.text.body,
+    color: theme.colors.textSecondary,
+    textAlign: 'center',
+    marginBottom: theme.spacing.xl,
+  },
+  successContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: theme.spacing.xl,
+  },
+  successTitle: {
+    ...theme.typography.text.h2,
+    color: theme.colors.text,
+    marginTop: theme.spacing.lg,
+    marginBottom: theme.spacing.sm,
+    textAlign: 'center',
+  },
+  successSubtitle: {
+    ...theme.typography.text.h4,
+    color: theme.colors.primary,
+    marginBottom: theme.spacing.sm,
+    fontWeight: '600',
+  },
+  successDescription: {
+    ...theme.typography.text.body,
+    color: theme.colors.textSecondary,
+    textAlign: 'center',
+    marginBottom: theme.spacing.xl,
+  },
+  successActions: {
+    width: '100%',
+    gap: theme.spacing.md,
+  },
+  primaryButton: {
+    backgroundColor: theme.colors.primary,
+    paddingVertical: theme.spacing.md,
+    borderRadius: theme.layout.BUTTON_RADIUS,
+    alignItems: 'center',
+  },
+  primaryButtonText: {
+    ...theme.typography.text.button,
+    color: theme.colors.textInverse,
+  },
+  secondaryButton: {
+    backgroundColor: theme.colors.surface,
+    paddingVertical: theme.spacing.md,
+    borderRadius: theme.layout.BUTTON_RADIUS,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+  },
+  secondaryButtonText: {
+    ...theme.typography.text.button,
+    color: theme.colors.text,
+  },
+});
