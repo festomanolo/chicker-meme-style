@@ -45,3 +45,51 @@ export const SplashScreen: React.FC = () => {
       // Check authentication status
       await checkAuth();
       
+      // Wait for animations to complete
+      setTimeout(() => {
+        navigation.navigate('Home' as never);
+      }, 2000);
+    } catch (error) {
+      console.error('App initialization failed:', error);
+      // Still navigate to home even if initialization fails
+      setTimeout(() => {
+        navigation.navigate('Home' as never);
+      }, 2000);
+    }
+  };
+
+  return (
+    <View style={styles.container}>
+      <Animated.View
+        style={[
+          styles.content,
+          {
+            opacity: fadeAnim,
+            transform: [{ scale: scaleAnim }],
+          },
+        ]}
+      >
+        <View style={styles.logoContainer}>
+          <Text style={styles.logoEmoji}>🐔</Text>
+          <Text style={styles.logoText}>Chicker</Text>
+        </View>
+        
+        <Text style={styles.tagline}>
+          Where Memes Meet Fashion
+        </Text>
+        
+        <View style={styles.loadingContainer}>
+          <View style={styles.loadingDot} />
+          <View style={[styles.loadingDot, styles.loadingDotDelay1]} />
+          <View style={[styles.loadingDot, styles.loadingDotDelay2]} />
+        </View>
+      </Animated.View>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: theme.colors.primary,
+    alignItems: 'center',
