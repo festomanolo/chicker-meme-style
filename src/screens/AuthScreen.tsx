@@ -224,3 +224,60 @@ const styles = StyleSheet.create({
     borderRadius: theme.layout.BUTTON_RADIUS,
     paddingHorizontal: theme.spacing.md,
     paddingVertical: theme.spacing.md,
+    fontSize: theme.typography.fontSize.base,
+    backgroundColor: theme.colors.surface,
+    color: theme.colors.text,
+  },
+  button: {
+    backgroundColor: theme.colors.primary,
+    borderRadius: theme.layout.BUTTON_RADIUS,
+    paddingVertical: theme.spacing.md,
+    alignItems: 'center',
+    marginTop: theme.spacing.lg,
+  },
+  buttonDisabled: {
+    opacity: 0.6,
+  },
+  buttonText: {
+    ...theme.typography.text.button,
+    color: theme.colors.textInverse,
+  },
+  toggleContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: theme.spacing.xl,
+  },
+  toggleText: {
+    ...theme.typography.text.body,
+    color: theme.colors.textSecondary,
+  },
+  toggleButton: {
+    ...theme.typography.text.body,
+    color: theme.colors.primary,
+    fontWeight: '600',
+  },
+  demoContainer: {
+    backgroundColor: theme.colors.surface,
+    padding: theme.spacing.md,
+    borderRadius: theme.layout.CARD_RADIUS,
+    borderWidth: 1,
+    borderColor: theme.colors.borderLight,
+  },
+  demoTitle: {
+    ...theme.typography.text.bodySmall,
+    color: theme.colors.text,
+    fontWeight: '600',
+    marginBottom: theme.spacing.sm,
+  },
+  demoText: {
+    ...theme.typography.text.bodySmall,
+    color: theme.colors.textSecondary,
+    marginBottom: theme.spacing.xs,
+  },
+});
+
+
+
+
+
