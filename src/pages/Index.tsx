@@ -209,3 +209,55 @@ const Index = () => {
           <div className="text-center mb-10">
             <h2 className="text-headline font-display text-3xl sm:text-4xl font-bold">Seasonal Collections</h2>
             <p className="text-muted-foreground">Curated picks for the moment</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+            <div className="glass-card p-8 rounded-2xl flex flex-col justify-between bg-gradient-to-br from-muted/40 to-transparent">
+              <div>
+                <h3 className="text-xl font-semibold">Back-to-School</h3>
+                <p className="text-sm text-muted-foreground mt-2">Smart, funny tees for a fresh start</p>
+              </div>
+              <Button variant="outline" className="mt-6 self-start glass border-glass-border">Explore</Button>
+            </div>
+            <div className="glass-card p-8 rounded-2xl flex flex-col justify-between bg-gradient-to-br from-primary/10 to-transparent">
+              <div>
+                <h3 className="text-xl font-semibold">Holiday Gifts</h3>
+                <p className="text-sm text-muted-foreground mt-2">Crowd-pleasers for every meme lover</p>
+              </div>
+              <Button variant="outline" className="mt-6 self-start glass border-glass-border">Explore</Button>
+            </div>
+            <div className="glass-card p-8 rounded-2xl flex flex-col justify-between bg-gradient-to-br from-accent/10 to-transparent">
+              <div>
+                <h3 className="text-xl font-semibold">Summer Essentials</h3>
+                <p className="text-sm text-muted-foreground mt-2">Light tees with maximum laughs</p>
+              </div>
+              <Button variant="outline" className="mt-6 self-start glass border-glass-border">Explore</Button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="px-4 sm:px-6 py-16 sm:py-20 bg-gradient-to-r from-primary/10 to-accent/10">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-headline font-display text-3xl sm:text-4xl font-bold text-foreground mb-6">
+            Ready to Express Your Humor?
+            </h2>
+          <p className="text-muted-foreground text-lg mb-8 max-w-2xl mx-auto">
+            Join thousands of customers who love our meme tees. Start shopping now and add some humor to your wardrobe!
+          </p>
+          <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-10 py-4 rounded-xl macos-hover shadow-lg shadow-primary/25">
+            Start Shopping
+            <ArrowRight className="ml-2 h-5 w-5" />
+          </Button>
+        </div>
+      </section>
+    </div>
+  );
+};
+
+function FlashSalesSection() {
+  const [deadline] = useState(() => Date.now() + 1000 * 60 * 60 * 2 + 1000 * 45);
+  const [, setNow] = useState(Date.now());
+
+  useEffect(() => {
+    const t = setInterval(() => setNow(Date.now()), 1000);
