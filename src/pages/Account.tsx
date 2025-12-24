@@ -351,3 +351,62 @@ const SettingsPage = () => {
               onChange={(e) => setUserInfo((prev) => ({ ...prev, bio: e.target.value }))}
               disabled={!isEditingProfile}
               rows={3}
+              className="mt-1"
+            />
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+
+  const Addresses = () => (
+    <div className="space-y-6">
+      <SectionHeader title="Addresses" description="Manage your shipping locations" />
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-base">Saved Addresses</CardTitle>
+            <Button>Add New Address</Button>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {addresses.map((address) => (
+            <div key={address.id} className="p-4 rounded-lg border border-border">
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-2">
+                    <h4 className="font-semibold">{address.name}</h4>
+                    {address.isDefault && (
+                      <Badge variant="secondary" className="text-xs">
+                        Default
+                      </Badge>
+                    )}
+                  </div>
+                  <p className="text-muted-foreground text-sm">{address.fullAddress}</p>
+                </div>
+                <div className="flex gap-2">
+                  <Button variant="outline" size="sm">
+                    Edit
+                  </Button>
+                  {!address.isDefault && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleAddressChange(address.id, "isDefault", true)}
+                    >
+                      Set Default
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+        </CardContent>
+      </Card>
+    </div>
+  );
+
+  const Payments = () => (
+    <div className="space-y-6">
+      <SectionHeader title="Payments" description="Manage your payment methods" />
+      <Card>
