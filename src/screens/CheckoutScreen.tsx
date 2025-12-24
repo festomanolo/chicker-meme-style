@@ -389,3 +389,59 @@ const styles = StyleSheet.create({
     ...theme.typography.text.body,
     color: theme.colors.textSecondary,
   },
+  totalValue: {
+    ...theme.typography.text.body,
+    color: theme.colors.text,
+    fontWeight: '600',
+  },
+  grandTotalRow: {
+    borderTopWidth: 1,
+    borderTopColor: theme.colors.border,
+    paddingTop: theme.spacing.sm,
+    marginTop: theme.spacing.sm,
+  },
+  grandTotalLabel: {
+    ...theme.typography.text.h4,
+    color: theme.colors.text,
+  },
+  grandTotalValue: {
+    ...theme.typography.text.h4,
+    color: theme.colors.primary,
+    fontWeight: '700',
+  },
+  checkoutActions: {
+    padding: theme.spacing.lg,
+    backgroundColor: theme.colors.background,
+    borderTopWidth: 1,
+    borderTopColor: theme.colors.borderLight,
+  },
+  placeOrderButton: {
+    backgroundColor: theme.colors.primary,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: theme.spacing.md,
+    borderRadius: theme.layout.BUTTON_RADIUS,
+  },
+  buttonDisabled: {
+    opacity: 0.6,
+  },
+  placeOrderText: {
+    ...theme.typography.text.button,
+    color: theme.colors.textInverse,
+    marginLeft: theme.spacing.sm,
+  },
+  emptyContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: theme.spacing.xl,
+  },
+  emptyTitle: {
+    ...theme.typography.text.h3,
+    color: theme.colors.text,
+    marginTop: theme.spacing.lg,
+    marginBottom: theme.spacing.sm,
+  },
+  emptySubtitle: {
+    ...theme.typography.text.body,
