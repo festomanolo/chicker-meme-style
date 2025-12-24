@@ -52,3 +52,56 @@ jest.mock('expo-sqlite', () => ({
 }));
 
 jest.mock('expo-secure-store', () => ({
+  setItemAsync: jest.fn(),
+  getItemAsync: jest.fn(),
+  deleteItemAsync: jest.fn(),
+}));
+
+jest.mock('@react-native-async-storage/async-storage', () => ({
+  setItem: jest.fn(),
+  getItem: jest.fn(),
+  removeItem: jest.fn(),
+}));
+
+describe('App', () => {
+  it('renders without crashing', () => {
+    render(
+      <NavigationContainer>
+        <App />
+      </NavigationContainer>
+    );
+  });
+
+  it('shows splash screen initially', () => {
+    render(
+      <NavigationContainer>
+        <App />
+      </NavigationContainer>
+    );
+    
+    // The splash screen should be visible initially
+    expect(screen.getByText('Chicker')).toBeTruthy();
+  });
+});
+
+describe('Database Integration', () => {
+  it('initializes database on app start', async () => {
+    const { initDatabase } = require('../lib/database');
+    
+    render(
+      <NavigationContainer>
+        <App />
+      </NavigationContainer>
+    );
+    
+    expect(initDatabase).toHaveBeenCalled();
+  });
+});
+
+describe('Authentication Flow', () => {
+  it('handles user authentication state', () => {
+    const { useAuthStore } = require('../lib/auth-store');
+    
+    // Mock authenticated user
+    useAuthStore.mockReturnValue({
+      user: { id: '1', name: 'Test User', email: 'test@example.com' },
