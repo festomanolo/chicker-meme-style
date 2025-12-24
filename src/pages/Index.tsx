@@ -261,3 +261,56 @@ function FlashSalesSection() {
 
   useEffect(() => {
     const t = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(t);
+  }, []);
+
+  const remaining = Math.max(0, deadline - Date.now());
+  const hh = Math.floor(remaining / 1000 / 60 / 60).toString().padStart(2, '0');
+  const mm = Math.floor((remaining / 1000 / 60) % 60).toString().padStart(2, '0');
+  const ss = Math.floor((remaining / 1000) % 60).toString().padStart(2, '0');
+
+  const saleProducts = products.slice(0, 4).map((p) => ({
+    ...p,
+    originalPrice: p.originalPrice ?? Math.round(p.price * 1.25),
+  }));
+
+  const stockLeft = (id: string) => {
+    let sum = 0;
+    for (let i = 0; i < id.length; i++) sum += id.charCodeAt(i);
+    return (sum % 7) + 3; // 3-9 left
+  };
+
+  return (
+    <section className="px-4 sm:px-6 py-16 sm:py-20 bg-gradient-to-r from-destructive/5 via-accent/5 to-transparent">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex items-center justify-between mb-6 sm:mb-8">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-destructive/10 flex items-center justify-center">
+              <Flashlight className="h-5 w-5 text-destructive" />
+            </div>
+            <div>
+              <h2 className="text-headline font-display text-2xl sm:text-3xl font-bold">Flash Sales</h2>
+              <p className="text-sm text-muted-foreground">Limited-time offers. Don’t miss out.</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 text-sm font-mono">
+            <Clock className="h-4 w-4 text-muted-foreground" />
+            <span className="px-2 py-1 rounded-md bg-card border border-border">{hh}:{mm}:{ss}</span>
+          </div>
+        </div>
+        <div className="responsive-grid">
+          {saleProducts.map((product) => (
+            <div key={product.id} className="relative">
+              <ProductCard {...product} />
+              <div className="absolute top-2 right-2 text-[10px] sm:text-xs bg-destructive text-destructive-foreground px-2 py-1 rounded-md">
+                Only {stockLeft(product.id)} left
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export default Index;
