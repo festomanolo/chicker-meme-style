@@ -234,3 +234,61 @@ const SettingsPage = () => {
         </CardContent>
       </Card>
     </div>
+  );
+
+  const Privacy = () => (
+    <div className="space-y-6">
+      <SectionHeader title="Privacy & Security" description="Protect your account" />
+      <Card>
+        <CardContent className="p-4 space-y-4">
+          <div>
+            <h4 className="font-medium mb-2">Change Password</h4>
+            <div className="space-y-3">
+              <Input type="password" placeholder="Current password" />
+              <Input type="password" placeholder="New password" />
+              <Input type="password" placeholder="Confirm new password" />
+              <Button>Update Password</Button>
+            </div>
+          </div>
+          <Separator />
+          <div>
+            <h4 className="font-medium mb-2">Two-Factor Authentication</h4>
+            <p className="text-sm text-muted-foreground mb-3">Add an extra layer of security</p>
+            <Button variant="outline">Enable 2FA</Button>
+          </div>
+          <Separator />
+          <div>
+            <h4 className="font-medium mb-2 text-destructive">Danger Zone</h4>
+            <p className="text-sm text-muted-foreground mb-3">These actions cannot be undone</p>
+            <div className="flex flex-col sm:flex-row gap-2">
+              <Button variant="outline" className="text-destructive border-destructive">
+                Deactivate Account
+              </Button>
+              <Button variant="outline" className="text-destructive border-destructive">
+                Delete Account
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+
+  const Profile = () => (
+    <div className="space-y-6">
+      <SectionHeader title="Profile" description="Your personal information" />
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <Avatar className="w-12 h-12">
+                <AvatarImage src="/api/placeholder/64/64" />
+                <AvatarFallback className="text-base font-semibold">
+                  {userInfo.name.split(" ").map((n) => n[0]).join("")}
+                </AvatarFallback>
+              </Avatar>
+              <div>
+                <div className="font-medium">{userInfo.name}</div>
+                <div className="text-sm text-muted-foreground flex items-center gap-1">
+                  <MapPin className="h-3.5 w-3.5" /> {userInfo.location}
+                </div>
