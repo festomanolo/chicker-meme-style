@@ -96,3 +96,52 @@ export function AppSidebar() {
                 to={settings.url} 
                 className={() => {
                   const baseClasses = "flex flex-col items-center gap-1 px-2 py-2 rounded-lg text-xs font-medium transition-all duration-200";
+                  if (active) {
+                    return `${baseClasses} text-primary`;
+                  }
+                  return `${baseClasses} text-muted-foreground hover:text-foreground hover:bg-hover`;
+                }}
+              >
+                <span className={active ? "p-1.5 rounded-full ring-2 ring-primary" : ""}>
+                  <ItemIcon className={active ? "h-5 w-5 text-primary stroke-[2.25]" : "h-5 w-5"} />
+                </span>
+                {active && <span className="text-xs">{settings.title}</span>}
+              </NavLink>
+            )
+          })()}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Desktop Sidebar
+  return (
+    <Sidebar
+      className="glass-card border-r border-sidebar-border transition-all duration-300"
+      collapsible="icon"
+    >
+      <SidebarContent className={collapsed ? "p-2" : "p-4"}>
+        {/* App Logo */}
+        <div className={collapsed ? "mb-4" : "mb-6"}>
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+              <span className="text-primary-foreground font-bold text-lg">C</span>
+            </div>
+            {!collapsed && (
+              <div>
+                <h1 className="text-xl font-bold text-foreground">Chicker</h1>
+                <p className="text-xs text-muted-foreground">Meme Tees</p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Main Navigation */}
+        <SidebarGroup>
+          {!collapsed && (
+            <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+          )}
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {navigationItems.map((item) => (
