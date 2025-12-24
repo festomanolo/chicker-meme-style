@@ -166,3 +166,59 @@ export const CheckoutScreen: React.FC = () => {
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Order Summary</Text>
             {items.map((item) => (
+              <View key={item.id} style={styles.orderItem}>
+                <View style={styles.itemInfo}>
+                  <Text style={styles.itemName}>{item.name || `Product ${item.product_id}`}</Text>
+                  <Text style={styles.itemDetails}>
+                    Qty: {item.quantity} × ${item.price}
+                  </Text>
+                </View>
+                <Text style={styles.itemTotal}>
+                  ${(item.quantity * item.price).toFixed(2)}
+                </Text>
+              </View>
+            ))}
+          </View>
+
+          {/* Shipping Information */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Shipping Information</Text>
+            
+            <View style={styles.inputGroup}>
+              <Text style={styles.inputLabel}>Full Name *</Text>
+              <TextInput
+                style={styles.input}
+                value={shippingInfo.name}
+                onChangeText={(value) => handleInputChange('name', value)}
+                placeholder="Enter your full name"
+              />
+            </View>
+
+            <View style={styles.inputGroup}>
+              <Text style={styles.inputLabel}>Email *</Text>
+              <TextInput
+                style={styles.input}
+                value={shippingInfo.email}
+                onChangeText={(value) => handleInputChange('email', value)}
+                placeholder="Enter your email"
+                keyboardType="email-address"
+                autoCapitalize="none"
+              />
+            </View>
+
+            <View style={styles.inputGroup}>
+              <Text style={styles.inputLabel}>Phone Number *</Text>
+              <TextInput
+                style={styles.input}
+                value={shippingInfo.phone}
+                onChangeText={(value) => handleInputChange('phone', value)}
+                placeholder="Enter your phone number"
+                keyboardType="phone-pad"
+              />
+            </View>
+
+            <View style={styles.inputGroup}>
+              <Text style={styles.inputLabel}>Address *</Text>
+              <TextInput
+                style={styles.input}
+                value={shippingInfo.address}
