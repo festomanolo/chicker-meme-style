@@ -54,3 +54,60 @@ export const COLORS = {
   textInverse: '#FFFFFF',
   
   // Border colors
+  border: '#C6C6C8',
+  borderLight: '#E5E5EA',
+  borderDark: '#8E8E93',
+  
+  // Overlay colors
+  overlay: 'rgba(0, 0, 0, 0.5)',
+  overlayLight: 'rgba(0, 0, 0, 0.1)',
+  
+  // Dark mode colors
+  dark: {
+    background: '#000000',
+    surface: '#1C1C1E',
+    surfaceDark: '#2C2C2E',
+    surfaceLight: '#3A3A3C',
+    text: '#FFFFFF',
+    textSecondary: '#8E8E93',
+    textTertiary: '#48484A',
+    border: '#38383A',
+    borderLight: '#48484A',
+    borderDark: '#2C2C2E',
+  },
+} as const;
+
+// Typography - Friendly, rounded sans-serif
+export const TYPOGRAPHY = {
+  // Font families
+  fontFamily: {
+    regular: 'System',
+    medium: 'System',
+    semibold: 'System',
+    bold: 'System',
+  },
+  
+  // Font sizes
+  fontSize: {
+    xs: 12,
+    sm: 14,
+    base: 16,
+    lg: 18,
+    xl: 20,
+    '2xl': 24,
+    '3xl': 28,
+    '4xl': 32,
+    '5xl': 36,
+  },
+  
+  // Line heights
+  lineHeight: {
+    tight: 1.2,
+    normal: 1.4,
+    relaxed: 1.6,
+    loose: 1.8,
+  },
+  
+  // Font weights
+  fontWeight: {
+    normal: '400',
