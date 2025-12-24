@@ -102,3 +102,56 @@ async function generateIcons() {
       const { width, height } = splashSizes.android[i];
       await sharp(sourcePath)
         .resize(Math.floor(width * 0.4), Math.floor(height * 0.4), {
+          fit: 'contain',
+          background: { r: 255, g: 255, b: 255, alpha: 1 }
+        })
+        .extend({
+          top: Math.floor(height * 0.3),
+          bottom: Math.floor(height * 0.3),
+          left: Math.floor(width * 0.3),
+          right: Math.floor(width * 0.3),
+          background: { r: 255, g: 255, b: 255, alpha: 1 }
+        })
+        .png()
+        .toFile(path.join(splashDir, `android-splash-${width}x${height}.png`));
+    }
+
+    // Generate main app icon and splash
+    console.log('✨ Generating main app assets...');
+    
+    // Main app icon (1024x1024)
+    await sharp(sourcePath)
+      .resize(1024, 1024)
+      .png()
+      .toFile(path.join(outputDir, 'icon.png'));
+
+    // Main splash screen (1242x2436 - iPhone X size)
+    await sharp(sourcePath)
+      .resize(497, 974, {
+        fit: 'contain',
+        background: { r: 255, g: 255, b: 255, alpha: 1 }
+      })
+      .extend({
+        top: 730,
+        bottom: 730,
+        left: 372,
+        right: 372,
+        background: { r: 255, g: 255, b: 255, alpha: 1 }
+      })
+      .png()
+      .toFile(path.join(outputDir, 'splash.png'));
+
+    // Adaptive icon for Android
+    await sharp(sourcePath)
+      .resize(108, 108, {
+        fit: 'contain',
+        background: { r: 255, g: 255, b: 255, alpha: 1 }
+      })
+      .extend({
+        top: 36,
+        bottom: 36,
+        left: 36,
+        right: 36,
+        background: { r: 255, g: 255, b: 255, alpha: 1 }
+      })
+      .png()
