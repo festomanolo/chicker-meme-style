@@ -32,3 +32,36 @@ npm install
 ```bash
 # Start Metro bundler
 npm start
+
+# Run on Android
+npm run android
+
+# Run web version
+npm run web
+```
+
+### Production Build
+
+```bash
+# Build optimized APK
+./build-production.sh
+```
+
+The script will generate:
+- APK: `android/app/build/outputs/apk/release/app-release.apk`
+- Bundle: `android/app/build/outputs/bundle/release/app-release.aab`
+
+## Optimizations Applied
+
+### Bundle Size Reduction
+- Removed Expo dependencies
+- Replaced SQLite with AsyncStorage
+- Removed unused libraries (reanimated, etc.)
+- Optimized asset bundling
+
+### Android Optimizations
+- Enabled Hermes JS engine
+- ProGuard minification
+- Resource shrinking
+- PNG crunching
+- R8 full mode optimization
