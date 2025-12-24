@@ -40,3 +40,45 @@ export const useCartStore = create<CartState>()(
 
           const itemId = await db.addCartItem({
             cart_id: cart.id,
+            product_id: productId,
+            quantity,
+            price,
+            name,
+            size,
+            color,
+          });
+
+          const newItem: CartItem = {
+            id: itemId,
+            cart_id: cart.id,
+            product_id: productId,
+            quantity,
+            price,
+            name,
+            size,
+            color,
+          };
+
+          set((state) => ({
+            items: [...state.items, newItem],
+            isLoading: false,
+          }));
+        } catch (error) {
+          console.error('Add item error:', error);
+          set({ isLoading: false });
+        }
+      },
+
+      removeItem: async (itemId: string) => {
+        set({ isLoading: true });
+        try {
+          await db.removeCartItem(itemId);
+          set((state) => ({
+            items: state.items.filter(item => item.id !== itemId),
+            isLoading: false,
+          }));
+        } catch (error) {
+          console.error('Remove item error:', error);
+          set({ isLoading: false });
+        }
+      },
