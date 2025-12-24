@@ -33,3 +33,38 @@ export const ContentContainer: React.FC<ContentContainerProps> = ({
           contentContainerStyle,
         ]}
         showsVerticalScrollIndicator={showsVerticalScrollIndicator}
+        bounces={bounces}
+        {...scrollViewProps}
+      >
+        {children}
+      </ScrollView>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    marginTop: theme.layout.HEADER_HEIGHT - theme.layout.CONTENT_OVERLAP,
+    backgroundColor: theme.colors.background,
+  },
+  scrollView: {
+    flex: 1,
+  },
+  contentContainer: {
+    backgroundColor: theme.colors.surface,
+    borderTopLeftRadius: theme.layout.BORDER_RADIUS,
+    borderTopRightRadius: theme.layout.BORDER_RADIUS,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
+    paddingTop: theme.layout.CONTENT_PADDING_TOP,
+    paddingBottom: theme.layout.BOTTOM_NAV_HEIGHT + theme.layout.CONTENT_PADDING_BOTTOM,
+    minHeight: '100%',
+    overflow: 'hidden',
+  },
+});
+
+
+
+
+
