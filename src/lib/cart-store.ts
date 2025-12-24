@@ -82,3 +82,46 @@ export const useCartStore = create<CartState>()(
           set({ isLoading: false });
         }
       },
+
+      updateQuantity: async (itemId: string, quantity: number) => {
+        set({ isLoading: true });
+        try {
+          if (quantity <= 0) {
+            await db.removeCartItem(itemId);
+            set((state) => ({
+              items: state.items.filter(item => item.id !== itemId),
+              isLoading: false,
+            }));
+          } else {
+            await db.updateCartItemQuantity(itemId, quantity);
+            set((state) => ({
+              items: state.items.map(item =>
+                item.id === itemId ? { ...item, quantity } : item
+              ),
+              isLoading: false,
+            }));
+          }
+        } catch (error) {
+          console.error('Update quantity error:', error);
+          set({ isLoading: false });
+        }
+      },
+
+      clearCart: async () => {
+        set({ isLoading: true });
+        try {
+          const { user } = useAuthStore.getState();
+          if (user) {
+            const cart = await db.getCartForUser(user.id);
+            if (cart) {
+              await db.clearCart(cart.id);
+            }
+          }
+          set({ items: [], isLoading: false });
+        } catch (error) {
+          console.error('Clear cart error:', error);
+          set({ isLoading: false });
+        }
+      },
+
+      loadCart: async () => {
