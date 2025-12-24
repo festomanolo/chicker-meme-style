@@ -163,3 +163,58 @@ export const CartScreen: React.FC = () => {
           </TouchableOpacity>
         </View>
       ) : (
+        <>
+          {/* Cart Items */}
+          <View style={styles.cartItems}>
+            {cartItems.map(renderCartItem)}
+          </View>
+
+          {/* Cart Summary */}
+          <View style={styles.cartSummary}>
+            <View style={styles.summaryRow}>
+              <Text style={styles.summaryLabel}>Subtotal</Text>
+              <Text style={styles.summaryValue}>${total.toFixed(2)}</Text>
+            </View>
+            <View style={styles.summaryRow}>
+              <Text style={styles.summaryLabel}>Shipping</Text>
+              <Text style={styles.summaryValue}>Free</Text>
+            </View>
+            <View style={[styles.summaryRow, styles.totalRow]}>
+              <Text style={styles.totalLabel}>Total</Text>
+              <Text style={styles.totalValue}>${total.toFixed(2)}</Text>
+            </View>
+          </View>
+
+          {/* Action Buttons */}
+          <View style={styles.actionButtons}>
+            <TouchableOpacity
+              style={styles.clearButton}
+              onPress={handleClearCart}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.clearButtonText}>Clear Cart</Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity
+              style={[styles.checkoutButton, isLoading && styles.checkoutButtonDisabled]}
+              onPress={handleCheckout}
+              disabled={isLoading}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.checkoutButtonText}>
+                {isLoading ? 'Processing...' : 'Proceed to Checkout →'}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </>
+      )}
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#f8f9fa',
+  },
+  header: {
