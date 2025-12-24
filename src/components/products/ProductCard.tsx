@@ -51,3 +51,56 @@ export function ProductCard({
       const set = new Set(likedIds);
       if (next) set.add(id); else set.delete(id);
       localStorage.setItem("likedProducts", JSON.stringify(Array.from(set)));
+    } catch {
+      // noop
+    }
+  };
+
+  const markRecentlyViewed = () => {
+    try {
+      const raw = localStorage.getItem("recentlyViewedProducts");
+      const list: { id: string; ts: number }[] = raw ? JSON.parse(raw) : [];
+      const without = list.filter((p) => p.id !== id);
+      const next = [{ id, ts: Date.now() }, ...without].slice(0, 20);
+      localStorage.setItem("recentlyViewedProducts", JSON.stringify(next));
+    } catch {
+      // noop
+    }
+  };
+
+  const handleAddToCart = async () => {
+    setIsLoading(true);
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 500));
+    setIsLoading(false);
+  };
+
+  return (
+    <Card className="group glass-card hover:shadow-macos transition-all duration-300 macos-hover overflow-hidden">
+      <div className="relative" onClick={markRecentlyViewed}>
+        <div className="aspect-square overflow-hidden">
+          <img
+            src={image}
+            alt={name}
+            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+          />
+        </div>
+        
+        {/* Badges */}
+        <div className="absolute top-2 left-2 flex flex-col gap-1">
+          {isNew && (
+            <Badge className="bg-success text-white font-medium text-xs">New</Badge>
+          )}
+          {isTrending && (
+            <Badge className="bg-accent text-accent-foreground font-medium text-xs">🔥</Badge>
+          )}
+          {badge && (
+            <Badge variant="secondary" className="bg-glass border-glass-border text-xs">
+              {badge}
+            </Badge>
+          )}
+        </div>
+
+        {/* Wishlist Button */}
+        <Button
+          variant="ghost"
