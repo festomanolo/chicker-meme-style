@@ -168,3 +168,59 @@ export const AuthScreen: React.FC = () => {
             </Text>
           </TouchableOpacity>
         </View>
+
+        {/* Demo Credentials */}
+        <View style={styles.demoContainer}>
+          <Text style={styles.demoTitle}>Demo Credentials:</Text>
+          <Text style={styles.demoText}>Email: demo@chicker.com</Text>
+          <Text style={styles.demoText}>Password: password123</Text>
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: theme.colors.background,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    paddingHorizontal: theme.spacing.lg,
+    paddingTop: theme.spacing['3xl'],
+    paddingBottom: theme.spacing.xl,
+  },
+  header: {
+    alignItems: 'center',
+    marginBottom: theme.spacing['3xl'],
+  },
+  title: {
+    ...theme.typography.text.h1,
+    color: theme.colors.text,
+    marginBottom: theme.spacing.sm,
+    textAlign: 'center',
+  },
+  subtitle: {
+    ...theme.typography.text.bodyLarge,
+    color: theme.colors.textSecondary,
+    textAlign: 'center',
+  },
+  form: {
+    marginBottom: theme.spacing.xl,
+  },
+  inputContainer: {
+    marginBottom: theme.spacing.lg,
+  },
+  label: {
+    ...theme.typography.text.bodySmall,
+    color: theme.colors.text,
+    marginBottom: theme.spacing.sm,
+    fontWeight: '500',
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+    borderRadius: theme.layout.BUTTON_RADIUS,
+    paddingHorizontal: theme.spacing.md,
+    paddingVertical: theme.spacing.md,
