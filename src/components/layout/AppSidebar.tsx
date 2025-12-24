@@ -145,3 +145,52 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {navigationItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton 
+                    asChild 
+                    isActive={isActive(item.url)}
+                    tooltip={item.title}
+                    size="default"
+                    className={collapsed ? "justify-start pl-1" : ""}
+                  >
+                    <NavLink to={item.url}>
+                      <item.icon className={collapsed ? "h-5 w-5" : "h-4 w-4"} />
+                      <span>{item.title}</span>
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        {/* Quick Actions */}
+        <SidebarGroup className={collapsed ? "mt-4" : "mt-6"}>
+          {!collapsed && (
+            <SidebarGroupLabel>Quick Actions</SidebarGroupLabel>
+          )}
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {quickActions.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton 
+                    asChild 
+                    isActive={isActive(item.url)}
+                    tooltip={item.title}
+                    size="default"
+                    className={collapsed ? "justify-start pl-1" : ""}
+                  >
+                    <NavLink to={item.url}>
+                      <item.icon className={collapsed ? "h-5 w-5" : "h-4 w-4"} />
+                      <span>{item.title}</span>
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+    </Sidebar>
+  );
+}
