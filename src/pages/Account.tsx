@@ -175,3 +175,62 @@ const SettingsPage = () => {
             >
               <option value="English">English</option>
               <option value="Swahili">Kiswahili</option>
+              <option value="French">Français</option>
+            </select>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+
+  const Notifications = () => (
+    <div className="space-y-6">
+      <SectionHeader title="Notifications" description="Control alerts and updates" />
+      <Card>
+        <CardContent className="p-4 space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h4 className="font-medium">Email Notifications</h4>
+              <p className="text-sm text-muted-foreground">Receive updates via email</p>
+            </div>
+            <Switch
+              checked={preferences.emailNotifications}
+              onCheckedChange={(checked) => handlePreferenceChange("emailNotifications", checked)}
+            />
+          </div>
+          <Separator />
+          <div className="flex items-center justify-between">
+            <div>
+              <h4 className="font-medium">Push Notifications</h4>
+              <p className="text-sm text-muted-foreground">Get real-time updates</p>
+            </div>
+            <Switch
+              checked={preferences.pushNotifications}
+              onCheckedChange={(checked) => handlePreferenceChange("pushNotifications", checked)}
+            />
+          </div>
+          <Separator />
+          <div className="flex items-center justify-between">
+            <div>
+              <h4 className="font-medium">Promotional Emails</h4>
+              <p className="text-sm text-muted-foreground">Special offers and new designs</p>
+            </div>
+            <Switch
+              checked={preferences.promotionalEmails}
+              onCheckedChange={(checked) => handlePreferenceChange("promotionalEmails", checked)}
+            />
+          </div>
+          <Separator />
+          <div className="flex items-center justify-between">
+            <div>
+              <h4 className="font-medium">Order Updates</h4>
+              <p className="text-sm text-muted-foreground">Shipping and delivery notifications</p>
+            </div>
+            <Switch
+              checked={preferences.orderUpdates}
+              onCheckedChange={(checked) => handlePreferenceChange("orderUpdates", checked)}
+            />
+          </div>
+        </CardContent>
+      </Card>
+    </div>
