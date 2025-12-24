@@ -88,3 +88,49 @@ export const AccountScreen: React.FC = () => {
                 <Text style={styles.menuItemTitle}>{item.title}</Text>
               </View>
               <Icon name="arrow-forward" size={20} color={theme.colors.textSecondary} />
+            </TouchableOpacity>
+          ))}
+        </View>
+
+        {/* Logout Button */}
+        <TouchableOpacity
+          style={styles.logoutButton}
+          onPress={handleLogout}
+          activeOpacity={0.8}
+        >
+          <Icon name="logout" size={20} color={theme.colors.error} />
+          <Text style={styles.logoutText}>Logout</Text>
+        </TouchableOpacity>
+      </ContentContainer>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: theme.colors.background,
+  },
+  profileSection: {
+    alignItems: 'center',
+    paddingVertical: theme.spacing.xl,
+    marginBottom: theme.spacing.xl,
+  },
+  avatarContainer: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: theme.colors.surface,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: theme.spacing.md,
+  },
+  userName: {
+    ...theme.typography.text.h3,
+    color: theme.colors.text,
+    marginBottom: theme.spacing.xs,
+  },
+  userEmail: {
+    ...theme.typography.text.body,
+    color: theme.colors.textSecondary,
+  },
