@@ -169,3 +169,60 @@ export const HomeScreen: React.FC = () => {
           activeOpacity={0.8}
         >
           <Text style={styles.ctaButtonText}>Start Shopping →</Text>
+        </TouchableOpacity>
+      </View>
+    </ScrollView>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#f8f9fa',
+  },
+  heroSection: {
+    alignItems: 'center',
+    marginBottom: 32,
+    paddingHorizontal: 20,
+    paddingTop: 40,
+  },
+  heroTitle: {
+    fontSize: 32,
+    color: '#333',
+    textAlign: 'center',
+    marginBottom: 8,
+    lineHeight: 40,
+    fontWeight: '700',
+  },
+  heroTitleAccent: {
+    color: '#FF6B35',
+    fontWeight: '800',
+  },
+  heroSubtitle: {
+    fontSize: 18,
+    color: '#666',
+    textAlign: 'center',
+    lineHeight: 28,
+  },
+  heroSubtitleAccent: {
+    color: '#4CAF50',
+    fontWeight: '600',
+  },
+  quickActions: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 32,
+    paddingHorizontal: 16,
+  },
+  actionButton: {
+    alignItems: 'center',
+    padding: 16,
+    backgroundColor: '#f5f5f5',
+    borderRadius: 12,
+    minWidth: 80,
+  },
+  actionIcon: {
+    fontSize: 24,
+    marginBottom: 4,
+  },
+  actionText: {
