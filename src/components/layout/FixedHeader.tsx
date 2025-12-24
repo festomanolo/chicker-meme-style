@@ -41,3 +41,46 @@ export const FixedHeader: React.FC<FixedHeaderProps> = ({
       navigation.goBack();
     }
   };
+
+  const handleCartPress = () => {
+    if (onCartPress) {
+      onCartPress();
+    } else {
+      navigation.navigate('Cart' as never);
+    }
+  };
+
+  return (
+    <View style={styles.safeArea}>
+      <View style={styles.header}>
+        {/* Left Section */}
+        <View style={styles.leftSection}>
+          {shouldShowBack && (
+            <TouchableOpacity
+              style={styles.backButton}
+              onPress={handleBackPress}
+              activeOpacity={0.7}
+            >
+              <Icon name="arrow-back" size={24} color={theme.colors.text} />
+            </TouchableOpacity>
+          )}
+        </View>
+
+        {/* Center Section - Title */}
+        <View style={styles.centerSection}>
+          <Text style={styles.title} numberOfLines={1}>
+            {displayTitle}
+          </Text>
+        </View>
+
+        {/* Right Section */}
+        <View style={styles.rightSection}>
+          {showCart && (
+            <TouchableOpacity
+              style={styles.cartButton}
+              onPress={handleCartPress}
+              activeOpacity={0.7}
+            >
+              <Icon name="cart" size={24} color={theme.colors.text} />
+              {cartItemCount > 0 && (
+                <View style={styles.cartBadge}>
