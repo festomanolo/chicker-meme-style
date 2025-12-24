@@ -410,3 +410,62 @@ const SettingsPage = () => {
     <div className="space-y-6">
       <SectionHeader title="Payments" description="Manage your payment methods" />
       <Card>
+        <CardContent className="p-4 space-y-4">
+          <div className="rounded-lg border border-dashed border-border p-6 text-center">
+            <p className="text-sm text-muted-foreground mb-3">No saved payment methods</p>
+            <Button>Add Card</Button>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+
+  const General = () => (
+    <div className="space-y-6">
+      <SectionHeader title="General" description="Basic preferences" />
+      <Card>
+        <CardContent className="p-4 space-y-4">
+          <div>
+            <Label htmlFor="language-gen">Language</Label>
+            <select
+              id="language-gen"
+              value={preferences.language}
+              onChange={(e) => handlePreferenceChange("language", e.target.value)}
+              className="w-full mt-1 bg-input border border-input-border rounded-lg px-3 py-2"
+            >
+              <option value="English">English</option>
+              <option value="Swahili">Kiswahili</option>
+              <option value="French">Français</option>
+            </select>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+
+  const About = () => (
+    <div className="space-y-6">
+      <SectionHeader title="About" description="Version and legal" />
+      <Card>
+        <CardContent className="p-4 space-y-3">
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-muted-foreground">App Version</span>
+            <span className="text-sm font-medium">1.0.0</span>
+          </div>
+          <Separator />
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-muted-foreground">Terms of Service</span>
+            <Button variant="outline" size="sm">View</Button>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-muted-foreground">Privacy Policy</span>
+            <Button variant="outline" size="sm">View</Button>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+
+  const renderContent = () => {
+    switch (active) {
+      case "appearance":
