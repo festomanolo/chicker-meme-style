@@ -125,3 +125,45 @@ export const useCartStore = create<CartState>()(
       },
 
       loadCart: async () => {
+        set({ isLoading: true });
+        try {
+          const { user } = useAuthStore.getState();
+          if (user) {
+            const cart = await db.getCartForUser(user.id);
+            if (cart) {
+              const items = await db.getCartItems(cart.id);
+              set({ items, isLoading: false });
+            } else {
+              set({ items: [], isLoading: false });
+            }
+          } else {
+            set({ items: [], isLoading: false });
+          }
+        } catch (error) {
+          console.error('Load cart error:', error);
+          set({ items: [], isLoading: false });
+        }
+      },
+
+      getTotal: () => {
+        const { items } = get();
+        return items.reduce((total, item) => total + (item.price * item.quantity), 0);
+      },
+
+      getItemCount: () => {
+        const { items } = get();
+        return items.reduce((count, item) => count + item.quantity, 0);
+      },
+    }),
+    {
+      name: 'cart-storage',
+      storage: createJSONStorage(() => storage),
+      partialize: (state) => ({ items: state.items }),
+    }
+  )
+);
+
+
+
+
+
