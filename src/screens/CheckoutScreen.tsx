@@ -277,3 +277,59 @@ export const CheckoutScreen: React.FC = () => {
             </View>
             <View style={[styles.totalRow, styles.grandTotalRow]}>
               <Text style={styles.grandTotalLabel}>Total</Text>
+              <Text style={styles.grandTotalValue}>${total.toFixed(2)}</Text>
+            </View>
+          </View>
+        </ScrollView>
+
+        {/* Place Order Button */}
+        <View style={styles.checkoutActions}>
+          <TouchableOpacity
+            style={[styles.placeOrderButton, isProcessing && styles.buttonDisabled]}
+            onPress={handlePlaceOrder}
+            disabled={isProcessing}
+            activeOpacity={0.8}
+          >
+            {isProcessing ? (
+              <Text style={styles.placeOrderText}>Processing...</Text>
+            ) : (
+              <>
+                <Icon name="card" size={20} color={theme.colors.textInverse} />
+                <Text style={styles.placeOrderText}>Place Order - ${total.toFixed(2)}</Text>
+              </>
+            )}
+          </TouchableOpacity>
+        </View>
+      </ContentContainer>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: theme.colors.background,
+  },
+  section: {
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.layout.CARD_RADIUS,
+    padding: theme.spacing.lg,
+    marginBottom: theme.spacing.lg,
+  },
+  sectionTitle: {
+    ...theme.typography.text.h4,
+    color: theme.colors.text,
+    marginBottom: theme.spacing.md,
+  },
+  orderItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: theme.spacing.sm,
+    borderBottomWidth: 1,
+    borderBottomColor: theme.colors.borderLight,
+  },
+  itemInfo: {
+    flex: 1,
+  },
+  itemName: {
