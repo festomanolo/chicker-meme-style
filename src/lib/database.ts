@@ -181,3 +181,49 @@ class Database {
       shippingAddress: {
         name: shippingInfo.name,
         address: shippingInfo.address,
+        city: shippingInfo.city,
+        country: shippingInfo.country
+      },
+      created_at: Date.now()
+    };
+    orders.push(order);
+    await this.setCollection('orders', orders);
+    return orderId;
+  }
+
+  async getOrdersForUser(userId: string): Promise<any[]> {
+    const orders = await this.getCollection('orders');
+    return orders
+      .filter(order => order.user_id === userId)
+      .sort((a, b) => b.created_at - a.created_at);
+  }
+
+  async createPaymentIntent(orderId: string, amount: number): Promise<string> {
+    const paymentIntentId = `pi_${Date.now()}`;
+    const intents = await this.getCollection('payment_intents');
+    intents.push({ id: paymentIntentId, order_id: orderId, amount, status: 'initiated', created_at: Date.now() });
+    await this.setCollection('payment_intents', intents);
+    return paymentIntentId;
+  }
+
+  async updatePaymentIntentStatus(paymentIntentId: string, status: string): Promise<void> {
+    const intents = await this.getCollection('payment_intents');
+    const intent = intents.find(i => i.id === paymentIntentId);
+    if (intent) {
+      intent.status = status;
+      await this.setCollection('payment_intents', intents);
+    }
+  }
+
+  async updateOrderStatus(orderId: string, status: string): Promise<void> {
+    const orders = await this.getCollection('orders');
+    const order = orders.find(o => o.id === orderId);
+    if (order) {
+      order.status = status;
+      await this.setCollection('orders', orders);
+    }
+  }
+}
+
+export const db = new Database();
+export const initDatabase = async () => await db.init();
