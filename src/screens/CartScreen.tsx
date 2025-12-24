@@ -108,3 +108,58 @@ export const CartScreen: React.FC = () => {
           <TouchableOpacity
             style={styles.quantityButton}
             onPress={() => handleQuantityChange(item.id, item.quantity - 1)}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.quantityButtonText}>-</Text>
+          </TouchableOpacity>
+          
+          <Text style={styles.quantityText}>{item.quantity}</Text>
+          
+          <TouchableOpacity
+            style={styles.quantityButton}
+            onPress={() => handleQuantityChange(item.id, item.quantity + 1)}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.quantityButtonText}>+</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Item Total */}
+        <Text style={styles.itemTotal}>
+          Total: ${(item.price * item.quantity).toFixed(2)}
+        </Text>
+      </View>
+
+      {/* Remove Button */}
+      <TouchableOpacity
+        style={styles.removeButton}
+        onPress={() => handleRemoveItem(item.id)}
+        activeOpacity={0.7}
+      >
+        <Text style={styles.removeButtonText}>🗑️</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>🛒 Cart</Text>
+      </View>
+      
+      {cartItems.length === 0 ? (
+        <View style={styles.emptyCart}>
+          <Text style={styles.emptyCartIcon}>🛒</Text>
+          <Text style={styles.emptyCartTitle}>Your cart is empty</Text>
+          <Text style={styles.emptyCartSubtitle}>
+            Add some meme tees to get started!
+          </Text>
+          <TouchableOpacity
+            style={styles.shopButton}
+            onPress={() => navigation.navigate('Home' as never)}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.shopButtonText}>Start Shopping</Text>
+          </TouchableOpacity>
+        </View>
+      ) : (
