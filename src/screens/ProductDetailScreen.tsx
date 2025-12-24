@@ -103,3 +103,55 @@ export const ProductDetailScreen: React.FC = () => {
           {/* Product Image */}
           <View style={styles.imageContainer}>
             <Image source={product.image} style={styles.productImage} />
+          </View>
+
+          {/* Product Info */}
+          <View style={styles.productInfo}>
+            <Text style={styles.productTitle}>{product.title}</Text>
+            <Text style={styles.productPrice}>${product.price}</Text>
+            <Text style={styles.productDescription}>{product.description}</Text>
+
+            {/* Size Selection */}
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Size</Text>
+              <View style={styles.optionsContainer}>
+                {product.sizes.map((size) => (
+                  <TouchableOpacity
+                    key={size}
+                    style={[
+                      styles.optionButton,
+                      selectedSize === size && styles.optionButtonActive,
+                    ]}
+                    onPress={() => setSelectedSize(size)}
+                    activeOpacity={0.7}
+                  >
+                    <Text
+                      style={[
+                        styles.optionText,
+                        selectedSize === size && styles.optionTextActive,
+                      ]}
+                    >
+                      {size}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+
+            {/* Color Selection */}
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Color</Text>
+              <View style={styles.optionsContainer}>
+                {product.colors.map((color) => (
+                  <TouchableOpacity
+                    key={color}
+                    style={[
+                      styles.optionButton,
+                      selectedColor === color && styles.optionButtonActive,
+                    ]}
+                    onPress={() => setSelectedColor(color)}
+                    activeOpacity={0.7}
+                  >
+                    <Text
+                      style={[
+                        styles.optionText,
