@@ -111,3 +111,60 @@ export const AuthScreen: React.FC = () => {
               placeholder="Enter your email"
               keyboardType="email-address"
               autoCapitalize="none"
+              autoCorrect={false}
+            />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Password</Text>
+            <TextInput
+              style={styles.input}
+              value={password}
+              onChangeText={setPassword}
+              placeholder="Enter your password"
+              secureTextEntry
+              autoCapitalize="none"
+            />
+          </View>
+
+          {!isLogin && (
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Confirm Password</Text>
+              <TextInput
+                style={styles.input}
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+                placeholder="Confirm your password"
+                secureTextEntry
+                autoCapitalize="none"
+              />
+            </View>
+          )}
+
+          <TouchableOpacity
+            style={[styles.button, isLoading && styles.buttonDisabled]}
+            onPress={handleSubmit}
+            disabled={isLoading}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.buttonText}>
+              {isLoading
+                ? 'Loading...'
+                : isLogin
+                ? 'Sign In'
+                : 'Create Account'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Toggle Mode */}
+        <View style={styles.toggleContainer}>
+          <Text style={styles.toggleText}>
+            {isLogin ? "Don't have an account? " : 'Already have an account? '}
+          </Text>
+          <TouchableOpacity onPress={toggleMode} activeOpacity={0.7}>
+            <Text style={styles.toggleButton}>
+              {isLogin ? 'Sign Up' : 'Sign In'}
+            </Text>
+          </TouchableOpacity>
+        </View>
