@@ -47,3 +47,52 @@ export function AppSidebar() {
           <div className="flex items-center justify-around px-2 py-0.5">
           {coreNav.map((item) => {
             const active = isActive(item.url)
+            return (
+              <NavLink 
+                key={item.title} 
+                to={item.url} 
+                className={() => {
+                  const baseClasses = "flex flex-col items-center gap-1 px-2 py-2 rounded-lg text-xs font-medium transition-all duration-200";
+                  if (active) {
+                    return `${baseClasses} text-primary`;
+                  }
+                  return `${baseClasses} text-muted-foreground hover:text-foreground hover:bg-hover`;
+                }}
+              >
+                <span className={active ? "p-1.5 rounded-full ring-2 ring-primary" : ""}>
+                  <item.icon className={active ? "h-5 w-5 text-primary stroke-[2.25]" : "h-5 w-5"} />
+                </span>
+                {active && <span className="text-xs">{item.title}</span>}
+              </NavLink>
+            )
+          })}
+          {quickActions.map((item) => {
+            const active = isActive(item.url)
+            return (
+              <NavLink 
+                key={item.title} 
+                to={item.url} 
+                className={() => {
+                  const baseClasses = "flex flex-col items-center gap-1 px-2 py-2 rounded-lg text-xs font-medium transition-all duration-200";
+                  if (active) {
+                    return `${baseClasses} text-primary`;
+                  }
+                  return `${baseClasses} text-muted-foreground hover:text-foreground hover:bg-hover`;
+                }}
+              >
+                <span className={active ? "p-1.5 rounded-full ring-2 ring-primary" : ""}>
+                  <item.icon className={active ? "h-5 w-5 text-primary stroke-[2.25]" : "h-5 w-5"} />
+                </span>
+                {active && <span className="text-xs">{item.title}</span>}
+              </NavLink>
+            )
+          })}
+          {settings && (() => {
+            const active = isActive(settings.url)
+            const ItemIcon = settings.icon
+            return (
+              <NavLink 
+                key={settings.title} 
+                to={settings.url} 
+                className={() => {
+                  const baseClasses = "flex flex-col items-center gap-1 px-2 py-2 rounded-lg text-xs font-medium transition-all duration-200";
