@@ -43,3 +43,48 @@ export const BottomNav: React.FC = () => {
         {tabs.map((tab) => {
           const isActive = currentRouteName === tab.name;
           const isCart = tab.name === 'Cart';
+          
+          return (
+            <TouchableOpacity
+              key={tab.name}
+              style={styles.tab}
+              onPress={() => handleTabPress(tab.name)}
+              activeOpacity={0.7}
+            >
+              <View style={styles.iconContainer}>
+                <Icon
+                  name={tab.icon}
+                  size={24}
+                  color={isActive ? theme.colors.primary : theme.colors.textSecondary}
+                />
+                {isCart && cartItemCount > 0 && (
+                  <View style={styles.badge}>
+                    <Text style={styles.badgeText}>
+                      {cartItemCount > 99 ? '99+' : cartItemCount}
+                    </Text>
+                  </View>
+                )}
+              </View>
+              <Text
+                style={[
+                  styles.label,
+                  { color: isActive ? theme.colors.primary : theme.colors.textSecondary },
+                ]}
+              >
+                {tab.label}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
+      </View>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  safeArea: {
+    backgroundColor: theme.colors.background,
+    borderTopWidth: 1,
+    borderTopColor: theme.colors.borderLight,
+  },
+  container: {
