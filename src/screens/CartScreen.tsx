@@ -329,3 +329,58 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   quantityButtonText: {
+    fontSize: 18,
+    color: '#333',
+    fontWeight: '600',
+  },
+  quantityText: {
+    fontSize: 16,
+    color: '#333',
+    marginHorizontal: 16,
+    minWidth: 30,
+    textAlign: 'center',
+  },
+  itemTotal: {
+    fontSize: 14,
+    color: '#666',
+    fontWeight: '600',
+  },
+  removeButton: {
+    padding: 8,
+    alignSelf: 'flex-start',
+  },
+  removeButtonText: {
+    fontSize: 20,
+  },
+  cartSummary: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 24,
+    marginBottom: 24,
+    marginHorizontal: 20,
+    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
+    // Native fallback
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  summaryRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  summaryLabel: {
+    fontSize: 16,
+    color: '#666',
+  },
+  summaryValue: {
+    fontSize: 16,
+    color: '#333',
+    fontWeight: '600',
+  },
+  totalRow: {
+    borderTopWidth: 1,
+    borderTopColor: '#e0e0e0',
