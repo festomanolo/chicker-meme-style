@@ -84,3 +84,45 @@ export const FixedHeader: React.FC<FixedHeaderProps> = ({
               <Icon name="cart" size={24} color={theme.colors.text} />
               {cartItemCount > 0 && (
                 <View style={styles.cartBadge}>
+                  <Text style={styles.cartBadgeText}>
+                    {cartItemCount > 99 ? '99+' : cartItemCount}
+                  </Text>
+                </View>
+              )}
+            </TouchableOpacity>
+          )}
+        </View>
+      </View>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  safeArea: {
+    backgroundColor: theme.colors.background,
+    borderBottomWidth: 1,
+    borderBottomColor: theme.colors.borderLight,
+  },
+  header: {
+    height: theme.layout.HEADER_HEIGHT,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: theme.spacing.md,
+    backgroundColor: theme.colors.background,
+  },
+  leftSection: {
+    flex: 1,
+    alignItems: 'flex-start',
+  },
+  centerSection: {
+    flex: 2,
+    alignItems: 'center',
+  },
+  rightSection: {
+    flex: 1,
+    alignItems: 'flex-end',
+  },
+  backButton: {
+    width: 40,
+    height: 40,
