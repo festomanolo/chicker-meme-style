@@ -128,3 +128,47 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
   },
+  testTitle: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: 'white',
+    marginBottom: 10,
+    textAlign: 'center',
+  },
+  testSubtitle: {
+    fontSize: 18,
+    color: 'white',
+    marginBottom: 40,
+    opacity: 0.9,
+    textAlign: 'center',
+  },
+  testButton: {
+    backgroundColor: 'white',
+    paddingHorizontal: 30,
+    paddingVertical: 15,
+    borderRadius: 25,
+    marginBottom: 20,
+  },
+  testButtonText: {
+    color: '#FF6B35',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  testStatus: {
+    color: 'white',
+    fontSize: 16,
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  testInfo: {
+    color: 'white',
+    fontSize: 14,
+    textAlign: 'center',
+    opacity: 0.8,
+  },
+});
+
+
+
+
+
