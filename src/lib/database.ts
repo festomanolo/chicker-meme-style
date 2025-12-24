@@ -135,3 +135,49 @@ class Database {
     const items = await this.getCollection('cart_items');
     return items.filter(item => item.cart_id === cartId);
   }
+
+  async removeCartItem(itemId: string): Promise<void> {
+    const items = await this.getCollection('cart_items');
+    const filteredItems = items.filter(item => item.id !== itemId);
+    await this.setCollection('cart_items', filteredItems);
+  }
+
+  async updateCartItemQuantity(itemId: string, quantity: number): Promise<void> {
+    const items = await this.getCollection('cart_items');
+    const itemIndex = items.findIndex(item => item.id === itemId);
+    if (itemIndex !== -1) {
+      items[itemIndex].quantity = quantity;
+      await this.setCollection('cart_items', items);
+    }
+  }
+
+  async clearCart(cartId: string): Promise<void> {
+    const items = await this.getCollection('cart_items');
+    const filteredItems = items.filter(item => item.cart_id !== cartId);
+    await this.setCollection('cart_items', filteredItems);
+  }
+
+  // Order functions
+  async createOrder(userId: string, items: CartItem[], total: number, shippingInfo: any): Promise<string> {
+    const orderId = `ORD-${new Date().getFullYear()}-${String(Date.now()).slice(-6)}`;
+    const orders = await this.getCollection('orders');
+    const order = {
+      id: orderId,
+      user_id: userId,
+      items: items.map(item => ({
+        id: item.id,
+        name: item.name || `Product ${item.product_id}`,
+        image: '/api/placeholder/100/100',
+        quantity: item.quantity,
+        price: item.price,
+        size: item.size || 'M',
+        color: item.color || 'White'
+      })),
+      total,
+      status: 'paid' as const,
+      date: new Date().toISOString().split('T')[0],
+      tracking: `TZ${Math.random().toString().slice(2, 11)}`,
+      estimatedDelivery: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString(),
+      shippingAddress: {
+        name: shippingInfo.name,
+        address: shippingInfo.address,
