@@ -53,3 +53,58 @@ export const CartScreen: React.FC = () => {
       await removeItem(itemId);
     } catch (error) {
       Alert.alert('Error', 'Failed to remove item');
+    }
+  };
+
+  const handleCheckout = async () => {
+    if (cartItems.length === 0) {
+      Alert.alert('Empty Cart', 'Add some items to your cart first!');
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      // Navigate to checkout
+      navigation.navigate('Checkout' as never);
+    } catch (error) {
+      Alert.alert('Error', 'Failed to proceed to checkout');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleClearCart = () => {
+    Alert.alert(
+      'Clear Cart',
+      'Are you sure you want to remove all items from your cart?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        { text: 'Clear', style: 'destructive', onPress: () => console.log('Clear cart') },
+      ]
+    );
+  };
+
+  const renderCartItem = (item: CartItem) => (
+    <View key={item.id} style={styles.cartItem}>
+      {/* Product Image */}
+      <View style={styles.imageContainer}>
+        <Text style={styles.productEmoji}>🔥</Text>
+      </View>
+
+      {/* Product Details */}
+      <View style={styles.productDetails}>
+        <Text style={styles.productTitle} numberOfLines={2}>
+          {item.name || `Product ${item.product_id}`}
+        </Text>
+        <Text style={styles.productPrice}>${item.price}</Text>
+        {item.size && item.color && (
+          <Text style={styles.productVariant}>
+            Size: {item.size}, Color: {item.color}
+          </Text>
+        )}
+        
+        {/* Quantity Controls */}
+        <View style={styles.quantityContainer}>
+          <TouchableOpacity
+            style={styles.quantityButton}
+            onPress={() => handleQuantityChange(item.id, item.quantity - 1)}
