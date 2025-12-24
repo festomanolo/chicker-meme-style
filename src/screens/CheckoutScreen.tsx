@@ -110,3 +110,59 @@ export const CheckoutScreen: React.FC = () => {
               Thank you for your order! You will receive a confirmation email shortly.
             </Text>
             
+            <View style={styles.successActions}>
+              <TouchableOpacity
+                style={styles.primaryButton}
+                onPress={() => navigation.navigate('Orders' as never)}
+                activeOpacity={0.8}
+              >
+                <Text style={styles.primaryButtonText}>View Orders</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity
+                style={styles.secondaryButton}
+                onPress={() => navigation.navigate('Home' as never)}
+                activeOpacity={0.8}
+              >
+                <Text style={styles.secondaryButtonText}>Continue Shopping</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </ContentContainer>
+      </View>
+    );
+  }
+
+  if (items.length === 0) {
+    return (
+      <View style={styles.container}>
+        <FixedHeader title="Checkout" />
+        <ContentContainer>
+          <View style={styles.emptyContainer}>
+            <Icon name="cart" size={64} color={theme.colors.textSecondary} />
+            <Text style={styles.emptyTitle}>Your cart is empty</Text>
+            <Text style={styles.emptySubtitle}>
+              Add some items to your cart before checking out.
+            </Text>
+            <TouchableOpacity
+              style={styles.primaryButton}
+              onPress={() => navigation.navigate('Home' as never)}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.primaryButtonText}>Start Shopping</Text>
+            </TouchableOpacity>
+          </View>
+        </ContentContainer>
+      </View>
+    );
+  }
+
+  return (
+    <View style={styles.container}>
+      <FixedHeader title="Checkout" />
+      <ContentContainer>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          {/* Order Summary */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Order Summary</Text>
+            {items.map((item) => (
