@@ -99,5 +99,3 @@ The script will generate:
 ## License
 
 MIT
-
-<!-- build-revision: 218 (2025-12-28) -->
