@@ -100,4 +100,4 @@ The script will generate:
 
 MIT
 
-<!-- pr-milestone: feat/whatsapp-order-summary-template (2025-04-17T05:35:06Z) -->
+<!-- pr-milestone: fix/mobile-pinch-zoom-clamp (2025-05-21T21:00:02Z) -->
