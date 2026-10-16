@@ -100,4 +100,4 @@ The script will generate:
 
 MIT
 
-<!-- pr-milestone: refactor/auth-session-storage (2025-05-24T07:04:59Z) -->
+<!-- pr-milestone: feat/crop-aspect-ratio-presets (2025-06-07T06:14:55Z) -->
