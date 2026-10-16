@@ -6,10 +6,12 @@ import { AppLayout } from '@/components/layout/AppLayout';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { initDatabase } from '@/lib/database';
 import { useAuthStore } from '@/lib/auth-store';
+import { useCartStore } from '@/lib/cart-store';
 
 // Web pages
 import Index from '@/pages/Index';
 import Discover from '@/pages/Discover';
+import ProductDetail from '@/pages/ProductDetail';
 import Cart from '@/pages/Cart';
 import Account from '@/pages/Account';
 import Customize from '@/pages/Customize';
@@ -23,19 +25,21 @@ import './globals.css';
 
 function App() {
   const { checkAuth } = useAuthStore();
+  const { loadCart } = useCartStore();
 
   useEffect(() => {
     const initApp = async () => {
       try {
         await initDatabase();
         await checkAuth();
+        await loadCart();
       } catch (error) {
         console.error('Failed to initialize app:', error);
       }
     };
 
     initApp();
-  }, [checkAuth]);
+  }, [checkAuth, loadCart]);
 
   return (
     <ThemeProvider defaultTheme="light" storageKey="chicker-theme">
@@ -44,25 +48,18 @@ function App() {
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/discover" element={<Discover />} />
-            <Route path="/cart" element={
-              <ProtectedRoute>
-                <Cart />
-              </ProtectedRoute>
-            } />
-            <Route path="/account" element={
-              <ProtectedRoute>
-                <Account />
-              </ProtectedRoute>
-            } />
+            <Route path="/product/:id" element={<ProductDetail />} />
+            <Route path="/cart" element={<Cart />} />
             <Route path="/customize" element={<Customize />} />
+            <Route path="/checkout" element={<Checkout />} />
             <Route path="/orders" element={
               <ProtectedRoute>
                 <Orders />
               </ProtectedRoute>
             } />
-            <Route path="/checkout" element={
+            <Route path="/account" element={
               <ProtectedRoute>
-                <Checkout />
+                <Account />
               </ProtectedRoute>
             } />
             <Route path="/auth" element={<Auth />} />
