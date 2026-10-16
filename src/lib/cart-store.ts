@@ -3,11 +3,21 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 import { storage } from './storage';
 import { db, CartItem } from './database';
 import { useAuthStore } from './auth-store';
+import { products } from '@/data/products';
 
 interface CartState {
   items: CartItem[];
   isLoading: boolean;
-  addItem: (productId: string, quantity: number, price: number, name?: string, size?: string, color?: string) => Promise<void>;
+  addItem: (
+    productId: string,
+    quantity: number,
+    price: number,
+    name?: string,
+    size?: string,
+    color?: string,
+    image?: string,
+    customDesign?: CartItem['customDesign']
+  ) => Promise<void>;
   removeItem: (itemId: string) => Promise<void>;
   updateQuantity: (itemId: string, quantity: number) => Promise<void>;
   clearCart: () => Promise<void>;
@@ -22,30 +32,66 @@ export const useCartStore = create<CartState>()(
       items: [],
       isLoading: false,
 
-      addItem: async (productId: string, quantity: number, price: number, name?: string, size?: string, color?: string) => {
+      addItem: async (
+        productId: string,
+        quantity: number,
+        price: number,
+        name?: string,
+        size = 'L',
+        color = 'White',
+        image?: string,
+        customDesign?: CartItem['customDesign']
+      ) => {
         set({ isLoading: true });
         try {
           const { user } = useAuthStore.getState();
-          if (!user) {
-            console.error('User not authenticated');
-            set({ isLoading: false });
+          const ownerId = user?.id || 'guest';
+
+          let cart = await db.getCartForUser(ownerId);
+          if (!cart) {
+            const cartId = await db.createCart(ownerId);
+            cart = { id: cartId, user_id: ownerId, created_at: Date.now() };
+          }
+
+          // Check if an identical product + size + color (non-custom) already exists in cart
+          const existing = !customDesign
+            ? get().items.find(
+                (i) =>
+                  i.product_id === productId &&
+                  (i.size || 'L') === size &&
+                  (i.color || 'White') === color &&
+                  !i.customDesign
+              )
+            : undefined;
+
+          if (existing) {
+            const nextQty = existing.quantity + quantity;
+            await db.updateCartItemQuantity(existing.id, nextQty);
+            set((state) => ({
+              items: state.items.map((item) =>
+                item.id === existing.id ? { ...item, quantity: nextQty } : item
+              ),
+              isLoading: false,
+            }));
             return;
           }
 
-          let cart = await db.getCartForUser(user.id);
-          if (!cart) {
-            const cartId = await db.createCart(user.id);
-            cart = { id: cartId, user_id: user.id, created_at: Date.now() };
-          }
+          const catalogProduct = products.find((p) => p.id === productId);
+          const resolvedName = name || catalogProduct?.name || 'Custom Meme Apparel';
+          const resolvedImage = image || catalogProduct?.image || '/placeholder.svg';
 
           const itemId = await db.addCartItem({
             cart_id: cart.id,
             product_id: productId,
             quantity,
             price,
-            name,
+            originalPrice: catalogProduct?.originalPrice,
+            name: resolvedName,
+            image: resolvedImage,
             size,
             color,
+            inStock: true,
+            customDesign,
           });
 
           const newItem: CartItem = {
@@ -54,9 +100,13 @@ export const useCartStore = create<CartState>()(
             product_id: productId,
             quantity,
             price,
-            name,
+            originalPrice: catalogProduct?.originalPrice,
+            name: resolvedName,
+            image: resolvedImage,
             size,
             color,
+            inStock: true,
+            customDesign,
           };
 
           set((state) => ({
@@ -74,7 +124,7 @@ export const useCartStore = create<CartState>()(
         try {
           await db.removeCartItem(itemId);
           set((state) => ({
-            items: state.items.filter(item => item.id !== itemId),
+            items: state.items.filter((item) => item.id !== itemId),
             isLoading: false,
           }));
         } catch (error) {
@@ -89,13 +139,13 @@ export const useCartStore = create<CartState>()(
           if (quantity <= 0) {
             await db.removeCartItem(itemId);
             set((state) => ({
-              items: state.items.filter(item => item.id !== itemId),
+              items: state.items.filter((item) => item.id !== itemId),
               isLoading: false,
             }));
           } else {
             await db.updateCartItemQuantity(itemId, quantity);
             set((state) => ({
-              items: state.items.map(item =>
+              items: state.items.map((item) =>
                 item.id === itemId ? { ...item, quantity } : item
               ),
               isLoading: false,
@@ -111,11 +161,10 @@ export const useCartStore = create<CartState>()(
         set({ isLoading: true });
         try {
           const { user } = useAuthStore.getState();
-          if (user) {
-            const cart = await db.getCartForUser(user.id);
-            if (cart) {
-              await db.clearCart(cart.id);
-            }
+          const ownerId = user?.id || 'guest';
+          const cart = await db.getCartForUser(ownerId);
+          if (cart) {
+            await db.clearCart(cart.id);
           }
           set({ items: [], isLoading: false });
         } catch (error) {
@@ -128,26 +177,25 @@ export const useCartStore = create<CartState>()(
         set({ isLoading: true });
         try {
           const { user } = useAuthStore.getState();
-          if (user) {
-            const cart = await db.getCartForUser(user.id);
-            if (cart) {
-              const items = await db.getCartItems(cart.id);
-              set({ items, isLoading: false });
-            } else {
-              set({ items: [], isLoading: false });
+          const ownerId = user?.id || 'guest';
+          const cart = await db.getCartForUser(ownerId);
+          if (cart) {
+            const dbItems = await db.getCartItems(cart.id);
+            if (dbItems.length > 0) {
+              set({ items: dbItems, isLoading: false });
+              return;
             }
-          } else {
-            set({ items: [], isLoading: false });
           }
+          set({ isLoading: false });
         } catch (error) {
           console.error('Load cart error:', error);
-          set({ items: [], isLoading: false });
+          set({ isLoading: false });
         }
       },
 
       getTotal: () => {
         const { items } = get();
-        return items.reduce((total, item) => total + (item.price * item.quantity), 0);
+        return items.reduce((total, item) => total + item.price * item.quantity, 0);
       },
 
       getItemCount: () => {
@@ -162,8 +210,3 @@ export const useCartStore = create<CartState>()(
     }
   )
 );
-
-
-
-
-

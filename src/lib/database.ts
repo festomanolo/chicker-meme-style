@@ -1,7 +1,6 @@
-import { storage, storageUtils } from './storage';
+import { storageUtils } from './storage';
 import { PasswordUtils } from './crypto';
-
-const DATABASE_NAME = 'chicker.db';
+import { products } from '@/data/products';
 
 export interface User {
   id: string;
@@ -23,9 +22,17 @@ export interface CartItem {
   product_id: string;
   quantity: number;
   price: number;
+  originalPrice?: number;
   name?: string;
+  image?: string;
   size?: string;
   color?: string;
+  inStock?: boolean;
+  customDesign?: {
+    view: 'front' | 'back';
+    garmentType: string;
+    elementsCount: number;
+  };
 }
 
 export interface Order {
@@ -46,7 +53,6 @@ export interface PaymentIntent {
 
 class Database {
   async init(): Promise<void> {
-    // Initialize storage keys if they don't exist
     const keys = ['users', 'carts', 'cart_items', 'orders', 'payment_intents'];
     for (const key of keys) {
       const existing = await storageUtils.getJSON(key);
@@ -54,15 +60,14 @@ class Database {
         await storageUtils.setJSON(key, []);
       }
     }
-    
-    // Create demo user if it doesn't exist
+
     await this.createDemoUser();
   }
 
   private async createDemoUser(): Promise<void> {
     const demoEmail = 'demo@chicker.com';
     const existingUser = await this.getUserByEmail(demoEmail);
-    
+
     if (!existingUser) {
       const hashedPassword = await PasswordUtils.hashPassword('password123');
       await this.createUser({
@@ -75,7 +80,7 @@ class Database {
   }
 
   private async getCollection(key: string): Promise<any[]> {
-    return await storageUtils.getJSON(key) || [];
+    return (await storageUtils.getJSON(key)) || [];
   }
 
   private async setCollection(key: string, data: any[]): Promise<void> {
@@ -92,7 +97,7 @@ class Database {
 
   async getUserByEmail(email: string): Promise<User | null> {
     const users = await this.getCollection('users');
-    return users.find(user => user.email === email) || null;
+    return users.find(user => user.email.toLowerCase() === email.toLowerCase()) || null;
   }
 
   async getUserById(id: string): Promise<User | null> {
@@ -116,7 +121,7 @@ class Database {
   }
 
   async createCart(userId: string): Promise<string> {
-    const cartId = `cart_${Date.now()}`;
+    const cartId = `cart_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
     const carts = await this.getCollection('carts');
     carts.push({ id: cartId, user_id: userId, created_at: Date.now() });
     await this.setCollection('carts', carts);
@@ -124,7 +129,7 @@ class Database {
   }
 
   async addCartItem(cartItem: Omit<CartItem, 'id'>): Promise<string> {
-    const itemId = `item_${Date.now()}`;
+    const itemId = `item_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
     const items = await this.getCollection('cart_items');
     items.push({ id: itemId, ...cartItem });
     await this.setCollection('cart_items', items);
@@ -164,25 +169,29 @@ class Database {
     const order = {
       id: orderId,
       user_id: userId,
-      items: items.map(item => ({
-        id: item.id,
-        name: item.name || `Product ${item.product_id}`,
-        image: '/api/placeholder/100/100',
-        quantity: item.quantity,
-        price: item.price,
-        size: item.size || 'M',
-        color: item.color || 'White'
-      })),
+      items: items.map(item => {
+        const matchedProduct = products.find(p => p.id === item.product_id);
+        return {
+          id: item.id,
+          product_id: item.product_id,
+          name: item.name || matchedProduct?.name || `Product ${item.product_id}`,
+          image: item.image || matchedProduct?.image || '/placeholder.svg',
+          quantity: item.quantity,
+          price: item.price,
+          size: item.size || 'M',
+          color: item.color || 'White'
+        };
+      }),
       total,
       status: 'paid' as const,
       date: new Date().toISOString().split('T')[0],
       tracking: `TZ${Math.random().toString().slice(2, 11)}`,
-      estimatedDelivery: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString(),
+      estimatedDelivery: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toLocaleDateString(),
       shippingAddress: {
-        name: shippingInfo.name,
-        address: shippingInfo.address,
-        city: shippingInfo.city,
-        country: shippingInfo.country
+        name: shippingInfo.name || 'Customer',
+        address: shippingInfo.address || 'Dar es Salaam',
+        city: shippingInfo.city || 'Dar es Salaam',
+        country: shippingInfo.country || 'Tanzania'
       },
       created_at: Date.now()
     };
@@ -194,7 +203,7 @@ class Database {
   async getOrdersForUser(userId: string): Promise<any[]> {
     const orders = await this.getCollection('orders');
     return orders
-      .filter(order => order.user_id === userId)
+      .filter(order => order.user_id === userId || userId === 'guest')
       .sort((a, b) => b.created_at - a.created_at);
   }
 

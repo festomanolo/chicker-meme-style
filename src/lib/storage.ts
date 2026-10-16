@@ -1,23 +1,39 @@
-// Platform-aware storage abstraction
-interface StorageInterface {
+// Web storage abstraction backed by localStorage with in-memory fallback
+export interface StorageInterface {
   getItem(key: string): Promise<string | null>;
   setItem(key: string, value: string): Promise<void>;
   removeItem(key: string): Promise<void>;
   clear(): Promise<void>;
 }
 
+const memoryStore = new Map<string, string>();
+
 class WebStorage implements StorageInterface {
+  private hasLocalStorage(): boolean {
+    try {
+      return typeof window !== 'undefined' && typeof window.localStorage !== 'undefined';
+    } catch {
+      return false;
+    }
+  }
+
   async getItem(key: string): Promise<string | null> {
     try {
-      return localStorage.getItem(key);
+      if (this.hasLocalStorage()) {
+        return window.localStorage.getItem(key);
+      }
+      return memoryStore.get(key) ?? null;
     } catch {
-      return null;
+      return memoryStore.get(key) ?? null;
     }
   }
 
   async setItem(key: string, value: string): Promise<void> {
     try {
-      localStorage.setItem(key, value);
+      memoryStore.set(key, value);
+      if (this.hasLocalStorage()) {
+        window.localStorage.setItem(key, value);
+      }
     } catch (error) {
       console.error('Failed to save to localStorage:', error);
     }
@@ -25,7 +41,10 @@ class WebStorage implements StorageInterface {
 
   async removeItem(key: string): Promise<void> {
     try {
-      localStorage.removeItem(key);
+      memoryStore.delete(key);
+      if (this.hasLocalStorage()) {
+        window.localStorage.removeItem(key);
+      }
     } catch (error) {
       console.error('Failed to remove from localStorage:', error);
     }
@@ -33,67 +52,18 @@ class WebStorage implements StorageInterface {
 
   async clear(): Promise<void> {
     try {
-      localStorage.clear();
+      memoryStore.clear();
+      if (this.hasLocalStorage()) {
+        window.localStorage.clear();
+      }
     } catch (error) {
       console.error('Failed to clear localStorage:', error);
     }
   }
 }
 
-class MobileStorage implements StorageInterface {
-  private AsyncStorage: any;
+export const storage: StorageInterface = new WebStorage();
 
-  constructor() {
-    // Dynamic import for React Native AsyncStorage
-    try {
-      this.AsyncStorage = require('@react-native-async-storage/async-storage').default;
-    } catch {
-      // Fallback to web storage if AsyncStorage is not available
-      return new WebStorage() as any;
-    }
-  }
-
-  async getItem(key: string): Promise<string | null> {
-    try {
-      return await this.AsyncStorage.getItem(key);
-    } catch {
-      return null;
-    }
-  }
-
-  async setItem(key: string, value: string): Promise<void> {
-    try {
-      await this.AsyncStorage.setItem(key, value);
-    } catch (error) {
-      console.error('Failed to save to AsyncStorage:', error);
-    }
-  }
-
-  async removeItem(key: string): Promise<void> {
-    try {
-      await this.AsyncStorage.removeItem(key);
-    } catch (error) {
-      console.error('Failed to remove from AsyncStorage:', error);
-    }
-  }
-
-  async clear(): Promise<void> {
-    try {
-      await this.AsyncStorage.clear();
-    } catch (error) {
-      console.error('Failed to clear AsyncStorage:', error);
-    }
-  }
-}
-
-// Platform detection
-const isWeb = typeof window !== 'undefined' && typeof window.localStorage !== 'undefined';
-const isMobile = typeof navigator !== 'undefined' && /react-native/i.test(navigator.userAgent);
-
-// Export the appropriate storage implementation
-export const storage: StorageInterface = isWeb ? new WebStorage() : new MobileStorage();
-
-// Utility functions for common operations
 export const storageUtils = {
   async getJSON<T>(key: string): Promise<T | null> {
     try {
@@ -104,7 +74,7 @@ export const storageUtils = {
     }
   },
 
-  async setJSON(key: string, value: any): Promise<void> {
+  async setJSON(key: string, value: unknown): Promise<void> {
     try {
       await storage.setItem(key, JSON.stringify(value));
     } catch (error) {
