@@ -99,3 +99,5 @@ The script will generate:
 ## License
 
 MIT
+
+<!-- pr-milestone: feat/canvas-snap-guides (2025-02-04T09:51:29Z) -->
