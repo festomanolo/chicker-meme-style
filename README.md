@@ -100,4 +100,4 @@ The script will generate:
 
 MIT
 
-<!-- pr-milestone: perf/product-grid-virtualization (2025-04-11T01:23:23Z) -->
+<!-- pr-milestone: feat/whatsapp-order-summary-template (2025-04-17T05:35:06Z) -->
