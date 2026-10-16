@@ -99,5 +99,3 @@ The script will generate:
 ## License
 
 MIT
-
-<!-- pr-milestone: test/canvas-layer-ordering-spec (2025-12-05T06:41:15Z) -->
