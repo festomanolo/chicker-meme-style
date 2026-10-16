@@ -100,4 +100,4 @@ The script will generate:
 
 MIT
 
-<!-- pr-milestone: fix/color-picker-hex-validation (2025-03-24T05:34:03Z) -->
+<!-- pr-milestone: perf/product-grid-virtualization (2025-04-11T01:23:23Z) -->
