@@ -100,4 +100,4 @@ The script will generate:
 
 MIT
 
-<!-- pr-milestone: feat/canvas-snap-guides (2025-02-04T09:51:29Z) -->
+<!-- pr-milestone: feat/layer-duplication-shortcut (2025-02-09T14:24:23Z) -->
