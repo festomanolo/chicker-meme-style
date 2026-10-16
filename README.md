@@ -100,4 +100,4 @@ The script will generate:
 
 MIT
 
-<!-- pr-milestone: feat/font-pairing-presets (2025-08-02T10:22:28Z) -->
+<!-- pr-milestone: chore/android-proguard-keep-rules (2025-09-07T22:02:51Z) -->
