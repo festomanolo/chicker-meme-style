@@ -100,4 +100,4 @@ The script will generate:
 
 MIT
 
-<!-- pr-milestone: feat/crop-aspect-ratio-presets (2025-06-07T06:14:55Z) -->
+<!-- pr-milestone: fix/cart-badge-count-sync (2025-06-29T00:57:15Z) -->
