@@ -100,4 +100,4 @@ The script will generate:
 
 MIT
 
-<!-- pr-milestone: feat/layer-duplication-shortcut (2025-02-09T14:24:23Z) -->
+<!-- pr-milestone: fix/color-picker-hex-validation (2025-03-24T05:34:03Z) -->
